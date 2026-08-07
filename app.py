@@ -16,6 +16,25 @@ app.secret_key = "ksr_dairy_secret_key"
 
 
 
+# ================= BRANDING =================
+
+SITE_NAME = "KSR Dairy Foods"
+SITE_TAGLINE = "Fresh Milk Delivered To Your Doorstep"
+
+
+
+@app.context_processor
+def inject_brand():
+
+    return {
+
+        "site_name": SITE_NAME,
+        "site_tagline": SITE_TAGLINE
+
+    }
+
+
+
 # ================= ADMIN LOGIN =================
 
 ADMIN_USERNAME = "ksr"
@@ -23,9 +42,11 @@ ADMIN_PASSWORD = "123"
 
 
 
+
 # ================= MONGODB =================
 
 mongo_uri = os.environ.get("MONGO_URI")
+
 
 
 def get_orders_collection():
@@ -39,35 +60,42 @@ def get_orders_collection():
 
 
 
+
 # ================= PRODUCTS =================
 
 PRODUCTS = [
 
-    {
-        "id": 1,
-        "name": "Cow Milk",
-        "price": 60,
-        "image": "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=600",
-        "description": "Fresh pure cow milk"
-    },
 
     {
-        "id": 2,
-        "name": "Buffalo Milk",
-        "price": 80,
-        "image": "https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=600",
-        "description": "Rich and creamy buffalo milk"
+        "id":1,
+        "name":"Cow Milk",
+        "price":60,
+        "image":"/static/images/cow-milk.jpg",
+        "description":"Fresh pure cow milk"
     },
 
+
     {
-        "id": 3,
-        "name": "Premium Buffalo Milk",
-        "price": 90,
-        "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600",
-        "description": "Premium quality buffalo milk"
+        "id":2,
+        "name":"Buffalo Milk",
+        "price":80,
+        "image":"/static/images/buffalo-milk.jpg",
+        "description":"Rich and creamy buffalo milk"
+    },
+
+
+    {
+        "id":3,
+        "name":"Premium Buffalo Milk",
+        "price":90,
+        "image":"/static/images/premium-milk.jpg",
+        "description":"Premium quality buffalo milk"
     }
 
+
 ]
+
+
 
 
 
@@ -80,6 +108,8 @@ def home():
         "index.html",
         products=PRODUCTS
     )
+
+
 
 
 
@@ -100,32 +130,38 @@ def add_cart():
             item["qty"] += 1
             break
 
+
     else:
 
         for product in PRODUCTS:
 
             if product["id"] == product_id:
 
+
                 cart.append({
 
-                    "id": product["id"],
-                    "name": product["name"],
-                    "price": product["price"],
-                    "image": product["image"],
-                    "qty": 1
+                    "id":product["id"],
+                    "name":product["name"],
+                    "price":product["price"],
+                    "image":product["image"],
+                    "qty":1
 
                 })
 
                 break
 
 
+
     session["cart"] = cart
 
 
     return jsonify({
+
         "status":"success",
         "message":"Added to cart"
+
     })
+
 
 
 
@@ -137,23 +173,26 @@ def cart():
 
 
 
+
+
 @app.route("/increase/<int:id>")
 def increase(id):
 
-    cart = session.get("cart", [])
+    cart=session.get("cart",[])
 
 
     for item in cart:
 
-        if item["id"] == id:
+        if item["id"]==id:
 
-            item["qty"] += 1
+            item["qty"]+=1
             break
 
 
-    session["cart"] = cart
+    session["cart"]=cart
 
     return cart_page()
+
 
 
 
@@ -161,27 +200,31 @@ def increase(id):
 @app.route("/decrease/<int:id>")
 def decrease(id):
 
-    cart = session.get("cart", [])
+    cart=session.get("cart",[])
 
 
     for item in cart:
 
-        if item["id"] == id:
+        if item["id"]==id:
 
-            if item["qty"] > 1:
 
-                item["qty"] -= 1
+            if item["qty"]>1:
+
+                item["qty"]-=1
+
 
             else:
 
                 cart.remove(item)
 
+
             break
 
 
-    session["cart"] = cart
+    session["cart"]=cart
 
     return cart_page()
+
 
 
 
@@ -189,38 +232,54 @@ def decrease(id):
 @app.route("/remove/<int:id>")
 def remove(id):
 
-    cart = session.get("cart", [])
+    cart=session.get("cart",[])
 
 
-    cart = [
+    cart=[
+
         item for item in cart
-        if item["id"] != id
+
+        if item["id"]!=id
+
     ]
 
 
-    session["cart"] = cart
+    session["cart"]=cart
+
 
     return cart_page()
 
 
 
 
+
 def cart_page():
 
-    cart = session.get("cart", [])
+    cart=session.get("cart",[])
 
 
-    total = sum(
-        item["price"] * item["qty"]
+    total=sum(
+
+        item["price"]*item["qty"]
+
         for item in cart
+
     )
 
 
     return render_template(
+
         "cart.html",
+
         cart=cart,
+
         total=total
+
     )
+
+
+
+
 
 
 
@@ -230,68 +289,90 @@ def cart_page():
 @app.route("/checkout")
 def checkout():
 
-    cart = session.get("cart", [])
+    cart=session.get("cart",[])
 
 
-    total = sum(
-        item["price"] * item["qty"]
+    total=sum(
+
+        item["price"]*item["qty"]
+
         for item in cart
+
     )
 
 
     return render_template(
+
         "checkout.html",
+
         cart=cart,
+
         total=total
+
     )
+
+
+
+
 
 
 
 # ================= ORDER =================
 
 
-@app.route("/place-order", methods=["POST"])
+@app.route("/place-order",methods=["POST"])
 def place_order():
 
-    cart = session.get("cart", [])
+    cart=session.get("cart",[])
 
 
-    total = sum(
-        item["price"] * item["qty"]
+    total=sum(
+
+        item["price"]*item["qty"]
+
         for item in cart
+
     )
 
 
-    order = {
 
-        "name": request.form.get("name"),
+    order={
 
-        "phone": request.form.get("phone"),
 
-        "address": request.form.get("address"),
+        "name":request.form.get("name"),
 
-        "products": cart,
+        "phone":request.form.get("phone"),
 
-        "total": total,
+        "address":request.form.get("address"),
 
-        "status": "Pending",
+        "products":cart,
 
-        "date": datetime.now()
+        "total":total,
+
+        "status":"Pending",
+
+        "date":datetime.now()
+
 
     }
 
 
-    orders_collection = get_orders_collection()
 
-    orders_collection.insert_one(order)
+    get_orders_collection().insert_one(order)
+
 
 
     session.clear()
 
 
+
     return render_template(
         "success.html"
     )
+
+
+
+
 
 
 
@@ -308,29 +389,13 @@ def admin():
         )
 
 
-    orders_collection = get_orders_collection()
+    orders=list(
 
+        get_orders_collection()
+        .find()
+        .sort("date",-1)
 
-    orders = list(
-        orders_collection.find().sort(
-            "date",
-            -1
-        )
     )
-
-
-    total_orders = len(orders)
-
-    pending_orders = len([
-        order for order in orders
-        if order.get("status") == "Pending"
-    ])
-
-    delivered_orders = len([
-        order for order in orders
-        if order.get("status") == "Delivered"
-    ])
-
 
 
     return render_template(
@@ -339,28 +404,43 @@ def admin():
 
         orders=orders,
 
-        total_orders=total_orders,
+        total_orders=len(orders),
 
-        pending_orders=pending_orders,
+        pending_orders=len([
 
-        delivered_orders=delivered_orders
+            o for o in orders
+
+            if o.get("status")=="Pending"
+
+        ]),
+
+        delivered_orders=len([
+
+            o for o in orders
+
+            if o.get("status")=="Delivered"
+
+        ])
 
     )
 
 
 
 
-@app.route("/admin-login", methods=["POST"])
+
+
+
+@app.route("/admin-login",methods=["POST"])
 def admin_login():
 
-    username = request.form.get("username")
+    username=request.form.get("username")
 
-    password = request.form.get("password")
+    password=request.form.get("password")
 
 
-    if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+    if username==ADMIN_USERNAME and password==ADMIN_PASSWORD:
 
-        session["admin"] = True
+        session["admin"]=True
 
         return redirect("/admin")
 
@@ -369,9 +449,12 @@ def admin_login():
 
         "admin_login.html",
 
-        error="Invalid Username or Password ❌"
+        error="Invalid Username or Password"
 
     )
+
+
+
 
 
 
@@ -379,9 +462,12 @@ def admin_login():
 @app.route("/admin-logout")
 def admin_logout():
 
-    session.pop("admin", None)
+    session.pop("admin",None)
 
     return redirect("/admin")
+
+
+
 
 
 
@@ -389,13 +475,10 @@ def admin_logout():
 @app.route("/update-status/<id>/<status>")
 def update_status(id,status):
 
-    orders_collection = get_orders_collection()
-
-
-    orders_collection.update_one(
+    get_orders_collection().update_one(
 
         {
-            "_id": ObjectId(id)
+            "_id":ObjectId(id)
         },
 
         {
@@ -412,16 +495,16 @@ def update_status(id,status):
 
 
 
+
+
+
 @app.route("/delete-order/<id>")
 def delete_order(id):
 
-    orders_collection = get_orders_collection()
-
-
-    orders_collection.delete_one(
+    get_orders_collection().delete_one(
 
         {
-            "_id": ObjectId(id)
+            "_id":ObjectId(id)
         }
 
     )
@@ -432,15 +515,21 @@ def delete_order(id):
 
 
 
+
+
+
 # ================= RUN =================
 
-if __name__ == "__main__":
+if __name__=="__main__":
 
-    port = int(
+
+    port=int(
+
         os.environ.get(
             "PORT",
             5000
         )
+
     )
 
 
