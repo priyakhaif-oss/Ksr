@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>KSR Dairy Foods</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="logo">
+        🥛 KSR Dairy Foods
+    </div>
+
+    <a href="/cart" class="cart-btn">
+        🛒 Cart
+    </a>
+
+</header>
+
+
+
+<section class="hero">
+
+    <h1>
+        Fresh Milk Delivered
+        To Your Doorstep
+    </h1>
+
+    <p>
+        100% Pure • Fresh • Healthy
+    </p>
+
+    <a href="#products" class="order-btn">
+        Order Now
+    </a>
+
+</section>
+
+
+
+
+<section id="products">
+
+<h2>
+Our Products
+</h2>
+
+
+<div class="products-container">
+
+
+{% for product in products %}
+
+
+<div class="card">
+
+
+<img src="/static/images/{{product.image}}">
+
+
+<h3>
+{{product.name}}
+</h3>
+
+
+<p>
+{{product.description}}
+</p>
+
+
+<h2>
+₹{{product.price}} / Litre
+</h2>
+
+
+<form action="/add-cart" method="POST">
+
+<input 
+type="hidden" 
+name="product_id"
+value="{{product.id}}">
+
+
+<button>
+Add To Cart 🛒
+</button>
+
+</form>
+
+
+</div>
+
+
+{% endfor %}
+
+
+</div>
+
+
+</section>
+
+
+
+
+<footer>
+
+<p>
+© 2026 KSR Dairy Foods
+</p>
+
+</footer>
+
+
+<script src="/static/js/script.js"></script>
+
+</body>
+
+</html>
