@@ -328,23 +328,42 @@ def admin():
 
 
     orders = list(
-
         orders_collection.find().sort(
             "date",
             -1
         )
-
     )
+
+
+    total_orders = len(orders)
+
+
+    pending_orders = len([
+        order for order in orders
+        if order.get("status") == "Pending"
+    ])
+
+
+    delivered_orders = len([
+        order for order in orders
+        if order.get("status") == "Delivered"
+    ])
+
 
 
     return render_template(
 
         "admin.html",
 
-        orders=orders
+        orders=orders,
+
+        total_orders=total_orders,
+
+        pending_orders=pending_orders,
+
+        delivered_orders=delivered_orders
 
     )
-
 
 
 
