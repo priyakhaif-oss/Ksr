@@ -2,11 +2,17 @@ from flask import Flask, render_template, request, jsonify, session
 from datetime import datetime
 import os
 
+
 app = Flask(__name__)
+
 app.secret_key = "ksr_dairy_secret_key"
 
+
+
 # Products Data
+
 PRODUCTS = [
+
     {
         "id": 1,
         "name": "Cow Milk",
@@ -14,6 +20,7 @@ PRODUCTS = [
         "image": "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=600",
         "description": "Fresh pure cow milk"
     },
+
     {
         "id": 2,
         "name": "Buffalo Milk",
@@ -21,6 +28,7 @@ PRODUCTS = [
         "image": "https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=600",
         "description": "Rich and creamy buffalo milk"
     },
+
     {
         "id": 3,
         "name": "Premium Buffalo Milk",
@@ -28,140 +36,373 @@ PRODUCTS = [
         "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600",
         "description": "Premium quality buffalo milk"
     }
+
 ]
+
+
+
 
 
 @app.route("/")
 def home():
+
     return render_template(
         "index.html",
         products=PRODUCTS
     )
 
 
-# Add product to cart
+
+
+
+
+# Add Cart
+
 @app.route("/add-cart", methods=["POST"])
 def add_cart():
 
+
     product_id = int(request.form.get("product_id"))
+
 
     cart = session.get("cart", [])
 
-    found = False
+
 
     for item in cart:
+
         if item["id"] == product_id:
+
             item["qty"] += 1
-            found = True
             break
 
-    if not found:
+
+    else:
+
+
         for product in PRODUCTS:
+
+
             if product["id"] == product_id:
+
+
                 cart.append({
-                    "id": product["id"],
-                    "name": product["name"],
-                    "price": product["price"],
-                    "image": product["image"],
-                    "qty": 1
+
+                    "id":product["id"],
+                    "name":product["name"],
+                    "price":product["price"],
+                    "image":product["image"],
+                    "qty":1
+
                 })
+
+
+                break
+
+
+
 
     session["cart"] = cart
 
+
+
     return jsonify({
-        "status": "success",
-        "message": "Added to cart"
+
+        "status":"success",
+
+        "message":"Added to cart"
+
     })
 
 
-# Cart page
+
+
+
+
+
+
+
+# Cart Page
+
 @app.route("/cart")
 def cart():
 
+
     cart = session.get("cart", [])
+
 
     total = sum(
+
         item["price"] * item["qty"]
+
         for item in cart
+
     )
+
+
 
     return render_template(
+
         "cart.html",
+
         cart=cart,
+
         total=total
+
     )
 
 
-# Remove cart item
-@app.route("/remove/<int:id>")
-def remove(id):
+
+
+
+
+
+
+
+# Increase Quantity
+
+@app.route("/increase/<int:id>")
+def increase(id):
+
 
     cart = session.get("cart", [])
 
-    cart = [
-        item for item in cart
-        if item["id"] != id
-    ]
+
+
+    for item in cart:
+
+
+        if item["id"] == id:
+
+
+            item["qty"] += 1
+
+            break
+
+
 
     session["cart"] = cart
 
-    return render_template(
-        "cart.html",
-        cart=cart,
-        total=sum(
-            item["price"] * item["qty"]
-            for item in cart
-        )
-    )
 
 
-# Checkout
-@app.route("/checkout")
-def checkout():
+    return cart_page()
+
+
+
+
+
+
+
+# Decrease Quantity
+
+@app.route("/decrease/<int:id>")
+def decrease(id):
+
 
     cart = session.get("cart", [])
 
+
+
+    for item in cart:
+
+
+        if item["id"] == id:
+
+
+            if item["qty"] > 1:
+
+                item["qty"] -= 1
+
+
+            else:
+
+                cart.remove(item)
+
+
+            break
+
+
+
+    session["cart"] = cart
+
+
+
+    return cart_page()
+
+
+
+
+
+
+
+
+# Remove Item
+
+@app.route("/remove/<int:id>")
+def remove(id):
+
+
+    cart = session.get("cart", [])
+
+
+
+    cart = [
+
+        item for item in cart
+
+        if item["id"] != id
+
+    ]
+
+
+
+    session["cart"] = cart
+
+
+
+    return cart_page()
+
+
+
+
+
+
+
+
+
+# Cart Helper
+
+def cart_page():
+
+
+    cart = session.get("cart", [])
+
+
+
     total = sum(
+
         item["price"] * item["qty"]
+
         for item in cart
+
     )
+
+
 
     return render_template(
-        "checkout.html",
+
+        "cart.html",
+
         cart=cart,
+
         total=total
+
     )
 
 
-# Place order
+
+
+
+
+
+
+
+# Checkout
+
+@app.route("/checkout")
+def checkout():
+
+
+    cart = session.get("cart", [])
+
+
+
+    total = sum(
+
+        item["price"] * item["qty"]
+
+        for item in cart
+
+    )
+
+
+
+    return render_template(
+
+        "checkout.html",
+
+        cart=cart,
+
+        total=total
+
+    )
+
+
+
+
+
+
+
+
+
+# Place Order
+
 @app.route("/place-order", methods=["POST"])
 def place_order():
 
-    name = request.form.get("name")
-    phone = request.form.get("phone")
-    address = request.form.get("address")
 
     order = {
-        "name": name,
-        "phone": phone,
-        "address": address,
-        "date": datetime.now()
+
+
+        "name":request.form.get("name"),
+
+        "phone":request.form.get("phone"),
+
+        "address":request.form.get("address"),
+
+        "products":session.get("cart", []),
+
+        "date":datetime.now()
+
     }
+
+
 
     print(order)
 
+
+
     session.clear()
 
+
+
     return render_template(
+
         "success.html"
+
     )
 
 
+
+
+
+
+
+
+
+
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+
+
+    port = int(os.environ.get("PORT",5000))
+
 
     app.run(
+
         host="0.0.0.0",
+
         port=port,
+
         debug=True
-)
+
+    )
