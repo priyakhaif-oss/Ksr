@@ -25,11 +25,13 @@
 
 
 <a href="/" class="cart-btn">
-Home
+🏠 Home
 </a>
 
 
 </header>
+
+
 
 
 
@@ -42,19 +44,27 @@ Home
 
 
 
+
 {% if cart %}
+
 
 
 <div class="products-container">
 
 
+
 {% for item in cart %}
+
 
 
 <div class="card">
 
 
-<img src="/static/images/{{item.image}}">
+
+<img 
+src="{{item.image}}" 
+alt="{{item.name}}">
+
 
 
 <h3>
@@ -62,9 +72,11 @@ Home
 </h3>
 
 
+
 <p>
 Quantity : {{item.qty}}
 </p>
+
 
 
 <h2>
@@ -72,16 +84,19 @@ Quantity : {{item.qty}}
 </h2>
 
 
+
 <a 
 href="/remove/{{item.id}}"
 class="cart-btn">
 
-Remove
+Remove ❌
 
 </a>
 
 
+
 </div>
+
 
 
 {% endfor %}
@@ -91,7 +106,10 @@ Remove
 </div>
 
 
-<br>
+
+
+
+<div style="text-align:center; margin-top:30px;">
 
 
 <h2>
@@ -99,21 +117,32 @@ Total : ₹{{total}}
 </h2>
 
 
-<center>
+
+<br>
+
+
 
 <a 
 href="/checkout"
 class="order-btn">
 
-Proceed To Checkout
+Proceed To Checkout 💳
 
 </a>
 
-</center>
+
+</div>
+
+
 
 
 
 {% else %}
+
+
+
+
+<div class="card">
 
 
 <h2>
@@ -121,17 +150,20 @@ Your cart is empty 🥛
 </h2>
 
 
-<center>
+<br>
+
 
 <a 
 href="/"
 class="order-btn">
 
-Continue Shopping
+Continue Shopping 🛒
 
 </a>
 
-</center>
+
+</div>
+
 
 
 
@@ -139,7 +171,25 @@ Continue Shopping
 
 
 
+
+
 </section>
+
+
+
+
+
+<footer>
+
+
+<p>
+© 2026 KSR Dairy Foods
+</p>
+
+
+</footer>
+
+
 
 
 
