@@ -33,6 +33,7 @@
 
 
 
+
 <section class="hero">
 
 
@@ -53,6 +54,7 @@
 
 
 </section>
+
 
 
 
@@ -104,13 +106,17 @@ alt="{{product.name}}">
 
 
 
-<form action="/add-cart" method="POST">
+
+<form class="cart-form">
+
 
 
 <input 
 type="hidden" 
 name="product_id"
 value="{{product.id}}">
+
+
 
 
 
@@ -145,6 +151,7 @@ Add To Cart 🛒
 
 
 
+
 <footer>
 
 
@@ -159,6 +166,8 @@ Fresh Milk • Pure Quality • Fast Delivery 🥛
 
 
 </footer>
+
+
 
 
 
