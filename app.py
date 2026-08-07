@@ -15,17 +15,14 @@ app = Flask(__name__)
 app.secret_key = "ksr_dairy_secret_key"
 
 
-
-# Admin Login
+# ================= ADMIN LOGIN =================
 
 ADMIN_USERNAME = "ksr"
 ADMIN_PASSWORD = "123"
 
 
 
-
-
-# MongoDB Setup
+# ================= MONGODB =================
 
 mongo_uri = os.environ.get("MONGO_URI")
 
@@ -37,9 +34,7 @@ orders_collection = db["orders"]
 
 
 
-
-
-# Products Data
+# ================= PRODUCTS =================
 
 PRODUCTS = [
 
@@ -71,8 +66,7 @@ PRODUCTS = [
 
 
 
-
-
+# ================= HOME =================
 
 @app.route("/")
 def home():
@@ -84,10 +78,7 @@ def home():
 
 
 
-
-
-
-# Add Cart
+# ================= CART =================
 
 @app.route("/add-cart", methods=["POST"])
 def add_cart():
@@ -103,7 +94,6 @@ def add_cart():
 
             item["qty"] += 1
             break
-
 
     else:
 
@@ -124,23 +114,18 @@ def add_cart():
                 break
 
 
-
     session["cart"] = cart
 
 
     return jsonify({
 
-        "status":"success",
-        "message":"Added to cart"
+        "status": "success",
+        "message": "Added to cart"
 
     })
 
 
 
-
-
-
-# Cart
 
 @app.route("/cart")
 def cart():
@@ -150,23 +135,21 @@ def cart():
 
 
 
-
-
 @app.route("/increase/<int:id>")
 def increase(id):
 
-    cart=session.get("cart",[])
+    cart = session.get("cart", [])
 
 
     for item in cart:
 
-        if item["id"]==id:
+        if item["id"] == id:
 
             item["qty"] += 1
             break
 
 
-    session["cart"]=cart
+    session["cart"] = cart
 
 
     return cart_page()
@@ -174,21 +157,19 @@ def increase(id):
 
 
 
-
-
 @app.route("/decrease/<int:id>")
 def decrease(id):
 
-    cart=session.get("cart",[])
+    cart = session.get("cart", [])
 
 
     for item in cart:
 
-        if item["id"]==id:
+        if item["id"] == id:
 
-            if item["qty"]>1:
+            if item["qty"] > 1:
 
-                item["qty"]-=1
+                item["qty"] -= 1
 
             else:
 
@@ -197,7 +178,7 @@ def decrease(id):
             break
 
 
-    session["cart"]=cart
+    session["cart"] = cart
 
 
     return cart_page()
@@ -205,15 +186,13 @@ def decrease(id):
 
 
 
-
-
 @app.route("/remove/<int:id>")
 def remove(id):
 
-    cart=session.get("cart",[])
+    cart = session.get("cart", [])
 
 
-    cart=[
+    cart = [
 
         item for item in cart
 
@@ -222,7 +201,7 @@ def remove(id):
     ]
 
 
-    session["cart"]=cart
+    session["cart"] = cart
 
 
     return cart_page()
@@ -230,16 +209,14 @@ def remove(id):
 
 
 
-
-
 def cart_page():
 
-    cart=session.get("cart",[])
+    cart = session.get("cart", [])
 
 
-    total=sum(
+    total = sum(
 
-        item["price"]*item["qty"]
+        item["price"] * item["qty"]
 
         for item in cart
 
@@ -258,20 +235,18 @@ def cart_page():
 
 
 
+# ================= CHECKOUT =================
 
-
-
-# Checkout
 
 @app.route("/checkout")
 def checkout():
 
-    cart=session.get("cart",[])
+    cart = session.get("cart", [])
 
 
-    total=sum(
+    total = sum(
 
-        item["price"]*item["qty"]
+        item["price"] * item["qty"]
 
         for item in cart
 
@@ -290,65 +265,52 @@ def checkout():
 
 
 
+# ================= ORDER =================
 
-
-
-
-# Place Order
 
 @app.route("/place-order", methods=["POST"])
 def place_order():
 
+    cart = session.get("cart", [])
 
-    cart=session.get("cart",[])
 
+    total = sum(
 
-    total=sum(
-
-        item["price"]*item["qty"]
+        item["price"] * item["qty"]
 
         for item in cart
 
     )
 
 
-    order={
+    order = {
 
+        "name": request.form.get("name"),
 
-        "name":request.form.get("name"),
+        "phone": request.form.get("phone"),
 
-        "phone":request.form.get("phone"),
+        "address": request.form.get("address"),
 
-        "address":request.form.get("address"),
+        "products": cart,
 
-        "products":cart,
+        "total": total,
 
-        "total":total,
+        "status": "Pending",
 
-        "status":"Pending",
-
-        "date":datetime.now()
+        "date": datetime.now()
 
     }
-
 
 
     orders_collection.insert_one(order)
 
 
-
     session.clear()
-
 
 
     return render_template(
         "success.html"
     )
-
-
-
-
-
 
 
 
@@ -358,7 +320,6 @@ def place_order():
 @app.route("/admin")
 def admin():
 
-
     if not session.get("admin"):
 
         return render_template(
@@ -366,7 +327,7 @@ def admin():
         )
 
 
-    orders=list(
+    orders = list(
 
         orders_collection.find().sort(
             "date",
@@ -387,26 +348,19 @@ def admin():
 
 
 
-
-
 @app.route("/admin-login", methods=["POST"])
 def admin_login():
 
+    username = request.form.get("username")
 
-    username=request.form.get("username")
-
-    password=request.form.get("password")
-
+    password = request.form.get("password")
 
 
-    if username==ADMIN_USERNAME and password==ADMIN_PASSWORD:
+    if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
 
-
-        session["admin"]=True
-
+        session["admin"] = True
 
         return redirect("/admin")
-
 
 
     return render_template(
@@ -420,35 +374,28 @@ def admin_login():
 
 
 
-
-
 @app.route("/admin-logout")
 def admin_logout():
 
-    session.pop("admin",None)
-
+    session.pop("admin", None)
 
     return redirect("/admin")
 
 
 
 
-
-
-
 @app.route("/update-status/<id>/<status>")
-def update_status(id,status):
-
+def update_status(id, status):
 
     orders_collection.update_one(
 
         {
-            "_id":ObjectId(id)
+            "_id": ObjectId(id)
         },
 
         {
-            "$set":{
-                "status":status
+            "$set": {
+                "status": status
             }
         }
 
@@ -460,13 +407,11 @@ def update_status(id,status):
 
 
 
+# ================= RUN =================
 
+if __name__ == "__main__":
 
-
-if __name__=="__main__":
-
-
-    port=int(
+    port = int(
         os.environ.get(
             "PORT",
             5000
