@@ -15,15 +15,35 @@ e.preventDefault();
 
 
 
+const button = form.querySelector("button");
+
+
+
+button.style.transform = "scale(0.95)";
+
+
+
+setTimeout(()=>{
+
+button.style.transform = "scale(1)";
+
+},150);
+
+
+
+
+
 let data = new FormData(form);
+
+
 
 
 
 fetch("/add-cart", {
 
-method:"POST",
+    method:"POST",
 
-body:data
+    body:data
 
 })
 
@@ -39,6 +59,16 @@ body:data
 showMessage("Added to cart successfully");
 
 
+})
+
+
+
+.catch(()=>{
+
+
+showMessage("Something went wrong");
+
+
 });
 
 
@@ -52,7 +82,6 @@ showMessage("Added to cart successfully");
 
 
 });
-
 
 
 
@@ -62,34 +91,26 @@ showMessage("Added to cart successfully");
 function showMessage(message){
 
 
+
+const oldToast = document.querySelector(".toast-message");
+
+
+if(oldToast){
+
+    oldToast.remove();
+
+}
+
+
+
+
 const toast = document.createElement("div");
 
 
-toast.innerHTML = message;
 
+toast.className = "toast-message";
 
-
-toast.style.position = "fixed";
-
-toast.style.top = "90px";
-
-toast.style.right = "20px";
-
-toast.style.background = "#166534";
-
-toast.style.color = "white";
-
-toast.style.padding = "14px 24px";
-
-toast.style.borderRadius = "10px";
-
-toast.style.fontWeight = "600";
-
-toast.style.zIndex = "9999";
-
-toast.style.boxShadow = "0 8px 25px rgba(0,0,0,0.15)";
-
-toast.style.animation = "fadeUp .4s ease";
+toast.innerText = message;
 
 
 
@@ -102,23 +123,21 @@ document.body.appendChild(toast);
 setTimeout(()=>{
 
 
-toast.style.opacity = "0";
-
-toast.style.transform = "translateY(-20px)";
-
-toast.style.transition = ".3s";
+toast.classList.add("hide");
 
 
 
 setTimeout(()=>{
 
+
 toast.remove();
 
-},300);
+
+},400);
 
 
 
-},2500);
+},2200);
 
 
 
