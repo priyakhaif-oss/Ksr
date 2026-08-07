@@ -15,65 +15,35 @@
 
 </head>
 
-
 <body>
 
-
 <header>
-
 
 <a href="/" class="logo">
 
 <img src="/static/images/logo.png" alt="{{site_name}}">
 
-<span>
-{{site_name}}
-</span>
+<span>{{site_name}}</span>
 
 </a>
-
-
-
-
 
 <nav class="navbar">
 
+<a href="/">Home</a>
 
-<a href="/">
-Home
-</a>
+<a href="#products">Products</a>
 
+<a href="#categories">Categories</a>
 
-<a href="#products">
-Products
-</a>
-
-
-<a href="#categories">
-Categories
-</a>
-
-
-<a href="/profile">
-Profile
-</a>
-
+<a href="/profile">Profile</a>
 
 </nav>
 
-
-
-
-
-
 <div class="header-actions">
-
 
 <a href="/cart" class="cart-icon">
 
-
 <svg viewBox="0 0 24 24" fill="none">
-
 
 <path d="M3 3H5L7.5 15H17.5L21 6H6"
 stroke="currentColor"
@@ -81,16 +51,11 @@ stroke-width="2"
 stroke-linecap="round"
 stroke-linejoin="round"/>
 
-
 <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
-
 
 <circle cx="17" cy="20" r="1.5" fill="currentColor"/>
 
-
 </svg>
-
-
 
 <span class="cart-count">
 
@@ -98,33 +63,25 @@ stroke-linejoin="round"/>
 
 </span>
 
-
 </a>
-
 
 </div>
 
-
 </header>
-
-
-
-
-
 
 <section class="hero">
 
-
 <h1>
+
 {{site_tagline}}
+
 </h1>
 
-
 <p>
-Pure quality milk with freshness you can trust
+
+Pure quality milk with freshness you can trust.
+
 </p>
-
-
 
 <a href="#products" class="order-btn">
 
@@ -132,484 +89,309 @@ Order Now
 
 </a>
 
-
 </section>
-
-
-
-
-
 
 <section id="products">
 
-
 <h2>
+
 Our Products
+
 </h2>
-
-
-
 
 <div class="products-container">
 
-
-
 {% for product in products %}
-
-
 
 <div class="card">
 
-
-
-<img
-src="{{product.image}}"
-alt="{{product.name}}"
->
-
-
-
-
+<img src="{{product.image}}" alt="{{product.name}}">
 
 <h3>
+
 {{product.name}}
+
 </h3>
 
-
-
-
 <p>
+
 {{product.description}}
+
 </p>
 
-
-
-
 <h2>
+
 ₹{{product.price}} / Litre
+
 </h2>
-
-
-
 
 
 {% if product.stock is defined %}
 
+    {% if product.stock <= 0 %}
 
-{% if product.stock > 0 %}
+        <p>
 
+            <span class="status pending">
 
-<p>
+                Out Of Stock
 
-<span class="status delivered">
+            </span>
 
-{{product.stock}} Available
+        </p>
 
-</span>
+        <button
+            class="cart-btn"
+            disabled>
 
-</p>
+            Out Of Stock
 
+        </button>
 
+    {% elif product.stock <= 10 %}
 
-<form class="cart-form">
+        <p>
 
+            <span class="status low-stock">
 
-<input
-type="hidden"
-name="product_id"
-value="{{product._id}}"
->
+                Only {{product.stock}} Left
 
+            </span>
 
-<button type="submit">
+        </p>
 
-Add To Cart
+        <form class="cart-form">
 
-</button>
+            <input
+                type="hidden"
+                name="product_id"
+                value="{{product._id}}">
 
+            <button type="submit">
 
-</form>
+                Add To Cart
 
+            </button>
 
+        </form>
 
+    {% else %}
+
+        <p>
+
+            <span class="status delivered">
+
+                {{product.stock}} Available
+
+            </span>
+
+        </p>
+
+        <form class="cart-form">
+
+            <input
+                type="hidden"
+                name="product_id"
+                value="{{product._id}}">
+
+            <button type="submit">
+
+                Add To Cart
+
+            </button>
+
+        </form>
+
+    {% endif %}
 
 {% else %}
 
+    <form class="cart-form">
 
+        <input
+            type="hidden"
+            name="product_id"
+            value="{{product._id}}">
 
-<p>
+        <button type="submit">
 
-<span class="status pending">
+            Add To Cart
 
-Out Of Stock
+        </button>
 
-</span>
-
-
-</p>
-
-
-
-<button disabled>
-
-Out Of Stock
-
-</button>
-
-
-
+    </form>
 
 {% endif %}
-
-
-
-{% else %}
-
-
-
-<form class="cart-form">
-
-
-<input
-type="hidden"
-name="product_id"
-value="{{product._id}}"
->
-
-
-<button type="submit">
-
-Add To Cart
-
-</button>
-
-
-</form>
-
-
-
-{% endif %}
-
-
 
 </div>
-
-
 
 {% endfor %}
 
-
-
 </div>
 
-
-
 </section>
-
 
 <section id="categories">
 
-
 <div class="card">
 
-
 <h3>
+
 Milk Categories
+
 </h3>
 
-
 <p>
-Fresh Cow Milk • Buffalo Milk • Premium Quality Milk
-</p>
 
+🥛 Cow Milk • 🐃 Buffalo Milk • ⭐ Premium Milk
+
+</p>
 
 </div>
 
-
 </section>
-
-
-
-
-
-
 
 <footer>
 
-
 <p>
+
 © 2026 {{site_name}}
-</p>
 
+</p>
 
 <p>
-Fresh Milk • Pure Quality • Fast Delivery
-</p>
 
+Fresh Milk • Pure Quality • Fast Delivery
+
+</p>
 
 </footer>
 
-
-
-
-
-
-
 <nav class="bottom-nav">
 
+<a href="/">Home</a>
 
+<a href="#products">Products</a>
 
-<a href="/">
+<a href="#categories">Categories</a>
 
-
-<svg viewBox="0 0 24 24" fill="none">
-
-
-<path d="M3 11L12 3L21 11V21H14V15H10V21H3V11Z"
-stroke="currentColor"
-stroke-width="2"/>
-
-
-</svg>
-
-
-Home
-
-
-</a>
-
-
-
-
-
-
-<a href="#products">
-
-
-<svg viewBox="0 0 24 24" fill="none">
-
-
-<path d="M4 6H20M4 12H20M4 18H20"
-stroke="currentColor"
-stroke-width="2"/>
-
-
-</svg>
-
-
-Products
-
-
-</a>
-
-
-
-
-
-
-
-<a href="#categories">
-
-
-<svg viewBox="0 0 24 24" fill="none">
-
-
-<circle cx="12" cy="12" r="9"
-stroke="currentColor"
-stroke-width="2"/>
-
-
-</svg>
-
-
-Categories
-
-
-</a>
-
-
-
-
-
-
-
-<a href="/profile">
-
-
-<svg viewBox="0 0 24 24" fill="none">
-
-
-<circle cx="12" cy="8" r="4"
-stroke="currentColor"
-stroke-width="2"/>
-
-
-<path d="M4 21C4 17 7 15 12 15C17 15 20 17 20 21"
-stroke="currentColor"
-stroke-width="2"/>
-
-
-</svg>
-
-
-Profile
-
-
-</a>
-
-
+<a href="/profile">Profile</a>
 
 </nav>
 
 
-<script src="/static/js/script.js"></script>
 
 
 <script>
 
+document.querySelectorAll(".cart-form").forEach(form => {
 
-document.querySelectorAll(".cart-form").forEach(form=>{
+    form.addEventListener("submit", function(e){
 
+        e.preventDefault();
 
-form.addEventListener("submit",function(e){
+        let formData = new FormData(this);
 
+        fetch("/add-cart",{
 
-e.preventDefault();
+            method:"POST",
 
+            body:formData
 
+        })
 
-let formData = new FormData(this);
+        .then(response => response.json())
 
+        .then(data => {
 
+            if(data.status === "success"){
 
-fetch("/add-cart",{
+                showToast("🛒 Added to Cart");
 
+                updateCartCount();
 
-method:"POST",
+            }
 
+            else if(data.status === "limit"){
 
-body:formData
+                showToast("⚠️ Stock limit reached");
 
+            }
 
-})
+            else if(data.status === "out"){
 
+                showToast("❌ Product Out Of Stock");
 
-.then(response=>response.json())
+            }
 
+            else{
 
-.then(data=>{
+                showToast(data.message);
 
+            }
 
-if(data.status=="success"){
+        })
 
+        .catch(() => {
 
-showToast("Added to cart 🛒");
+            showToast("Something went wrong");
 
+        });
 
-updateCartCount();
-
-
-}
-
-
-
-else{
-
-
-showToast(data.message);
-
-
-}
-
-
-
-});
-
+    });
 
 });
-
-
-
-});
-
-
-
 
 
 
 function updateCartCount(){
 
+    fetch("/cart-count")
 
+    .then(response => response.json())
 
-fetch("/cart-count")
+    .then(data => {
 
+        const badge = document.querySelector(".cart-count");
 
-.then(response=>response.json())
+        if(badge){
 
+            badge.innerHTML = data.count;
 
-.then(data=>{
+        }
 
-
-document.querySelector(".cart-count").innerHTML = data.count;
-
-
-});
-
+    });
 
 }
-
-
-
 
 
 
 function showToast(message){
 
+    const toast = document.createElement("div");
 
+    toast.className = "toast-message";
 
-let toast=document.createElement("div");
+    toast.innerHTML = message;
 
-toast.className="toast-message";
+    document.body.appendChild(toast);
 
-toast.innerHTML=message;
+    setTimeout(() => {
 
+        toast.classList.add("hide");
 
-document.body.appendChild(toast);
+    }, 2000);
 
+    setTimeout(() => {
 
+        toast.remove();
 
-setTimeout(()=>{
-
-
-toast.classList.add("hide");
-
-
-},2000);
-
-
-
-setTimeout(()=>{
-
-
-toast.remove();
-
-
-},2500);
-
-
+    }, 2500);
 
 }
 
-
-
 </script>
-
-
-
-
 
 </body>
 
-</html>
-
-
+    </html>
