@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, redirect
 from datetime import datetime, timedelta
 import os
+from werkzeug.utils import secure_filename
 
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -14,6 +15,36 @@ load_dotenv()
 # ================= APP CONFIG =================
 
 app = Flask(__name__)
+
+
+# ================= IMAGE UPLOAD CONFIG =================
+
+UPLOAD_FOLDER = "static/uploads"
+
+ALLOWED_EXTENSIONS = {
+    "png",
+    "jpg",
+    "jpeg",
+    "webp"
+}
+
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+
+
+def allowed_file(filename):
+
+    return (
+        "." in filename
+        and
+        filename.rsplit(".",1)[1].lower()
+        in ALLOWED_EXTENSIONS
+    )
 
 
 app.secret_key = os.environ.get(
@@ -1053,7 +1084,7 @@ def admin_products():
 
 
 
-# ================= ADD PRODUCT =================
+# ================= ADD PRODUCT WITH IMAGE =================
 
 
 @app.route("/add-product", methods=["POST"])
@@ -1062,29 +1093,47 @@ def add_product():
 
     if not session.get("admin"):
 
-
         return redirect("/admin")
 
 
 
-    name = request.form.get(
-        "name"
-    )
+    name = request.form.get("name")
+
+    price = request.form.get("price")
+
+    description = request.form.get("description")
 
 
-    price = request.form.get(
-        "price"
-    )
+
+    image_file = request.files.get("image")
 
 
-    image = request.form.get(
-        "image"
-    )
+
+    image_path = "/static/images/default.png"
 
 
-    description = request.form.get(
-        "description"
-    )
+
+    if image_file and allowed_file(image_file.filename):
+
+
+        filename = secure_filename(
+            image_file.filename
+        )
+
+
+        image_file.save(
+
+            os.path.join(
+                app.config["UPLOAD_FOLDER"],
+                filename
+            )
+
+        )
+
+
+        image_path = "/static/uploads/" + filename
+
+
 
 
 
@@ -1093,32 +1142,23 @@ def add_product():
 
         "name":name,
 
-
         "price":int(price),
 
-
-        "image":image,
-
+        "image":image_path,
 
         "description":description
-
 
     }
 
 
 
-    get_products_collection().insert_one(
 
-        product
-
-    )
+    get_products_collection().insert_one(product)
 
 
 
     return redirect(
-
         "/admin-products"
-
     )
 
 
