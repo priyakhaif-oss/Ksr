@@ -19,6 +19,7 @@ app.secret_key = "ksr_dairy_secret_key"
 # ================= BRANDING =================
 
 SITE_NAME = "KSR Dairy Foods"
+
 SITE_TAGLINE = "Fresh Milk Delivered To Your Doorstep"
 
 
@@ -26,19 +27,33 @@ SITE_TAGLINE = "Fresh Milk Delivered To Your Doorstep"
 @app.context_processor
 def inject_brand():
 
+    cart = session.get("cart", [])
+
+    cart_count = sum(
+        item["qty"]
+        for item in cart
+    )
+
     return {
 
         "site_name": SITE_NAME,
-        "site_tagline": SITE_TAGLINE
+
+        "site_tagline": SITE_TAGLINE,
+
+        "cart_count": cart_count
 
     }
+
+
 
 
 
 # ================= ADMIN LOGIN =================
 
 ADMIN_USERNAME = "ksr"
+
 ADMIN_PASSWORD = "123"
+
 
 
 
@@ -68,28 +83,43 @@ PRODUCTS = [
 
     {
         "id":1,
+
         "name":"Cow Milk",
+
         "price":60,
+
         "image":"/static/images/cow-milk.jpg",
+
         "description":"Fresh pure cow milk"
+
     },
 
 
     {
         "id":2,
+
         "name":"Buffalo Milk",
+
         "price":80,
+
         "image":"/static/images/buffalo-milk.jpg",
+
         "description":"Rich and creamy buffalo milk"
+
     },
 
 
     {
         "id":3,
+
         "name":"Premium Buffalo Milk",
+
         "price":90,
+
         "image":"/static/images/premium-milk.jpg",
+
         "description":"Premium quality buffalo milk"
+
     }
 
 
@@ -104,9 +134,13 @@ PRODUCTS = [
 @app.route("/")
 def home():
 
+
     return render_template(
+
         "index.html",
+
         products=PRODUCTS
+
     )
 
 
@@ -118,22 +152,36 @@ def home():
 @app.route("/add-cart", methods=["POST"])
 def add_cart():
 
-    product_id = int(request.form.get("product_id"))
 
-    cart = session.get("cart", [])
+    product_id = int(
+        request.form.get("product_id")
+    )
+
+
+    cart = session.get(
+        "cart",
+        []
+    )
+
 
 
     for item in cart:
 
+
         if item["id"] == product_id:
 
+
             item["qty"] += 1
+
             break
+
 
 
     else:
 
+
         for product in PRODUCTS:
+
 
             if product["id"] == product_id:
 
@@ -141,12 +189,17 @@ def add_cart():
                 cart.append({
 
                     "id":product["id"],
+
                     "name":product["name"],
+
                     "price":product["price"],
+
                     "image":product["image"],
+
                     "qty":1
 
                 })
+
 
                 break
 
@@ -155,15 +208,17 @@ def add_cart():
     session["cart"] = cart
 
 
+
     return jsonify({
 
         "status":"success",
+
         "message":"Added to cart"
 
     })
 
 
-
+# ================= CART MANAGEMENT =================
 
 
 @app.route("/cart")
@@ -178,18 +233,27 @@ def cart():
 @app.route("/increase/<int:id>")
 def increase(id):
 
-    cart=session.get("cart",[])
+
+    cart = session.get(
+        "cart",
+        []
+    )
 
 
     for item in cart:
 
-        if item["id"]==id:
 
-            item["qty"]+=1
+        if item["id"] == id:
+
+
+            item["qty"] += 1
+
             break
 
 
-    session["cart"]=cart
+
+    session["cart"] = cart
+
 
     return cart_page()
 
@@ -200,28 +264,41 @@ def increase(id):
 @app.route("/decrease/<int:id>")
 def decrease(id):
 
-    cart=session.get("cart",[])
+
+    cart = session.get(
+        "cart",
+        []
+    )
+
 
 
     for item in cart:
 
-        if item["id"]==id:
+
+        if item["id"] == id:
 
 
-            if item["qty"]>1:
 
-                item["qty"]-=1
+            if item["qty"] > 1:
+
+
+                item["qty"] -= 1
 
 
             else:
 
+
                 cart.remove(item)
+
 
 
             break
 
 
-    session["cart"]=cart
+
+
+    session["cart"] = cart
+
 
     return cart_page()
 
@@ -232,19 +309,28 @@ def decrease(id):
 @app.route("/remove/<int:id>")
 def remove(id):
 
-    cart=session.get("cart",[])
+
+    cart = session.get(
+        "cart",
+        []
+    )
 
 
-    cart=[
 
-        item for item in cart
+    cart = [
 
-        if item["id"]!=id
+        item
+
+        for item in cart
+
+        if item["id"] != id
 
     ]
 
 
-    session["cart"]=cart
+
+    session["cart"] = cart
+
 
 
     return cart_page()
@@ -255,16 +341,22 @@ def remove(id):
 
 def cart_page():
 
-    cart=session.get("cart",[])
+
+    cart = session.get(
+        "cart",
+        []
+    )
 
 
-    total=sum(
 
-        item["price"]*item["qty"]
+    total = sum(
+
+        item["price"] * item["qty"]
 
         for item in cart
 
     )
+
 
 
     return render_template(
@@ -289,16 +381,22 @@ def cart_page():
 @app.route("/checkout")
 def checkout():
 
-    cart=session.get("cart",[])
+
+    cart = session.get(
+        "cart",
+        []
+    )
 
 
-    total=sum(
 
-        item["price"]*item["qty"]
+    total = sum(
+
+        item["price"] * item["qty"]
 
         for item in cart
 
     )
+
 
 
     return render_template(
@@ -316,19 +414,59 @@ def checkout():
 
 
 
+# ================= ORDER PLACE =================
 
-# ================= ORDER =================
 
-
-@app.route("/place-order",methods=["POST"])
+@app.route("/place-order", methods=["POST"])
 def place_order():
 
-    cart=session.get("cart",[])
+
+    cart = session.get(
+        "cart",
+        []
+    )
 
 
-    total=sum(
 
-        item["price"]*item["qty"]
+    if not cart:
+
+
+        return redirect("/")
+
+
+
+    phone = request.form.get(
+        "phone"
+    )
+
+
+
+    if not phone.isdigit() or len(phone) != 10:
+
+
+        return render_template(
+
+            "checkout.html",
+
+            cart=cart,
+
+            total=sum(
+
+                item["price"] * item["qty"]
+
+                for item in cart
+
+            ),
+
+            error="Enter valid 10 digit mobile number"
+
+        )
+
+
+
+    total = sum(
+
+        item["price"] * item["qty"]
 
         for item in cart
 
@@ -336,22 +474,35 @@ def place_order():
 
 
 
-    order={
+    order = {
 
 
-        "name":request.form.get("name"),
+        "name":
+        request.form.get("name"),
 
-        "phone":request.form.get("phone"),
 
-        "address":request.form.get("address"),
+        "phone":
+        phone,
 
-        "products":cart,
 
-        "total":total,
+        "address":
+        request.form.get("address"),
 
-        "status":"Pending",
 
-        "date":datetime.now()
+        "products":
+        cart,
+
+
+        "total":
+        total,
+
+
+        "status":
+        "Pending",
+
+
+        "date":
+        datetime.now()
 
 
     }
@@ -367,60 +518,94 @@ def place_order():
 
 
     return render_template(
+
         "success.html"
+
     )
 
 
-
-
-
-
-
-# ================= ADMIN =================
+# ================= ADMIN PANEL =================
 
 
 @app.route("/admin")
 def admin():
 
+
     if not session.get("admin"):
 
+
         return render_template(
+
             "admin_login.html"
+
         )
 
 
-    orders=list(
+
+    orders = list(
 
         get_orders_collection()
+
         .find()
-        .sort("date",-1)
+
+        .sort(
+
+            "date",
+
+            -1
+
+        )
 
     )
+
+
+
+    total_orders = len(orders)
+
+
+
+    pending_orders = len([
+
+        order
+
+        for order in orders
+
+        if order.get("status") == "Pending"
+
+    ])
+
+
+
+
+    delivered_orders = len([
+
+        order
+
+        for order in orders
+
+        if order.get("status") == "Delivered"
+
+    ])
+
+
+
 
 
     return render_template(
 
         "admin.html",
 
+
         orders=orders,
 
-        total_orders=len(orders),
 
-        pending_orders=len([
+        total_orders=total_orders,
 
-            o for o in orders
 
-            if o.get("status")=="Pending"
+        pending_orders=pending_orders,
 
-        ]),
 
-        delivered_orders=len([
-
-            o for o in orders
-
-            if o.get("status")=="Delivered"
-
-        ])
+        delivered_orders=delivered_orders
 
     )
 
@@ -430,24 +615,48 @@ def admin():
 
 
 
-@app.route("/admin-login",methods=["POST"])
+# ================= ADMIN LOGIN =================
+
+
+@app.route("/admin-login", methods=["POST"])
 def admin_login():
 
-    username=request.form.get("username")
 
-    password=request.form.get("password")
+    username = request.form.get(
+        "username"
+    )
 
 
-    if username==ADMIN_USERNAME and password==ADMIN_PASSWORD:
+    password = request.form.get(
+        "password"
+    )
 
-        session["admin"]=True
+
+
+    if (
+
+        username == ADMIN_USERNAME
+
+        and
+
+        password == ADMIN_PASSWORD
+
+    ):
+
+
+        session["admin"] = True
+
+
 
         return redirect("/admin")
+
+
 
 
     return render_template(
 
         "admin_login.html",
+
 
         error="Invalid Username or Password"
 
@@ -459,10 +668,21 @@ def admin_login():
 
 
 
+# ================= ADMIN LOGOUT =================
+
+
 @app.route("/admin-logout")
 def admin_logout():
 
-    session.pop("admin",None)
+
+    session.pop(
+
+        "admin",
+
+        None
+
+    )
+
 
     return redirect("/admin")
 
@@ -470,22 +690,35 @@ def admin_logout():
 
 
 
+
+
+# ================= UPDATE ORDER STATUS =================
 
 
 @app.route("/update-status/<id>/<status>")
 def update_status(id,status):
 
+
     get_orders_collection().update_one(
 
-        {
-            "_id":ObjectId(id)
-        },
 
         {
+
+            "_id":ObjectId(id)
+
+        },
+
+
+        {
+
             "$set":{
+
                 "status":status
+
             }
+
         }
+
 
     )
 
@@ -496,16 +729,24 @@ def update_status(id,status):
 
 
 
+
+
+# ================= DELETE ORDER =================
 
 
 @app.route("/delete-order/<id>")
 def delete_order(id):
 
+
     get_orders_collection().delete_one(
 
+
         {
+
             "_id":ObjectId(id)
+
         }
+
 
     )
 
@@ -514,23 +755,119 @@ def delete_order(id):
 
 
 
+# ================= ERROR HANDLING =================
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+
+    return render_template(
+
+        "404.html"
+
+    ),404
 
 
 
 
-# ================= RUN =================
 
-if __name__=="__main__":
+@app.errorhandler(500)
+def server_error(error):
+
+    return render_template(
+
+        "500.html"
+
+    ),500
 
 
-    port=int(
+
+
+
+
+
+# ================= SESSION SETTINGS =================
+
+
+@app.before_request
+def keep_session_alive():
+
+    session.permanent = True
+
+
+
+
+
+# ================= API CART COUNT =================
+
+
+@app.route("/cart-count")
+def cart_count():
+
+
+    cart = session.get(
+
+        "cart",
+
+        []
+
+    )
+
+
+    count = sum(
+
+        item["qty"]
+
+        for item in cart
+
+    )
+
+
+    return jsonify({
+
+        "count":count
+
+    })
+
+
+
+
+
+
+
+# ================= HEALTH CHECK =================
+
+
+@app.route("/health")
+def health():
+
+
+    return jsonify({
+
+        "status":"KSR Dairy Foods is running"
+
+    })
+
+
+
+# ================= RUN SERVER =================
+
+
+if __name__ == "__main__":
+
+
+    port = int(
 
         os.environ.get(
+
             "PORT",
+
             5000
+
         )
 
     )
+
 
 
     app.run(
@@ -542,3 +879,5 @@ if __name__=="__main__":
         debug=True
 
     )
+
+
