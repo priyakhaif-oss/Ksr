@@ -406,6 +406,21 @@ def update_status(id, status):
 
 
 
+# ================= DELETE ORDER =================
+
+@app.route("/delete-order/<id>")
+def delete_order(id):
+
+    orders_collection.delete_one(
+        {
+            "_id": ObjectId(id)
+        }
+    )
+
+    return redirect("/admin")
+
+
+
 
 # ================= RUN =================
 
