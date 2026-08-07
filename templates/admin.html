@@ -19,20 +19,16 @@
 
 <header>
 
-
 <div class="logo">
 🥛 KSR Dairy Foods Admin
 </div>
 
 
-
 <div class="admin-actions">
-
 
 <a href="/" class="cart-btn">
 🏠 Website
 </a>
-
 
 
 <a href="/admin-logout" 
@@ -42,7 +38,6 @@ title="Logout">
 🚪
 
 </a>
-
 
 </div>
 
@@ -57,7 +52,65 @@ title="Logout">
 
 
 <h2>
-📦 Orders Dashboard
+📦 Admin Dashboard
+</h2>
+
+
+
+<!-- Statistics -->
+
+<div class="products-container">
+
+
+<div class="card">
+
+<h2>
+📦 {{total_orders}}
+</h2>
+
+<p>
+Total Orders
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+⏳ {{pending_orders}}
+</h2>
+
+<p>
+Pending Orders
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+✅ {{delivered_orders}}
+</h2>
+
+<p>
+Delivered Orders
+</p>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<h2 style="margin-top:50px;">
+🛒 Orders List
 </h2>
 
 
@@ -72,16 +125,11 @@ title="Logout">
 
 
 
-
-
 {% for order in orders %}
 
 
 
-
-
 <div class="card">
-
 
 
 <h3>
@@ -89,11 +137,9 @@ title="Logout">
 </h3>
 
 
-
 <p>
 📱 {{order.phone}}
 </p>
-
 
 
 <p>
@@ -102,9 +148,7 @@ title="Logout">
 
 
 
-
 <hr>
-
 
 
 
@@ -114,25 +158,19 @@ title="Logout">
 
 
 
-
 {% for item in order.products %}
-
 
 <p>
 {{item.name}} × {{item.qty}}
 </p>
 
-
 {% endfor %}
-
 
 
 
 <h2>
 💰 ₹{{order.total}}
 </h2>
-
-
 
 
 
@@ -150,7 +188,6 @@ Status:
 
 {% else %}
 
-
 <strong style="color:orange;">
 ⏳ Pending
 </strong>
@@ -160,7 +197,6 @@ Status:
 
 
 </p>
-
 
 
 
@@ -178,8 +214,6 @@ Status:
 
 
 <br>
-
-
 
 
 <a 
@@ -208,6 +242,7 @@ class="cart-btn">
 
 
 
+
 <br><br>
 
 
@@ -218,17 +253,13 @@ href="/delete-order/{{order._id}}"
 class="delete-btn"
 onclick="return confirm('Delete this order?')">
 
-🗑
+🗑 Delete
 
 </a>
 
 
 
-
-
 </div>
-
-
 
 
 
@@ -236,12 +267,7 @@ onclick="return confirm('Delete this order?')">
 
 
 
-
-
 </div>
-
-
-
 
 
 
@@ -251,19 +277,14 @@ onclick="return confirm('Delete this order?')">
 
 <div class="card">
 
-
 <h2>
 No Orders Found 🥛
 </h2>
 
-
 </div>
 
 
-
 {% endif %}
-
-
 
 
 
@@ -274,20 +295,13 @@ No Orders Found 🥛
 
 
 
-
 <footer>
-
 
 <p>
 © 2026 KSR Dairy Foods
 </p>
 
-
 </footer>
-
-
-
-
 
 
 
