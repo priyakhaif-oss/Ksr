@@ -1,14 +1,16 @@
 document.addEventListener("DOMContentLoaded", function(){
 
 
-    const forms = document.querySelectorAll(".cart-form");
-
-
     updateCartCount();
 
 
 
+    const forms = document.querySelectorAll(".cart-form");
+
+
+
     forms.forEach(function(form){
+
 
 
         form.addEventListener("submit", function(e){
@@ -22,15 +24,22 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
-            button.classList.add("clicked");
+            if(button){
 
 
+                button.style.transform="scale(.95)";
 
-            setTimeout(()=>{
 
-                button.classList.remove("clicked");
+                setTimeout(()=>{
 
-            },200);
+
+                    button.style.transform="scale(1)";
+
+
+                },150);
+
+
+            }
 
 
 
@@ -44,27 +53,32 @@ document.addEventListener("DOMContentLoaded", function(){
 
             fetch("/add-cart",{
 
+
                 method:"POST",
 
+
                 body:data
+
 
             })
 
 
 
-            .then(response => response.json())
+            .then(response=>response.json())
 
 
 
-            .then(result => {
+            .then(result=>{
 
 
 
-                increaseCartCount();
+                showMessage(
+                    "Added to cart successfully"
+                );
 
 
 
-                showMessage("Added to cart successfully");
+                updateCartCount();
 
 
 
@@ -75,7 +89,9 @@ document.addEventListener("DOMContentLoaded", function(){
             .catch(()=>{
 
 
-                showMessage("Something went wrong");
+                showMessage(
+                    "Something went wrong"
+                );
 
 
             });
@@ -97,41 +113,20 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
+
+
 /* =========================
    CART COUNT
 ========================= */
-
-
-function increaseCartCount(){
-
-
-    let count = localStorage.getItem("cartCount");
-
-
-    count = count ? parseInt(count)+1 : 1;
-
-
-
-    localStorage.setItem(
-        "cartCount",
-        count
-    );
-
-
-
-    updateCartCount();
-
-
-}
-
-
 
 
 function updateCartCount(){
 
 
 
-    const badge = document.querySelector(".cart-count");
+    const badge = document.querySelector(
+        ".cart-count"
+    );
 
 
 
@@ -143,21 +138,50 @@ function updateCartCount(){
 
 
 
-
-    let count = localStorage.getItem("cartCount");
-
-
-
-    if(!count){
-
-        count = 0;
-
-    }
+    fetch("/cart-count")
 
 
 
+    .then(response=>response.json())
 
-    badge.innerText = count;
+
+
+    .then(data=>{
+
+
+        badge.innerText = data.count;
+
+
+
+        if(data.count > 0){
+
+
+            badge.style.display="flex";
+
+
+        }
+
+        else{
+
+
+            badge.style.display="none";
+
+
+        }
+
+
+
+    })
+
+
+
+    .catch(()=>{
+
+
+        badge.innerText="0";
+
+
+    });
 
 
 
@@ -168,8 +192,10 @@ function updateCartCount(){
 
 
 
+
+
 /* =========================
-   TOAST POPUP
+   TOAST MESSAGE
 ========================= */
 
 
@@ -177,13 +203,17 @@ function showMessage(message){
 
 
 
-    const oldToast = document.querySelector(".toast-message");
+    const oldToast = document.querySelector(
+        ".toast-message"
+    );
 
 
 
     if(oldToast){
 
+
         oldToast.remove();
+
 
     }
 
@@ -191,7 +221,9 @@ function showMessage(message){
 
 
 
-    const toast = document.createElement("div");
+    const toast = document.createElement(
+        "div"
+    );
 
 
 
@@ -209,10 +241,14 @@ function showMessage(message){
 
 
 
+
     setTimeout(()=>{
 
 
-        toast.classList.add("hide");
+
+        toast.classList.add(
+            "hide"
+        );
 
 
 
@@ -228,6 +264,51 @@ function showMessage(message){
 
     },2200);
 
+
+
+}
+
+
+
+
+
+
+
+
+/* =========================
+   PHONE VALIDATION
+========================= */
+
+
+function validatePhone(){
+
+
+
+    const phone = document.getElementById(
+        "phone"
+    ).value;
+
+
+
+    if(
+        phone.length !== 10 ||
+        isNaN(phone)
+    ){
+
+
+        showMessage(
+            "Enter valid 10 digit mobile number"
+        );
+
+
+        return false;
+
+
+    }
+
+
+
+    return true;
 
 
 }
