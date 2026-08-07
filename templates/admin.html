@@ -7,14 +7,18 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <title>{{site_name}} | Admin Dashboard</title>
 
+
 <link rel="icon" href="/static/images/favicon.png">
+
 
 <link rel="stylesheet" href="/static/css/style.css">
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 </head>
 
@@ -22,22 +26,31 @@
 <body>
 
 
+
+
 <header>
+
 
 
 <a href="/" class="logo">
 
+
 <img src="/static/images/logo.png">
+
 
 <span>
 {{site_name}} Admin
 </span>
 
+
 </a>
 
 
 
+
+
 <div class="admin-actions">
+
 
 
 <a href="/" class="cart-btn">
@@ -48,12 +61,16 @@ Website
 
 
 
+
+
 <a href="/admin-logout"
 class="logout-btn"
 title="Logout">
 
 
+
 <svg viewBox="0 0 24 24" fill="none">
+
 
 <path d="M9 21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H9"
 stroke="currentColor"
@@ -76,13 +93,17 @@ stroke-linecap="round"/>
 </svg>
 
 
+
 </a>
 
 
 </div>
 
 
+
 </header>
+
+
 
 
 
@@ -98,34 +119,43 @@ Admin Dashboard
 
 
 
+
 <div class="products-container">
 
 
 
 <div class="card dashboard-card">
 
+
 <h2>
 {{total_orders}}
 </h2>
+
 
 <p>
 Total Orders
 </p>
 
+
 </div>
 
 
 
 
+
+
 <div class="card dashboard-card">
+
 
 <h2>
 {{pending_orders}}
 </h2>
 
+
 <p>
-Pending
+Pending Orders
 </p>
+
 
 </div>
 
@@ -133,15 +163,19 @@ Pending
 
 
 
+
 <div class="card dashboard-card">
+
 
 <h2>
 {{delivered_orders}}
 </h2>
 
+
 <p>
-Delivered
+Delivered Orders
 </p>
+
 
 </div>
 
@@ -149,15 +183,19 @@ Delivered
 
 
 
+
 <div class="card dashboard-card">
+
 
 <h2>
 {{total_products}}
 </h2>
 
+
 <p>
-Products
+Total Products
 </p>
+
 
 </div>
 
@@ -165,36 +203,72 @@ Products
 
 
 
+
+
 <div class="card dashboard-card">
+
 
 <h2>
 {{out_of_stock}}
 </h2>
 
+
 <p>
 Out Of Stock
 </p>
 
+
 </div>
+
+
 
 
 
 
 <div class="card dashboard-card">
 
+
+<h2>
+{{low_stock}}
+</h2>
+
+
+<p>
+Low Stock
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card dashboard-card">
+
+
 <h2>
 ₹{{total_revenue}}
 </h2>
+
 
 <p>
 Revenue
 </p>
 
+
+</div>
+
+
+
+
+
 </div>
 
 
 
-</div>
 
 
 
@@ -217,9 +291,17 @@ Sales Analytics
 
 
 
+
+
+
 <h2 style="margin-top:50px;">
+
 Add New Product
+
 </h2>
+
+
+
 
 
 
@@ -228,41 +310,82 @@ Add New Product
 <div class="card">
 
 
+
 <form action="/add-product"
 method="POST"
 enctype="multipart/form-data">
 
 
-<input type="text"
+
+<input 
+type="text"
 name="name"
 placeholder="Product Name"
 required>
 
 
 
-<input type="number"
+
+
+<input 
+type="number"
 name="price"
 placeholder="Price"
 required>
 
 
 
-<input type="number"
+
+
+<input 
+type="number"
 name="stock"
 placeholder="Stock Quantity"
+min="0"
 required>
 
 
 
-<input type="file"
+
+
+<select name="category">
+
+
+<option>
+Cow Milk
+</option>
+
+
+<option>
+Buffalo Milk
+</option>
+
+
+<option>
+Premium Milk
+</option>
+
+
+</select>
+
+
+
+
+
+<input
+type="file"
 name="image"
 accept="image/*">
+
+
 
 
 
 <textarea
 name="description"
 placeholder="Description"></textarea>
+
+
 
 
 
@@ -273,16 +396,19 @@ Add Product
 </button>
 
 
+
 </form>
 
 
 </div>
 
 
-
 <h2 style="margin-top:50px;">
+
 Manage Products
+
 </h2>
+
 
 
 
@@ -290,7 +416,11 @@ Manage Products
 {% if products %}
 
 
+
 <div class="products-container">
+
+
+
 
 
 
@@ -298,34 +428,69 @@ Manage Products
 
 
 
+
+
 <div class="card product-card">
 
 
 
-<img src="{{product.image}}"
+
+
+<img 
+src="{{product.image}}"
 style="width:100%;height:180px;object-fit:cover;border-radius:15px;">
 
 
 
 
 
+
+
 <h3>
+
 {{product.name}}
+
 </h3>
 
 
 
 
+
+
 <p>
+
 ₹{{product.price}}
+
 </p>
+
+
 
 
 
 
 <p>
+
 {{product.description}}
+
 </p>
+
+
+
+
+
+
+
+<p>
+
+Category:
+
+<b>
+{{product.category}}
+</b>
+
+</p>
+
+
 
 
 
@@ -335,16 +500,9 @@ style="width:100%;height:180px;object-fit:cover;border-radius:15px;">
 
 Stock:
 
-{% if product.stock > 0 %}
-
-<span class="status delivered">
-
-{{product.stock}} Available
-
-</span>
+{% if product.stock <= 0 %}
 
 
-{% else %}
 
 <span class="status pending">
 
@@ -353,10 +511,42 @@ Out Of Stock
 </span>
 
 
+
+
+{% elif product.stock <= 10 %}
+
+
+
+<span class="status low-stock">
+
+{{product.stock}} Low Stock
+
+</span>
+
+
+
+
+{% else %}
+
+
+
+<span class="status delivered">
+
+{{product.stock}} Available
+
+</span>
+
+
+
+
 {% endif %}
 
 
+
 </p>
+
+
+
 
 
 
@@ -367,11 +557,21 @@ Out Of Stock
 method="POST">
 
 
-<input type="number"
+
+
+
+
+<input
+type="number"
 name="stock"
 placeholder="Update Stock"
 min="0"
 required>
+
+
+
+
+
 
 
 <button type="submit">
@@ -379,6 +579,9 @@ required>
 Update Stock
 
 </button>
+
+
+
 
 
 </form>
@@ -389,8 +592,31 @@ Update Stock
 
 
 
+
+<br>
+
+
+
+
+
+
+
+<a href="/edit-product/{{product._id}}"
+class="cart-btn">
+
+Edit Product
+
+</a>
+
+
+
+
+
+
+
 <a href="/delete-product/{{product._id}}"
 class="delete-btn"
+
 onclick="return confirm('Delete this product?')">
 
 
@@ -401,14 +627,59 @@ Delete Product
 
 
 
+
+
+
+
 </div>
+
+
+
+
 
 
 
 {% endfor %}
 
 
+
+
+
+
 </div>
+
+
+
+
+
+{% else %}
+
+
+
+
+
+<div class="card">
+
+
+<h2>
+
+No Products Found
+
+</h2>
+
+
+
+<p>
+
+Add products from above.
+
+</p>
+
+
+</div>
+
+
+
 
 
 {% endif %}
@@ -419,9 +690,15 @@ Delete Product
 
 
 
+
 <h2 style="margin-top:50px;">
+
 Orders List
+
 </h2>
+
+
+
 
 
 
@@ -430,7 +707,12 @@ Orders List
 
 
 
+
+
 <div class="products-container">
+
+
+
 
 
 
@@ -438,25 +720,47 @@ Orders List
 
 
 
+
+
+
 <div class="card order-card">
 
 
 
+
+
+
 <h3>
+
 {{order.name}}
+
 </h3>
 
 
 
-<p>
-Phone: {{order.phone}}
-</p>
 
 
 
 <p>
-Address: {{order.address}}
+
+Phone:
+{{order.phone}}
+
 </p>
+
+
+
+
+
+
+<p>
+
+Address:
+{{order.address}}
+
+</p>
+
+
 
 
 
@@ -465,18 +769,37 @@ Address: {{order.address}}
 
 
 
+
+
+
 <h3>
+
 Products
+
 </h3>
+
+
+
+
+
 
 
 
 {% for item in order.products %}
 
 
+
 <p>
-{{item.name}} × {{item.qty}}
+
+{{item.name}}
+
+×
+
+{{item.qty}}
+
 </p>
+
+
 
 
 {% endfor %}
@@ -484,19 +807,33 @@ Products
 
 
 
+
+
+
 <h2>
+
 ₹{{order.total}}
+
 </h2>
+
+
+
 
 
 
 
 <p>
 
+
 Status:
 
 
-{% if order.status=="Delivered" %}
+
+
+
+{% if order.status == "Delivered" %}
+
+
 
 
 <span class="status delivered">
@@ -506,7 +843,12 @@ Delivered
 </span>
 
 
+
+
+
 {% else %}
+
+
 
 
 <span class="status pending">
@@ -516,10 +858,17 @@ Pending
 </span>
 
 
+
+
+
 {% endif %}
 
 
+
+
 </p>
+
+
 
 
 
@@ -528,9 +877,16 @@ Pending
 {% if order.date %}
 
 
+
+
 <p>
+
 {{order.date.strftime("%d-%m-%Y %I:%M %p")}}
+
 </p>
+
+
+
 
 
 {% endif %}
@@ -539,46 +895,90 @@ Pending
 
 
 
+
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+
+
+
+
 <a href="/update-status/{{order._id}}/Delivered"
+
 class="order-btn">
+
 
 Mark Delivered
 
+
 </a>
+
+
+
 
 
 
 
 <a href="/update-status/{{order._id}}/Pending"
+
 class="cart-btn">
+
 
 Mark Pending
 
+
 </a>
+
+
 
 
 
 
 
 <a href="/delete-order/{{order._id}}"
+
 class="delete-btn"
+
 onclick="return confirm('Delete this order?')">
 
+
 Delete
+
 
 </a>
 
 
 
 
+
+
 </div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
 
 
 
 {% endfor %}
 
 
+
+
+
+
 </div>
+
+
+
 
 
 
@@ -586,20 +986,31 @@ Delete
 
 
 
+
+
+
 <div class="card">
 
 
 <h2>
+
 No Orders Found
+
 </h2>
 
 
+
 <p>
+
 Orders will appear here after customers place orders.
+
 </p>
 
 
+
 </div>
+
+
 
 
 
@@ -615,16 +1026,21 @@ Orders will appear here after customers place orders.
 
 
 
+
 <footer>
 
 
 <p>
+
 © 2026 {{site_name}}
+
 </p>
 
 
 <p>
+
 Admin Portal
+
 </p>
 
 
@@ -639,27 +1055,50 @@ Admin Portal
 <nav class="bottom-nav">
 
 
+
 <a href="/">
+
 Home
+
 </a>
+
+
+
 
 
 <a href="/admin">
+
 Dashboard
+
 </a>
+
+
+
 
 
 <a href="/">
+
 Website
+
 </a>
+
+
+
 
 
 <a href="/admin-logout">
-Exit
+
+Logout
+
 </a>
 
 
+
+
+
 </nav>
+
+
 
 
 
@@ -672,52 +1111,99 @@ Exit
 
 fetch("/admin-chart-data")
 
-.then(response=>response.json())
+.then(response => response.json())
 
-.then(data=>{
+.then(data => {
 
 
-const ctx =
-document.getElementById("salesChart");
+
+const ctx = document.getElementById(
+"salesChart"
+);
+
+
+
 
 
 new Chart(ctx, {
 
 
+
 type:"line",
+
+
+
 
 
 data:{
 
 
+
 labels:data.labels,
 
 
-datasets:[{
+
+
+
+datasets:[
+
+
+
+{
 
 
 label:"Sales ₹",
 
 
-data:data.values,
+data:data.sales,
 
 
 borderWidth:3
 
 
-}]
+
+},
+
+
+
+{
+
+
+label:"Orders",
+
+
+data:data.orders,
+
+
+borderWidth:3
+
+
+
+}
+
+
+
+]
+
 
 
 },
 
 
+
+
+
+
 options:{
+
 
 
 responsive:true,
 
 
+
 plugins:{
+
 
 
 legend:{
@@ -729,14 +1215,50 @@ display:true
 }
 
 
+
+},
+
+
+
+
+scales:{
+
+
+
+y:{
+
+
+
+beginAtZero:true
+
+
+
 }
 
 
+
 }
+
+
+
+}
+
 
 
 });
 
+
+
+
+})
+
+.catch(error=>{
+
+
+console.log(
+"Chart Error:",
+error
+);
 
 
 });
@@ -750,7 +1272,12 @@ display:true
 
 
 
+
+
+
 </body>
 
+
 </html>
+
 
