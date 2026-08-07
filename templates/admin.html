@@ -7,39 +7,102 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>KSR Dairy Foods - Admin Dashboard</title>
+
+<title>KSR Dairy Foods | Admin Dashboard</title>
+
+
+<link rel="icon" type="image/png" href="/static/images/favicon.png">
+
 
 <link rel="stylesheet" href="/static/css/style.css">
 
+
 </head>
+
 
 
 <body>
 
 
+
+
+
 <header>
 
-<div class="logo">
+
+
+<a href="/" class="logo">
+
+
+<img src="/static/images/logo.png" alt="KSR Dairy Foods">
+
+
+<span>
 KSR Dairy Foods Admin
-</div>
+</span>
+
+
+</a>
+
+
+
 
 
 <div class="admin-actions">
 
+
+
+
+
 <a href="/" class="cart-btn">
+
 Website
+
 </a>
+
+
+
+
 
 
 <a href="/admin-logout"
 class="logout-btn"
 title="Logout">
 
-Logout
+
+
+<svg viewBox="0 0 24 24" fill="none">
+
+<path d="M10 17L15 12L10 7"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+
+<path d="M15 12H3"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"/>
+
+
+<path d="M21 3V21"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"/>
+
+
+</svg>
+
+
 
 </a>
 
+
+
 </div>
+
+
 
 </header>
 
@@ -47,7 +110,14 @@ Logout
 
 
 
+
+
+
+
 <section id="products">
+
+
+
 
 
 <h2>
@@ -57,53 +127,78 @@ Admin Dashboard
 
 
 
+
+
+
+
 <div class="products-container">
 
 
-<div class="card">
+
+
+
+<div class="card dashboard-card">
+
 
 <h2>
 {{total_orders}}
 </h2>
 
+
 <p>
 Total Orders
 </p>
+
 
 </div>
 
 
 
 
-<div class="card">
+
+
+<div class="card dashboard-card">
+
 
 <h2>
 {{pending_orders}}
 </h2>
 
+
 <p>
 Pending Orders
 </p>
+
 
 </div>
 
 
 
 
-<div class="card">
+
+
+<div class="card dashboard-card">
+
 
 <h2>
 {{delivered_orders}}
 </h2>
 
+
 <p>
 Delivered Orders
 </p>
 
+
 </div>
 
 
+
+
+
 </div>
+
+
 
 
 
@@ -120,10 +215,20 @@ Orders List
 
 
 
+
+
 {% if orders %}
 
 
+
+
+
+
 <div class="products-container">
+
+
+
+
 
 
 
@@ -131,7 +236,15 @@ Orders List
 
 
 
-<div class="card">
+
+
+
+<div class="card order-card">
+
+
+
+
+
 
 
 <h3>
@@ -139,9 +252,15 @@ Orders List
 </h3>
 
 
+
+
+
 <p>
 Phone: {{order.phone}}
 </p>
+
+
+
 
 
 <p>
@@ -150,7 +269,12 @@ Address: {{order.address}}
 
 
 
+
+
+
 <hr>
+
+
 
 
 
@@ -161,13 +285,22 @@ Products
 
 
 
+
+
+
 {% for item in order.products %}
+
 
 <p>
 {{item.name}} × {{item.qty}}
 </p>
 
+
+
 {% endfor %}
+
+
+
 
 
 
@@ -181,28 +314,44 @@ Products
 
 
 
+
+
+
+
 <p>
 
 Status:
 
 {% if order.status == "Delivered" %}
 
+
+
 <strong style="color:#15803d;">
 Delivered
 </strong>
 
 
+
+
 {% else %}
+
+
 
 <strong style="color:#d97706;">
 Pending
 </strong>
 
 
+
+
 {% endif %}
 
 
 </p>
+
+
+
+
 
 
 
@@ -210,9 +359,13 @@ Pending
 
 {% if order.date %}
 
+
+
 <p>
 {{order.date.strftime("%d-%m-%Y %I:%M %p")}}
 </p>
+
+
 
 {% endif %}
 
@@ -221,7 +374,7 @@ Pending
 
 
 
-<br>
+
 
 
 
@@ -229,14 +382,13 @@ Pending
 href="/update-status/{{order._id}}/Delivered"
 class="order-btn">
 
+
 Mark Delivered
+
 
 </a>
 
 
-
-
-<br><br>
 
 
 
@@ -246,14 +398,14 @@ Mark Delivered
 href="/update-status/{{order._id}}/Pending"
 class="cart-btn">
 
+
 Mark Pending
+
 
 </a>
 
 
 
-
-<br><br>
 
 
 
@@ -264,13 +416,22 @@ href="/delete-order/{{order._id}}"
 class="delete-btn"
 onclick="return confirm('Delete this order?')">
 
+
 Delete
+
 
 </a>
 
 
 
+
+
+
 </div>
+
+
+
+
 
 
 
@@ -278,7 +439,13 @@ Delete
 
 
 
+
+
+
 </div>
+
+
+
 
 
 
@@ -286,11 +453,16 @@ Delete
 
 
 
+
+
+
 <div class="card">
+
 
 <h2>
 No Orders Found
 </h2>
+
 
 
 <p>
@@ -298,11 +470,16 @@ Orders will appear here after customers place orders.
 </p>
 
 
+
 </div>
 
 
 
+
+
+
 {% endif %}
+
 
 
 
@@ -315,13 +492,21 @@ Orders will appear here after customers place orders.
 
 
 
+
+
 <footer>
+
 
 <p>
 © 2026 KSR Dairy Foods
 </p>
 
+
+
 </footer>
+
+
+
 
 
 
