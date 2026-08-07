@@ -15,13 +15,16 @@ load_dotenv()
 
 app = Flask(__name__)
 
+
 app.secret_key = os.environ.get(
     "SECRET_KEY",
     "ksr_dairy_secret_key"
 )
 
 
-app.permanent_session_lifetime = timedelta(days=7)
+app.permanent_session_lifetime = timedelta(
+    days=7
+)
 
 
 
@@ -32,6 +35,8 @@ app.permanent_session_lifetime = timedelta(days=7)
 SITE_NAME = "KSR Dairy Foods"
 
 SITE_TAGLINE = "Fresh Milk Delivered To Your Doorstep"
+
+
 
 
 
@@ -53,15 +58,11 @@ def inject_brand():
 
     return {
 
-
         "site_name": SITE_NAME,
-
 
         "site_tagline": SITE_TAGLINE,
 
-
         "cart_count": cart_count
-
 
     }
 
@@ -88,20 +89,35 @@ mongo_uri = os.environ.get(
 
 
 
-def get_orders_collection():
 
+
+def get_database():
 
     client = MongoClient(
         mongo_uri
     )
 
+    return client["ksr_dairy"]
 
-    db = client["ksr_dairy"]
 
+
+
+
+def get_orders_collection():
+
+    db = get_database()
 
     return db["orders"]
 
 
+
+
+
+def get_products_collection():
+
+    db = get_database()
+
+    return db["products"]
 
 
 
@@ -110,12 +126,10 @@ def get_orders_collection():
 # ================= PRODUCTS =================
 
 
-PRODUCTS = [
+DEFAULT_PRODUCTS = [
 
 
     {
-
-        "id":1,
 
         "name":"Cow Milk",
 
@@ -130,9 +144,6 @@ PRODUCTS = [
 
     {
 
-
-        "id":2,
-
         "name":"Buffalo Milk",
 
         "price":80,
@@ -145,9 +156,6 @@ PRODUCTS = [
 
 
     {
-
-
-        "id":3,
 
         "name":"Premium Buffalo Milk",
 
@@ -166,10 +174,49 @@ PRODUCTS = [
 
 
 
+
+def get_all_products():
+
+
+    products = list(
+
+        get_products_collection()
+
+        .find()
+
+    )
+
+
+    return products
+
+
+
+
+
+
+def create_default_products():
+
+
+    collection = get_products_collection()
+
+
+
+    if collection.count_documents({}) == 0:
+
+
+        collection.insert_many(
+            DEFAULT_PRODUCTS
+        )
+
+
+
+
+
 # ================= CATEGORIES =================
 
 
 CATEGORIES = [
+
 
     "Cow Milk",
 
@@ -183,6 +230,11 @@ CATEGORIES = [
 
 
 
+# ================= STARTUP =================
+
+
+create_default_products()
+
 
 # ================= HOME =================
 
@@ -191,11 +243,14 @@ CATEGORIES = [
 def home():
 
 
+    products = get_all_products()
+
+
     return render_template(
 
         "index.html",
 
-        products=PRODUCTS,
+        products=products,
 
         categories=CATEGORIES
 
@@ -223,6 +278,8 @@ def profile():
 
 
 
+
+
 # ================= CART ADD =================
 
 
@@ -230,13 +287,30 @@ def profile():
 def add_cart():
 
 
-    product_id = int(
-
-        request.form.get(
-            "product_id"
-        )
-
+    product_id = request.form.get(
+        "product_id"
     )
+
+
+    product = get_products_collection().find_one(
+        {
+            "_id": ObjectId(product_id)
+        }
+    )
+
+
+
+    if not product:
+
+
+        return jsonify({
+
+            "status":"error",
+
+            "message":"Product not found"
+
+        })
+
 
 
     cart = session.get(
@@ -249,6 +323,10 @@ def add_cart():
 
 
 
+    found = False
+
+
+
     for item in cart:
 
 
@@ -258,40 +336,32 @@ def add_cart():
             item["qty"] += 1
 
 
+            found = True
+
             break
 
 
-    else:
 
 
-        for product in PRODUCTS:
+
+    if not found:
 
 
-            if product["id"] == product_id:
+        cart.append({
+
+            "id":str(product["_id"]),
+
+            "name":product["name"],
+
+            "price":product["price"],
+
+            "image":product["image"],
+
+            "qty":1
+
+        })
 
 
-                cart.append({
-
-
-                    "id":product["id"],
-
-
-                    "name":product["name"],
-
-
-                    "price":product["price"],
-
-
-                    "image":product["image"],
-
-
-                    "qty":1
-
-
-                })
-
-
-                break
 
 
 
@@ -301,14 +371,16 @@ def add_cart():
 
     return jsonify({
 
-
         "status":"success",
-
 
         "message":"Added to cart"
 
-
     })
+
+
+
+
+
 
 
 # ================= CART PAGE =================
@@ -319,6 +391,7 @@ def cart():
 
 
     return cart_page()
+
 
 
 
@@ -365,7 +438,7 @@ def cart_page():
 # ================= INCREASE QUANTITY =================
 
 
-@app.route("/increase/<int:id>")
+@app.route("/increase/<id>")
 def increase(id):
 
 
@@ -376,6 +449,7 @@ def increase(id):
         []
 
     )
+
 
 
     for item in cart:
@@ -390,7 +464,9 @@ def increase(id):
 
 
 
+
     session["cart"] = cart
+
 
 
     return cart_page()
@@ -400,10 +476,11 @@ def increase(id):
 
 
 
+
 # ================= DECREASE QUANTITY =================
 
 
-@app.route("/decrease/<int:id>")
+@app.route("/decrease/<id>")
 def decrease(id):
 
 
@@ -416,10 +493,12 @@ def decrease(id):
     )
 
 
+
     for item in cart:
 
 
         if item["id"] == id:
+
 
 
             if item["qty"] > 1:
@@ -439,6 +518,7 @@ def decrease(id):
 
 
 
+
     session["cart"] = cart
 
 
@@ -450,10 +530,11 @@ def decrease(id):
 
 
 
+
 # ================= REMOVE ITEM =================
 
 
-@app.route("/remove/<int:id>")
+@app.route("/remove/<id>")
 def remove(id):
 
 
@@ -466,15 +547,14 @@ def remove(id):
     )
 
 
-    cart = [
 
+    cart = [
 
         item
 
         for item in cart
 
         if item["id"] != id
-
 
     ]
 
@@ -508,6 +588,7 @@ def checkout():
     )
 
 
+
     if not cart:
 
 
@@ -536,12 +617,6 @@ def checkout():
     )
 
 
-
-
-
-
-
-
 # ================= PLACE ORDER =================
 
 
@@ -558,7 +633,6 @@ def place_order():
     )
 
 
-
     if not cart:
 
 
@@ -568,25 +642,18 @@ def place_order():
 
 
     name = request.form.get(
-
         "name"
-
     )
 
 
     phone = request.form.get(
-
         "phone"
-
     )
 
 
     address = request.form.get(
-
         "address"
-
     )
-
 
 
 
@@ -633,28 +700,29 @@ def place_order():
     order = {
 
 
-        "name": name,
+        "name":name,
 
 
-        "phone": phone,
+        "phone":phone,
 
 
-        "address": address,
+        "address":address,
 
 
-        "products": cart,
+        "products":cart,
 
 
-        "total": total,
+        "total":total,
 
 
         "status":"Pending",
 
 
-        "date": datetime.now()
+        "date":datetime.now()
 
 
     }
+
 
 
 
@@ -676,6 +744,11 @@ def place_order():
         "success.html"
 
     )
+
+
+
+
+
 
 
 
@@ -748,21 +821,15 @@ def admin():
 
     return render_template(
 
-
         "admin.html",
-
 
         orders=orders,
 
-
         total_orders=total_orders,
-
 
         pending_orders=pending_orders,
 
-
         delivered_orders=delivered_orders
-
 
     )
 
@@ -781,16 +848,12 @@ def admin_login():
 
 
     username = request.form.get(
-
         "username"
-
     )
 
 
     password = request.form.get(
-
         "password"
-
     )
 
 
@@ -837,7 +900,6 @@ def admin_login():
 
 
 
-
 # ================= ADMIN LOGOUT =================
 
 
@@ -867,7 +929,7 @@ def admin_logout():
 
 
 
-# ================= UPDATE STATUS =================
+# ================= UPDATE ORDER STATUS =================
 
 
 @app.route("/update-status/<id>/<status>")
@@ -887,7 +949,11 @@ def update_status(id,status):
     if status not in allowed_status:
 
 
-        return redirect("/admin")
+        return redirect(
+
+            "/admin"
+
+        )
 
 
 
@@ -895,10 +961,9 @@ def update_status(id,status):
 
     get_orders_collection().update_one(
 
-
         {
 
-            "_id": ObjectId(id)
+            "_id":ObjectId(id)
 
         },
 
@@ -912,7 +977,6 @@ def update_status(id,status):
             }
 
         }
-
 
     )
 
@@ -940,16 +1004,13 @@ def delete_order(id):
 
     get_orders_collection().delete_one(
 
-
         {
 
-            "_id": ObjectId(id)
+            "_id":ObjectId(id)
 
         }
 
-
     )
-
 
 
     return redirect(
@@ -959,11 +1020,270 @@ def delete_order(id):
     )
 
 
+# ================= ADMIN PRODUCT MANAGEMENT =================
+
+
+@app.route("/admin-products")
+def admin_products():
+
+
+    if not session.get("admin"):
+
+
+        return redirect("/admin")
+
+
+
+    products = get_all_products()
+
+
+
+    return render_template(
+
+        "admin_products.html",
+
+        products=products
+
+    )
+
+
+
+
+
+
+
+
+# ================= ADD PRODUCT =================
+
+
+@app.route("/add-product", methods=["POST"])
+def add_product():
+
+
+    if not session.get("admin"):
+
+
+        return redirect("/admin")
+
+
+
+    name = request.form.get(
+        "name"
+    )
+
+
+    price = request.form.get(
+        "price"
+    )
+
+
+    image = request.form.get(
+        "image"
+    )
+
+
+    description = request.form.get(
+        "description"
+    )
+
+
+
+    product = {
+
+
+        "name":name,
+
+
+        "price":int(price),
+
+
+        "image":image,
+
+
+        "description":description
+
+
+    }
+
+
+
+    get_products_collection().insert_one(
+
+        product
+
+    )
+
+
+
+    return redirect(
+
+        "/admin-products"
+
+    )
+
+
+
+
+
+
+
+
+# ================= DELETE PRODUCT =================
+
+
+@app.route("/delete-product/<id>")
+def delete_product(id):
+
+
+    if not session.get("admin"):
+
+
+        return redirect("/admin")
+
+
+
+    get_products_collection().delete_one(
+
+        {
+
+            "_id":ObjectId(id)
+
+        }
+
+    )
+
+
+
+    return redirect(
+
+        "/admin-products"
+
+    )
+
+
+
+
+
+
+
+
+# ================= EDIT PRODUCT PAGE =================
+
+
+@app.route("/edit-product/<id>")
+def edit_product(id):
+
+
+    if not session.get("admin"):
+
+
+        return redirect("/admin")
+
+
+
+    product = get_products_collection().find_one(
+
+        {
+
+            "_id":ObjectId(id)
+
+        }
+
+    )
+
+
+
+    return render_template(
+
+        "edit_product.html",
+
+        product=product
+
+    )
+
+
+
+
+
+
+
+
+# ================= UPDATE PRODUCT =================
+
+
+@app.route("/update-product/<id>", methods=["POST"])
+def update_product(id):
+
+
+    if not session.get("admin"):
+
+
+        return redirect("/admin")
+
+
+
+    name = request.form.get(
+        "name"
+    )
+
+
+    price = request.form.get(
+        "price"
+    )
+
+
+    image = request.form.get(
+        "image"
+    )
+
+
+    description = request.form.get(
+        "description"
+    )
+
+
+
+    get_products_collection().update_one(
+
+        {
+
+            "_id":ObjectId(id)
+
+        },
+
+
+        {
+
+            "$set":{
+
+                "name":name,
+
+                "price":int(price),
+
+                "image":image,
+
+                "description":description
+
+            }
+
+        }
+
+    )
+
+
+
+    return redirect(
+
+        "/admin-products"
+
+        )
+
+
 # ================= CART COUNT API =================
 
 
 @app.route("/cart-count")
-def get_cart_count():
+def cart_count():
 
 
     cart = session.get(
@@ -1013,11 +1333,47 @@ def clear_cart():
     )
 
 
-    return redirect(
+    return redirect("/")
 
-        "/"
 
-    )
+
+
+
+
+
+
+# ================= DATABASE CHECK =================
+
+
+@app.route("/database-check")
+def database_check():
+
+
+    try:
+
+
+        get_orders_collection().find_one()
+
+
+
+        return jsonify({
+
+            "database":"connected"
+
+        })
+
+
+
+    except Exception as e:
+
+
+        return jsonify({
+
+            "database":"error",
+
+            "message":str(e)
+
+        })
 
 
 
@@ -1035,9 +1391,7 @@ def health():
 
     return jsonify({
 
-
         "status":"KSR Dairy Foods is running",
-
 
         "time":datetime.now().strftime(
 
@@ -1045,9 +1399,23 @@ def health():
 
         )
 
-
     })
 
+
+
+
+
+
+
+
+# ================= SESSION SETTINGS =================
+
+
+@app.before_request
+def session_settings():
+
+
+    session.permanent = True
 
 
 
@@ -1081,56 +1449,6 @@ def server_error(error):
         "500.html"
 
     ),500
-
-
-
-
-
-
-
-
-# ================= SESSION =================
-
-
-@app.before_request
-def session_settings():
-
-
-    session.permanent = True
-
-
-
-# ================= MONGO TEST =================
-
-
-@app.route("/database-check")
-def database_check():
-
-
-    try:
-
-
-        get_orders_collection().find_one()
-
-
-        return jsonify({
-
-            "database":"connected"
-
-        })
-
-
-    except Exception as e:
-
-
-        return jsonify({
-
-            "database":"error",
-
-            "message":str(e)
-
-        })
-
 
 
 
@@ -1172,15 +1490,11 @@ if __name__ == "__main__":
 
     app.run(
 
-
         host="0.0.0.0",
-
 
         port=port,
 
-
         debug=debug_mode
 
-
-    )
+            )
 
