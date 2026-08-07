@@ -7,7 +7,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Admin Dashboard - KSR Dairy Foods</title>
+<title>KSR Dairy Foods - Admin Dashboard</title>
 
 <link rel="stylesheet" href="/static/css/style.css">
 
@@ -20,27 +20,27 @@
 <header>
 
 <div class="logo">
-🥛 KSR Dairy Foods Admin
+KSR Dairy Foods Admin
 </div>
 
 
 <div class="admin-actions">
 
 <a href="/" class="cart-btn">
-🏠 Website
+Website
 </a>
 
 
-<a href="/admin-logout" 
+<a href="/admin-logout"
 class="logout-btn"
 title="Logout">
 
-🚪
+Logout
 
 </a>
 
-</div>
 
+</div>
 
 </header>
 
@@ -52,12 +52,12 @@ title="Logout">
 
 
 <h2>
-📦 Admin Dashboard
+Admin Dashboard
 </h2>
 
 
 
-<!-- Statistics -->
+
 
 <div class="products-container">
 
@@ -65,7 +65,7 @@ title="Logout">
 <div class="card">
 
 <h2>
-📦 {{total_orders}}
+{{total_orders}}
 </h2>
 
 <p>
@@ -76,10 +76,11 @@ Total Orders
 
 
 
+
 <div class="card">
 
 <h2>
-⏳ {{pending_orders}}
+{{pending_orders}}
 </h2>
 
 <p>
@@ -90,10 +91,11 @@ Pending Orders
 
 
 
+
 <div class="card">
 
 <h2>
-✅ {{delivered_orders}}
+{{delivered_orders}}
 </h2>
 
 <p>
@@ -109,8 +111,10 @@ Delivered Orders
 
 
 
+
+
 <h2 style="margin-top:50px;">
-🛒 Orders List
+Orders List
 </h2>
 
 
@@ -133,17 +137,17 @@ Delivered Orders
 
 
 <h3>
-👤 {{order.name}}
+{{order.name}}
 </h3>
 
 
 <p>
-📱 {{order.phone}}
+Phone: {{order.phone}}
 </p>
 
 
 <p>
-🏠 {{order.address}}
+Address: {{order.address}}
 </p>
 
 
@@ -152,8 +156,9 @@ Delivered Orders
 
 
 
+
 <h3>
-🥛 Products
+Products
 </h3>
 
 
@@ -168,8 +173,9 @@ Delivered Orders
 
 
 
+
 <h2>
-💰 ₹{{order.total}}
+₹{{order.total}}
 </h2>
 
 
@@ -182,14 +188,14 @@ Status:
 {% if order.status == "Delivered" %}
 
 <strong style="color:green;">
-✅ Delivered
+Delivered
 </strong>
 
 
 {% else %}
 
 <strong style="color:orange;">
-⏳ Pending
+Pending
 </strong>
 
 
@@ -204,7 +210,7 @@ Status:
 {% if order.date %}
 
 <p>
-📅 {{order.date.strftime("%d-%m-%Y %I:%M %p")}}
+{{order.date.strftime("%d-%m-%Y %I:%M %p")}}
 </p>
 
 {% endif %}
@@ -213,14 +219,16 @@ Status:
 
 
 
+
 <br>
+
 
 
 <a 
 href="/update-status/{{order._id}}/Delivered"
 class="order-btn">
 
-✅ Delivered
+Mark Delivered
 
 </a>
 
@@ -236,7 +244,7 @@ class="order-btn">
 href="/update-status/{{order._id}}/Pending"
 class="cart-btn">
 
-⏳ Pending
+Mark Pending
 
 </a>
 
@@ -253,7 +261,7 @@ href="/delete-order/{{order._id}}"
 class="delete-btn"
 onclick="return confirm('Delete this order?')">
 
-🗑 Delete
+Delete
 
 </a>
 
@@ -278,7 +286,7 @@ onclick="return confirm('Delete this order?')">
 <div class="card">
 
 <h2>
-No Orders Found 🥛
+No Orders Found
 </h2>
 
 </div>
