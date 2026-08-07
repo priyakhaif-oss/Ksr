@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-<title>KSR Dairy Foods | Checkout</title>
+<title>{{site_name}} | Checkout</title>
 
 
 <link rel="icon" type="image/png" href="/static/images/favicon.png">
@@ -33,11 +33,11 @@
 <a href="/" class="logo">
 
 
-<img src="/static/images/logo.png" alt="KSR Dairy Foods">
+<img src="/static/images/logo.png" alt="{{site_name}}">
 
 
 <span>
-KSR Dairy Foods
+{{site_name}}
 </span>
 
 
@@ -73,12 +73,13 @@ stroke-linejoin="round"/>
 
 
 <span class="cart-count">
-0
+
+{{cart_count}}
+
 </span>
 
 
 </a>
-
 
 
 </div>
@@ -122,10 +123,27 @@ Order Summary
 
 
 
+{% if error %}
+
+<p style="
+color:#dc2626;
+font-weight:700;
+margin:15px 0;
+">
+
+{{error}}
+
+</p>
+
+{% endif %}
+
+
+
+
+
 
 
 {% for item in cart %}
-
 
 
 
@@ -141,9 +159,7 @@ Order Summary
 
 
 
-
 <hr>
-
 
 
 
@@ -200,8 +216,6 @@ id="phone"
 name="phone"
 
 placeholder="10 Digit Mobile Number"
-
-pattern="[0-9]{10}"
 
 maxlength="10"
 
@@ -269,9 +283,8 @@ Place Order
 
 
 <p>
-© 2026 KSR Dairy Foods
+© 2026 {{site_name}}
 </p>
-
 
 
 
@@ -299,11 +312,13 @@ Home
 </a>
 
 
+
 <a href="/#products">
 
 Products
 
 </a>
+
 
 
 <a href="/#categories">
@@ -313,11 +328,13 @@ Categories
 </a>
 
 
-<a href="#">
+
+<a href="/profile">
 
 Profile
 
 </a>
+
 
 
 </nav>
@@ -329,10 +346,13 @@ Profile
 
 
 
+
 <script src="/static/js/script.js"></script>
 
 
+
 <script>
+
 
 function validatePhone(){
 
@@ -340,7 +360,8 @@ function validatePhone(){
 let phone=document.getElementById("phone").value;
 
 
-if(phone.length!==10 || isNaN(phone)){
+
+if(phone.length !== 10 || isNaN(phone)){
 
 
 alert("Enter valid 10 digit mobile number");
@@ -352,10 +373,12 @@ return false;
 }
 
 
+
 return true;
 
 
 }
+
 
 </script>
 
