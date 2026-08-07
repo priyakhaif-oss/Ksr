@@ -2,10 +2,39 @@ from flask import Flask, render_template, request, jsonify, session
 from datetime import datetime
 import os
 
+from pymongo import MongoClient
+from dotenv import load_dotenv
+
+
+
+load_dotenv()
+
+
 
 app = Flask(__name__)
 
 app.secret_key = "ksr_dairy_secret_key"
+
+
+
+
+
+# MongoDB Setup
+
+mongo_uri = os.environ.get("MONGO_URI")
+
+
+client = MongoClient(mongo_uri)
+
+
+db = client["ksr_dairy"]
+
+
+orders_collection = db["orders"]
+
+
+
+
 
 
 
@@ -43,6 +72,8 @@ PRODUCTS = [
 
 
 
+
+
 @app.route("/")
 def home():
 
@@ -50,6 +81,8 @@ def home():
         "index.html",
         products=PRODUCTS
     )
+
+
 
 
 
@@ -71,10 +104,12 @@ def add_cart():
 
     for item in cart:
 
+
         if item["id"] == product_id:
 
             item["qty"] += 1
             break
+
 
 
     else:
@@ -95,7 +130,6 @@ def add_cart():
                     "qty":1
 
                 })
-
 
                 break
 
@@ -122,67 +156,10 @@ def add_cart():
 
 
 
-# Cart Page
+# Cart
 
 @app.route("/cart")
 def cart():
-
-
-    cart = session.get("cart", [])
-
-
-    total = sum(
-
-        item["price"] * item["qty"]
-
-        for item in cart
-
-    )
-
-
-
-    return render_template(
-
-        "cart.html",
-
-        cart=cart,
-
-        total=total
-
-    )
-
-
-
-
-
-
-
-
-
-# Increase Quantity
-
-@app.route("/increase/<int:id>")
-def increase(id):
-
-
-    cart = session.get("cart", [])
-
-
-
-    for item in cart:
-
-
-        if item["id"] == id:
-
-
-            item["qty"] += 1
-
-            break
-
-
-
-    session["cart"] = cart
-
 
 
     return cart_page()
@@ -193,7 +170,42 @@ def increase(id):
 
 
 
-# Decrease Quantity
+
+
+# Increase
+
+@app.route("/increase/<int:id>")
+def increase(id):
+
+
+    cart = session.get("cart", [])
+
+
+    for item in cart:
+
+
+        if item["id"] == id:
+
+            item["qty"] += 1
+            break
+
+
+
+    session["cart"] = cart
+
+
+    return cart_page()
+
+
+
+
+
+
+
+
+
+
+# Decrease
 
 @app.route("/decrease/<int:id>")
 def decrease(id):
@@ -223,8 +235,8 @@ def decrease(id):
 
 
 
-    session["cart"] = cart
 
+    session["cart"] = cart
 
 
     return cart_page()
@@ -236,7 +248,8 @@ def decrease(id):
 
 
 
-# Remove Item
+
+# Remove
 
 @app.route("/remove/<int:id>")
 def remove(id):
@@ -270,7 +283,7 @@ def remove(id):
 
 
 
-# Cart Helper
+# Cart Function
 
 def cart_page():
 
@@ -345,6 +358,8 @@ def checkout():
 
 
 
+
+
 # Place Order
 
 @app.route("/place-order", methods=["POST"])
@@ -362,13 +377,25 @@ def place_order():
 
         "products":session.get("cart", []),
 
+        "status":"Pending",
+
         "date":datetime.now()
 
     }
 
 
 
-    print(order)
+
+
+    # Save order to MongoDB
+
+    orders_collection.insert_one(order)
+
+
+
+
+
+    print("New Order Saved:", order)
 
 
 
@@ -381,7 +408,6 @@ def place_order():
         "success.html"
 
     )
-
 
 
 
