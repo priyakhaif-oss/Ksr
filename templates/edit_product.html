@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Edit Product | {{site_name}}</title>
+
+<link rel="icon" href="/static/images/favicon.png">
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+<a href="/" class="logo">
+
+<img src="/static/images/logo.png" alt="{{site_name}}">
+
+<span>{{site_name}} Admin</span>
+
+</a>
+
+<div class="admin-actions">
+
+<a href="/admin" class="cart-btn">
+
+Dashboard
+
+</a>
+
+<a href="/admin-logout" class="logout-btn">
+
+Logout
+
+</a>
+
+</div>
+
+</header>
+
+<section id="products">
+
+<h2>
+
+Edit Product
+
+</h2>
+
+<div class="card checkout-card">
+
+<form
+action="/edit-product/{{product._id}}"
+method="POST"
+enctype="multipart/form-data">
+
+<input
+type="text"
+name="name"
+value="{{product.name}}"
+placeholder="Product Name"
+required>
+
+<input
+type="number"
+name="price"
+value="{{product.price}}"
+placeholder="Price"
+required>
+
+<input
+type="number"
+name="stock"
+value="{{product.stock}}"
+placeholder="Stock"
+min="0"
+required>
+
+<input
+type="text"
+name="category"
+value="{{product.category}}"
+placeholder="Category">
+
+<textarea
+name="description"
+placeholder="Description">{{product.description}}</textarea>
+
+<p style="margin:15px 0;font-weight:600;">
+
+Current Image
+
+</p>
+
+<img
+src="{{product.image}}"
+style="width:220px;border-radius:15px;margin-bottom:20px;">
+
+<input
+type="file"
+name="image"
+accept="image/*">
+
+<div style="margin-top:25px;display:flex;gap:15px;flex-wrap:wrap;">
+
+<button type="submit">
+
+Save Changes
+
+</button>
+
+<a
+href="/admin"
+class="cart-btn">
+
+Cancel
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+</section>
+
+<footer>
+
+<p>
+
+© 2026 {{site_name}}
+
+</p>
+
+<p>
+
+Admin Portal
+
+</p>
+
+</footer>
+
+</body>
+
+</html>
