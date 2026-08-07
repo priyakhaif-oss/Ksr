@@ -19,17 +19,21 @@
 
 <header>
 
+
 <div class="logo">
-🥛 KSR Dairy Foods
+KSR Dairy Foods
 </div>
 
 
+
 <a href="/" class="cart-btn">
-🏠 Home
+Home
 </a>
 
 
+
 </header>
+
 
 
 
@@ -40,8 +44,9 @@
 
 
 <h2>
-🛒 Your Cart
+Your Cart
 </h2>
+
 
 
 
@@ -76,10 +81,10 @@ alt="{{item.name}}">
 
 
 
+
 <h3>
 {{item.name}}
 </h3>
-
 
 
 
@@ -93,20 +98,26 @@ alt="{{item.name}}">
 
 
 
-<div style="display:flex;justify-content:center;align-items:center;gap:15px;margin:20px;">
+
+<div style="
+display:flex;
+justify-content:center;
+align-items:center;
+gap:20px;
+margin:20px;
+">
 
 
 
-<a href="/decrease/{{item.id}}" 
-style="
-text-decoration:none;
-background:#dc2626;
-color:white;
-padding:8px 15px;
-border-radius:50%;
-font-size:20px;">
+
+
+<a href="/decrease/{{item.id}}"
+class="delete-btn">
+
 -
+
 </a>
+
 
 
 
@@ -119,16 +130,15 @@ font-size:20px;">
 
 
 
+
 <a href="/increase/{{item.id}}"
-style="
-text-decoration:none;
-background:#16a34a;
-color:white;
-padding:8px 15px;
-border-radius:50%;
-font-size:20px;">
+class="order-btn">
+
 +
+
 </a>
+
+
 
 
 
@@ -149,12 +159,11 @@ font-size:20px;">
 
 
 
-
-<a 
+<a
 href="/remove/{{item.id}}"
-class="cart-btn">
+class="delete-btn">
 
-Remove ❌
+Remove
 
 </a>
 
@@ -182,7 +191,6 @@ Remove ❌
 
 
 
-
 <div style="
 text-align:center;
 margin-top:40px;
@@ -193,7 +201,7 @@ margin-top:40px;
 
 
 <h2>
-Total : ₹{{total}}
+Total Amount: ₹{{total}}
 </h2>
 
 
@@ -204,17 +212,20 @@ Total : ₹{{total}}
 
 
 
-<a 
+<a
 href="/checkout"
 class="order-btn">
 
-Proceed To Checkout 💳
+Proceed To Checkout
 
 </a>
 
 
 
+
 </div>
+
+
 
 
 
@@ -225,14 +236,11 @@ Proceed To Checkout 💳
 
 
 
-
-
 <div class="card">
 
 
-
 <h2>
-Your cart is empty 🥛
+Your cart is empty
 </h2>
 
 
@@ -241,19 +249,16 @@ Your cart is empty 🥛
 
 
 
-<a 
+<a
 href="/"
 class="order-btn">
 
-Continue Shopping 🛒
+Continue Shopping
 
 </a>
 
 
-
 </div>
-
-
 
 
 
@@ -272,7 +277,6 @@ Continue Shopping 🛒
 
 
 
-
 <footer>
 
 
@@ -282,12 +286,11 @@ Continue Shopping 🛒
 
 
 <p>
-Fresh Milk • Pure Quality • Fast Delivery 🥛
+Fresh Milk • Pure Quality • Fast Delivery
 </p>
 
 
 </footer>
-
 
 
 
