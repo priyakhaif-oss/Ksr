@@ -11,21 +11,21 @@ PRODUCTS = [
         "id": 1,
         "name": "Cow Milk",
         "price": 60,
-        "image": "cow-milk.jpg",
+        "image": "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=600",
         "description": "Fresh pure cow milk"
     },
     {
         "id": 2,
         "name": "Buffalo Milk",
         "price": 80,
-        "image": "buffalo-milk.jpg",
+        "image": "https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=600",
         "description": "Rich and creamy buffalo milk"
     },
     {
         "id": 3,
         "name": "Premium Buffalo Milk",
         "price": 90,
-        "image": "premium-buffalo.jpg",
+        "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600",
         "description": "Premium quality buffalo milk"
     }
 ]
