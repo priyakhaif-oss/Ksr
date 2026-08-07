@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify, session, redirect
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 from pymongo import MongoClient
@@ -10,9 +10,20 @@ from bson.objectid import ObjectId
 load_dotenv()
 
 
+
+# ================= APP CONFIG =================
+
 app = Flask(__name__)
 
-app.secret_key = "ksr_dairy_secret_key"
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "ksr_dairy_secret_key"
+)
+
+
+app.permanent_session_lifetime = timedelta(days=7)
+
+
 
 
 
@@ -27,20 +38,30 @@ SITE_TAGLINE = "Fresh Milk Delivered To Your Doorstep"
 @app.context_processor
 def inject_brand():
 
-    cart = session.get("cart", [])
+
+    cart = session.get(
+        "cart",
+        []
+    )
+
 
     cart_count = sum(
         item["qty"]
         for item in cart
     )
 
+
     return {
+
 
         "site_name": SITE_NAME,
 
+
         "site_tagline": SITE_TAGLINE,
 
+
         "cart_count": cart_count
+
 
     }
 
@@ -58,17 +79,25 @@ ADMIN_PASSWORD = "123"
 
 
 
-# ================= MONGODB =================
 
-mongo_uri = os.environ.get("MONGO_URI")
+# ================= DATABASE =================
+
+mongo_uri = os.environ.get(
+    "MONGO_URI"
+)
 
 
 
 def get_orders_collection():
 
-    client = MongoClient(mongo_uri)
+
+    client = MongoClient(
+        mongo_uri
+    )
+
 
     db = client["ksr_dairy"]
+
 
     return db["orders"]
 
@@ -76,12 +105,16 @@ def get_orders_collection():
 
 
 
+
+
 # ================= PRODUCTS =================
+
 
 PRODUCTS = [
 
 
     {
+
         "id":1,
 
         "name":"Cow Milk",
@@ -96,6 +129,8 @@ PRODUCTS = [
 
 
     {
+
+
         "id":2,
 
         "name":"Buffalo Milk",
@@ -110,6 +145,8 @@ PRODUCTS = [
 
 
     {
+
+
         "id":3,
 
         "name":"Premium Buffalo Milk",
@@ -129,7 +166,26 @@ PRODUCTS = [
 
 
 
+# ================= CATEGORIES =================
+
+
+CATEGORIES = [
+
+    "Cow Milk",
+
+    "Buffalo Milk",
+
+    "Premium Milk"
+
+]
+
+
+
+
+
+
 # ================= HOME =================
+
 
 @app.route("/")
 def home():
@@ -139,7 +195,9 @@ def home():
 
         "index.html",
 
-        products=PRODUCTS
+        products=PRODUCTS,
+
+        categories=CATEGORIES
 
     )
 
@@ -147,20 +205,46 @@ def home():
 
 
 
-# ================= CART =================
+
+# ================= PROFILE =================
+
+
+@app.route("/profile")
+def profile():
+
+
+    return render_template(
+
+        "profile.html"
+
+    )
+
+
+
+
+
+# ================= CART ADD =================
+
 
 @app.route("/add-cart", methods=["POST"])
 def add_cart():
 
 
     product_id = int(
-        request.form.get("product_id")
+
+        request.form.get(
+            "product_id"
+        )
+
     )
 
 
     cart = session.get(
+
         "cart",
+
         []
+
     )
 
 
@@ -173,8 +257,8 @@ def add_cart():
 
             item["qty"] += 1
 
-            break
 
+            break
 
 
     else:
@@ -188,15 +272,21 @@ def add_cart():
 
                 cart.append({
 
+
                     "id":product["id"],
+
 
                     "name":product["name"],
 
+
                     "price":product["price"],
+
 
                     "image":product["image"],
 
+
                     "qty":1
+
 
                 })
 
@@ -211,126 +301,21 @@ def add_cart():
 
     return jsonify({
 
+
         "status":"success",
 
+
         "message":"Added to cart"
+
 
     })
 
 
-# ================= CART MANAGEMENT =================
+# ================= CART PAGE =================
 
 
 @app.route("/cart")
 def cart():
-
-    return cart_page()
-
-
-
-
-
-@app.route("/increase/<int:id>")
-def increase(id):
-
-
-    cart = session.get(
-        "cart",
-        []
-    )
-
-
-    for item in cart:
-
-
-        if item["id"] == id:
-
-
-            item["qty"] += 1
-
-            break
-
-
-
-    session["cart"] = cart
-
-
-    return cart_page()
-
-
-
-
-
-@app.route("/decrease/<int:id>")
-def decrease(id):
-
-
-    cart = session.get(
-        "cart",
-        []
-    )
-
-
-
-    for item in cart:
-
-
-        if item["id"] == id:
-
-
-
-            if item["qty"] > 1:
-
-
-                item["qty"] -= 1
-
-
-            else:
-
-
-                cart.remove(item)
-
-
-
-            break
-
-
-
-
-    session["cart"] = cart
-
-
-    return cart_page()
-
-
-
-
-
-@app.route("/remove/<int:id>")
-def remove(id):
-
-
-    cart = session.get(
-        "cart",
-        []
-    )
-
-
-
-    cart = [
-
-        item
-
-        for item in cart
-
-        if item["id"] != id
-
-    ]
-
-
-
-    session["cart"] = cart
-
 
 
     return cart_page()
@@ -343,10 +328,12 @@ def cart_page():
 
 
     cart = session.get(
-        "cart",
-        []
-    )
 
+        "cart",
+
+        []
+
+    )
 
 
     total = sum(
@@ -375,6 +362,136 @@ def cart_page():
 
 
 
+# ================= INCREASE QUANTITY =================
+
+
+@app.route("/increase/<int:id>")
+def increase(id):
+
+
+    cart = session.get(
+
+        "cart",
+
+        []
+
+    )
+
+
+    for item in cart:
+
+
+        if item["id"] == id:
+
+
+            item["qty"] += 1
+
+            break
+
+
+
+    session["cart"] = cart
+
+
+    return cart_page()
+
+
+
+
+
+
+# ================= DECREASE QUANTITY =================
+
+
+@app.route("/decrease/<int:id>")
+def decrease(id):
+
+
+    cart = session.get(
+
+        "cart",
+
+        []
+
+    )
+
+
+    for item in cart:
+
+
+        if item["id"] == id:
+
+
+            if item["qty"] > 1:
+
+
+                item["qty"] -= 1
+
+
+            else:
+
+
+                cart.remove(item)
+
+
+
+            break
+
+
+
+    session["cart"] = cart
+
+
+
+    return cart_page()
+
+
+
+
+
+
+# ================= REMOVE ITEM =================
+
+
+@app.route("/remove/<int:id>")
+def remove(id):
+
+
+    cart = session.get(
+
+        "cart",
+
+        []
+
+    )
+
+
+    cart = [
+
+
+        item
+
+        for item in cart
+
+        if item["id"] != id
+
+
+    ]
+
+
+
+    session["cart"] = cart
+
+
+
+    return cart_page()
+
+
+
+
+
+
+
 # ================= CHECKOUT =================
 
 
@@ -383,9 +500,18 @@ def checkout():
 
 
     cart = session.get(
+
         "cart",
+
         []
+
     )
+
+
+    if not cart:
+
+
+        return redirect("/")
 
 
 
@@ -414,7 +540,9 @@ def checkout():
 
 
 
-# ================= ORDER PLACE =================
+
+
+# ================= PLACE ORDER =================
 
 
 @app.route("/place-order", methods=["POST"])
@@ -422,8 +550,11 @@ def place_order():
 
 
     cart = session.get(
+
         "cart",
+
         []
+
     )
 
 
@@ -435,13 +566,41 @@ def place_order():
 
 
 
+
+    name = request.form.get(
+
+        "name"
+
+    )
+
+
     phone = request.form.get(
+
         "phone"
+
+    )
+
+
+    address = request.form.get(
+
+        "address"
+
     )
 
 
 
-    if not phone.isdigit() or len(phone) != 10:
+
+
+    if not phone or not phone.isdigit() or len(phone) != 10:
+
+
+        total = sum(
+
+            item["price"] * item["qty"]
+
+            for item in cart
+
+        )
 
 
         return render_template(
@@ -450,17 +609,13 @@ def place_order():
 
             cart=cart,
 
-            total=sum(
-
-                item["price"] * item["qty"]
-
-                for item in cart
-
-            ),
+            total=total,
 
             error="Enter valid 10 digit mobile number"
 
         )
+
+
 
 
 
@@ -474,42 +629,41 @@ def place_order():
 
 
 
+
     order = {
 
 
-        "name":
-        request.form.get("name"),
+        "name": name,
 
 
-        "phone":
-        phone,
+        "phone": phone,
 
 
-        "address":
-        request.form.get("address"),
+        "address": address,
 
 
-        "products":
-        cart,
+        "products": cart,
 
 
-        "total":
-        total,
+        "total": total,
 
 
-        "status":
-        "Pending",
+        "status":"Pending",
 
 
-        "date":
-        datetime.now()
+        "date": datetime.now()
 
 
     }
 
 
 
-    get_orders_collection().insert_one(order)
+
+    get_orders_collection().insert_one(
+
+        order
+
+    )
 
 
 
@@ -524,7 +678,8 @@ def place_order():
     )
 
 
-# ================= ADMIN PANEL =================
+
+# ================= ADMIN DASHBOARD =================
 
 
 @app.route("/admin")
@@ -593,6 +748,7 @@ def admin():
 
     return render_template(
 
+
         "admin.html",
 
 
@@ -607,7 +763,9 @@ def admin():
 
         delivered_orders=delivered_orders
 
+
     )
+
 
 
 
@@ -623,12 +781,16 @@ def admin_login():
 
 
     username = request.form.get(
+
         "username"
+
     )
 
 
     password = request.form.get(
+
         "password"
+
     )
 
 
@@ -647,8 +809,16 @@ def admin_login():
         session["admin"] = True
 
 
+        session.permanent = True
 
-        return redirect("/admin")
+
+
+        return redirect(
+
+            "/admin"
+
+        )
+
 
 
 
@@ -657,10 +827,10 @@ def admin_login():
 
         "admin_login.html",
 
-
         error="Invalid Username or Password"
 
     )
+
 
 
 
@@ -684,7 +854,11 @@ def admin_logout():
     )
 
 
-    return redirect("/admin")
+    return redirect(
+
+        "/admin"
+
+    )
 
 
 
@@ -692,11 +866,31 @@ def admin_logout():
 
 
 
-# ================= UPDATE ORDER STATUS =================
+
+# ================= UPDATE STATUS =================
 
 
 @app.route("/update-status/<id>/<status>")
 def update_status(id,status):
+
+
+    allowed_status = [
+
+        "Pending",
+
+        "Delivered"
+
+    ]
+
+
+
+    if status not in allowed_status:
+
+
+        return redirect("/admin")
+
+
+
 
 
     get_orders_collection().update_one(
@@ -704,7 +898,7 @@ def update_status(id,status):
 
         {
 
-            "_id":ObjectId(id)
+            "_id": ObjectId(id)
 
         },
 
@@ -723,7 +917,13 @@ def update_status(id,status):
     )
 
 
-    return redirect("/admin")
+
+    return redirect(
+
+        "/admin"
+
+    )
+
 
 
 
@@ -743,7 +943,7 @@ def delete_order(id):
 
         {
 
-            "_id":ObjectId(id)
+            "_id": ObjectId(id)
 
         }
 
@@ -751,58 +951,19 @@ def delete_order(id):
     )
 
 
-    return redirect("/admin")
+
+    return redirect(
+
+        "/admin"
+
+    )
 
 
-
-# ================= ERROR HANDLING =================
-
-
-@app.errorhandler(404)
-def page_not_found(error):
-
-    return render_template(
-
-        "404.html"
-
-    ),404
-
-
-
-
-
-@app.errorhandler(500)
-def server_error(error):
-
-    return render_template(
-
-        "500.html"
-
-    ),500
-
-
-
-
-
-
-
-# ================= SESSION SETTINGS =================
-
-
-@app.before_request
-def keep_session_alive():
-
-    session.permanent = True
-
-
-
-
-
-# ================= API CART COUNT =================
+# ================= CART COUNT API =================
 
 
 @app.route("/cart-count")
-def cart_count():
+def get_cart_count():
 
 
     cart = session.get(
@@ -835,6 +996,36 @@ def cart_count():
 
 
 
+
+# ================= CLEAR CART =================
+
+
+@app.route("/clear-cart")
+def clear_cart():
+
+
+    session.pop(
+
+        "cart",
+
+        None
+
+    )
+
+
+    return redirect(
+
+        "/"
+
+    )
+
+
+
+
+
+
+
+
 # ================= HEALTH CHECK =================
 
 
@@ -844,13 +1035,110 @@ def health():
 
     return jsonify({
 
-        "status":"KSR Dairy Foods is running"
+
+        "status":"KSR Dairy Foods is running",
+
+
+        "time":datetime.now().strftime(
+
+            "%d-%m-%Y %H:%M:%S"
+
+        )
+
 
     })
 
 
 
-# ================= RUN SERVER =================
+
+
+
+
+
+# ================= ERROR HANDLING =================
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+
+
+    return render_template(
+
+        "404.html"
+
+    ),404
+
+
+
+
+
+@app.errorhandler(500)
+def server_error(error):
+
+
+    return render_template(
+
+        "500.html"
+
+    ),500
+
+
+
+
+
+
+
+
+# ================= SESSION =================
+
+
+@app.before_request
+def session_settings():
+
+
+    session.permanent = True
+
+
+
+# ================= MONGO TEST =================
+
+
+@app.route("/database-check")
+def database_check():
+
+
+    try:
+
+
+        get_orders_collection().find_one()
+
+
+        return jsonify({
+
+            "database":"connected"
+
+        })
+
+
+    except Exception as e:
+
+
+        return jsonify({
+
+            "database":"error",
+
+            "message":str(e)
+
+        })
+
+
+
+
+
+
+
+
+# ================= START SERVER =================
 
 
 if __name__ == "__main__":
@@ -870,14 +1158,29 @@ if __name__ == "__main__":
 
 
 
+    debug_mode = os.environ.get(
+
+        "DEBUG",
+
+        "False"
+
+    ).lower() == "true"
+
+
+
+
+
     app.run(
+
 
         host="0.0.0.0",
 
+
         port=port,
 
-        debug=True
+
+        debug=debug_mode
+
 
     )
-
 
