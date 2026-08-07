@@ -7,15 +7,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-<title>KSR Dairy Foods | Fresh Milk Delivery</title>
-
+<title>{{site_name}} | Fresh Milk Delivery</title>
 
 <link rel="icon" type="image/png" href="/static/images/favicon.png">
 
-
 <link rel="stylesheet" href="/static/css/style.css">
-
 
 </head>
 
@@ -23,20 +19,18 @@
 <body>
 
 
-
 <header>
 
 
 <a href="/" class="logo">
 
-<img src="/static/images/logo.png" alt="KSR Dairy Foods">
+<img src="/static/images/logo.png" alt="{{site_name}}">
 
 <span>
-KSR Dairy Foods
+{{site_name}}
 </span>
 
 </a>
-
 
 
 
@@ -59,10 +53,9 @@ Categories
 </a>
 
 
-<a href="#">
+<a href="/profile">
 Profile
 </a>
-
 
 
 </nav>
@@ -95,16 +88,17 @@ stroke-linejoin="round"/>
 
 
 <span class="cart-count">
-0
+
+{{cart_count}}
+
 </span>
+
 
 
 </a>
 
 
-
 </div>
-
 
 
 </header>
@@ -119,14 +113,13 @@ stroke-linejoin="round"/>
 
 
 <h1>
-Fresh Milk Delivered To Your Doorstep
+{{site_tagline}}
 </h1>
 
 
 <p>
 Pure quality milk with freshness you can trust
 </p>
-
 
 
 
@@ -139,7 +132,6 @@ Order Now
 
 
 </section>
-
 
 
 
@@ -162,11 +154,7 @@ Our Products
 
 
 
-
-
 {% for product in products %}
-
-
 
 
 
@@ -174,48 +162,31 @@ Our Products
 
 
 
-
-
 <img
-
 src="{{product.image}}"
-
 alt="{{product.name}}"
-
 >
 
 
 
 
-
 <h3>
-
 {{product.name}}
-
 </h3>
 
 
 
 
-
 <p>
-
 {{product.description}}
-
 </p>
 
 
 
 
-
 <h2>
-
 ₹{{product.price}} / Litre
-
 </h2>
-
-
-
 
 
 
@@ -223,20 +194,11 @@ alt="{{product.name}}"
 <form class="cart-form">
 
 
-
-
-
 <input
-
 type="hidden"
-
 name="product_id"
-
 value="{{product.id}}"
-
 >
-
-
 
 
 
@@ -249,18 +211,11 @@ Add To Cart
 
 
 
-
-
 </form>
 
 
 
-
-
-
 </div>
-
-
 
 
 
@@ -268,17 +223,11 @@ Add To Cart
 
 
 
-
-
 </div>
 
 
 
-
-
-
 </section>
-
 
 
 
@@ -298,7 +247,7 @@ Milk Categories
 
 
 <p>
-Fresh Cow Milk, Buffalo Milk and Premium Quality Milk
+Fresh Cow Milk • Buffalo Milk • Premium Quality Milk
 </p>
 
 
@@ -316,17 +265,14 @@ Fresh Cow Milk, Buffalo Milk and Premium Quality Milk
 <footer>
 
 
-
 <p>
-© 2026 KSR Dairy Foods
+© 2026 {{site_name}}
 </p>
-
 
 
 <p>
 Fresh Milk • Pure Quality • Fast Delivery
 </p>
-
 
 
 </footer>
@@ -343,7 +289,6 @@ Fresh Milk • Pure Quality • Fast Delivery
 
 <a href="/">
 
-
 <svg viewBox="0 0 24 24" fill="none">
 
 <path d="M3 11L12 3L21 11V21H14V15H10V21H3V11Z"
@@ -351,7 +296,6 @@ stroke="currentColor"
 stroke-width="2"/>
 
 </svg>
-
 
 Home
 
@@ -401,7 +345,7 @@ Categories
 
 
 
-<a href="#">
+<a href="/profile">
 
 
 <svg viewBox="0 0 24 24" fill="none">
@@ -430,10 +374,7 @@ Profile
 
 
 
-
-
 <script src="/static/js/script.js"></script>
-
 
 
 </body>
