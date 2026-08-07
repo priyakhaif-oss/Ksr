@@ -4,6 +4,7 @@ import os
 
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from bson.objectid import ObjectId
 
 
 
@@ -23,12 +24,9 @@ app.secret_key = "ksr_dairy_secret_key"
 
 mongo_uri = os.environ.get("MONGO_URI")
 
-
 client = MongoClient(mongo_uri)
 
-
 db = client["ksr_dairy"]
-
 
 orders_collection = db["orders"]
 
@@ -43,27 +41,27 @@ orders_collection = db["orders"]
 PRODUCTS = [
 
     {
-        "id": 1,
-        "name": "Cow Milk",
-        "price": 60,
-        "image": "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=600",
-        "description": "Fresh pure cow milk"
+        "id":1,
+        "name":"Cow Milk",
+        "price":60,
+        "image":"https://images.unsplash.com/photo-1563636619-e9143da7973b?w=600",
+        "description":"Fresh pure cow milk"
     },
 
     {
-        "id": 2,
-        "name": "Buffalo Milk",
-        "price": 80,
-        "image": "https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=600",
-        "description": "Rich and creamy buffalo milk"
+        "id":2,
+        "name":"Buffalo Milk",
+        "price":80,
+        "image":"https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=600",
+        "description":"Rich and creamy buffalo milk"
     },
 
     {
-        "id": 3,
-        "name": "Premium Buffalo Milk",
-        "price": 90,
-        "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600",
-        "description": "Premium quality buffalo milk"
+        "id":3,
+        "name":"Premium Buffalo Milk",
+        "price":90,
+        "image":"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600",
+        "description":"Premium quality buffalo milk"
     }
 
 ]
@@ -88,22 +86,17 @@ def home():
 
 
 
-
 # Add Cart
 
 @app.route("/add-cart", methods=["POST"])
 def add_cart():
 
-
     product_id = int(request.form.get("product_id"))
-
 
     cart = session.get("cart", [])
 
 
-
     for item in cart:
-
 
         if item["id"] == product_id:
 
@@ -111,15 +104,11 @@ def add_cart():
             break
 
 
-
     else:
-
 
         for product in PRODUCTS:
 
-
             if product["id"] == product_id:
-
 
                 cart.append({
 
@@ -132,7 +121,6 @@ def add_cart():
                 })
 
                 break
-
 
 
 
@@ -155,13 +143,11 @@ def add_cart():
 
 
 
-
 # Cart
 
 @app.route("/cart")
 def cart():
 
-
     return cart_page()
 
 
@@ -172,26 +158,24 @@ def cart():
 
 
 
-# Increase
+# Increase Quantity
 
 @app.route("/increase/<int:id>")
 def increase(id):
 
-
-    cart = session.get("cart", [])
+    cart=session.get("cart",[])
 
 
     for item in cart:
 
+        if item["id"]==id:
 
-        if item["id"] == id:
-
-            item["qty"] += 1
+            item["qty"]+=1
             break
 
 
 
-    session["cart"] = cart
+    session["cart"]=cart
 
 
     return cart_page()
@@ -203,28 +187,22 @@ def increase(id):
 
 
 
-
-
-# Decrease
+# Decrease Quantity
 
 @app.route("/decrease/<int:id>")
 def decrease(id):
 
-
-    cart = session.get("cart", [])
-
+    cart=session.get("cart",[])
 
 
     for item in cart:
 
+        if item["id"]==id:
 
-        if item["id"] == id:
 
+            if item["qty"]>1:
 
-            if item["qty"] > 1:
-
-                item["qty"] -= 1
-
+                item["qty"]-=1
 
             else:
 
@@ -235,8 +213,7 @@ def decrease(id):
 
 
 
-
-    session["cart"] = cart
+    session["cart"]=cart
 
 
     return cart_page()
@@ -254,23 +231,19 @@ def decrease(id):
 @app.route("/remove/<int:id>")
 def remove(id):
 
-
-    cart = session.get("cart", [])
-
+    cart=session.get("cart",[])
 
 
-    cart = [
+    cart=[
 
         item for item in cart
 
-        if item["id"] != id
+        if item["id"]!=id
 
     ]
 
 
-
-    session["cart"] = cart
-
+    session["cart"]=cart
 
 
     return cart_page()
@@ -283,23 +256,18 @@ def remove(id):
 
 
 
-# Cart Function
-
 def cart_page():
 
-
-    cart = session.get("cart", [])
-
+    cart=session.get("cart",[])
 
 
-    total = sum(
+    total=sum(
 
-        item["price"] * item["qty"]
+        item["price"]*item["qty"]
 
         for item in cart
 
     )
-
 
 
     return render_template(
@@ -319,25 +287,21 @@ def cart_page():
 
 
 
-
 # Checkout
 
 @app.route("/checkout")
 def checkout():
 
-
-    cart = session.get("cart", [])
-
+    cart=session.get("cart",[])
 
 
-    total = sum(
+    total=sum(
 
-        item["price"] * item["qty"]
+        item["price"]*item["qty"]
 
         for item in cart
 
     )
-
 
 
     return render_template(
@@ -358,16 +322,26 @@ def checkout():
 
 
 
-
-
 # Place Order
 
-@app.route("/place-order", methods=["POST"])
+@app.route("/place-order",methods=["POST"])
 def place_order():
 
 
-    order = {
+    cart=session.get("cart",[])
 
+
+    total=sum(
+
+        item["price"]*item["qty"]
+
+        for item in cart
+
+    )
+
+
+
+    order={
 
         "name":request.form.get("name"),
 
@@ -375,7 +349,9 @@ def place_order():
 
         "address":request.form.get("address"),
 
-        "products":session.get("cart", []),
+        "products":cart,
+
+        "total":total,
 
         "status":"Pending",
 
@@ -385,27 +361,49 @@ def place_order():
 
 
 
-
-
-    # Save order to MongoDB
-
     orders_collection.insert_one(order)
-
-
-
-
-
-    print("New Order Saved:", order)
 
 
 
     session.clear()
 
 
+    return render_template(
+        "success.html"
+    )
+
+
+
+
+
+
+
+
+
+
+# Admin Dashboard
+
+@app.route("/admin")
+def admin():
+
+
+    orders=list(
+
+        orders_collection.find().sort(
+
+            "date",
+            -1
+
+        )
+
+    )
+
 
     return render_template(
 
-        "success.html"
+        "admin.html",
+
+        orders=orders
 
     )
 
@@ -417,10 +415,53 @@ def place_order():
 
 
 
-if __name__ == "__main__":
+# Update Order Status
+
+@app.route("/update-status/<id>/<status>")
+def update_status(id,status):
 
 
-    port = int(os.environ.get("PORT",5000))
+    orders_collection.update_one(
+
+        {
+            "_id":ObjectId(id)
+        },
+
+        {
+
+            "$set":{
+
+                "status":status
+
+            }
+
+        }
+
+    )
+
+
+    return admin()
+
+
+
+
+
+
+
+
+
+
+if __name__=="__main__":
+
+
+    port=int(
+
+        os.environ.get(
+            "PORT",
+            5000
+        )
+
+    )
 
 
     app.run(
