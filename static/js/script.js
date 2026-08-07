@@ -1,39 +1,85 @@
 // KSR Dairy Foods JavaScript
 
 
-// Add to cart animation
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-        const buttons = document.querySelectorAll("button");
+document.addEventListener("DOMContentLoaded", function(){
 
 
-        buttons.forEach(
-            button => {
+    // Add to cart button animation
 
-                button.addEventListener(
-                    "click",
-                    function(){
-
-                        button.innerHTML =
-                        "Added ✓";
+    const buttons = document.querySelectorAll("button");
 
 
-                        setTimeout(
-                            ()=>{
-                                button.innerHTML =
-                                "Add To Cart 🛒";
-                            },
-                            1200
-                        );
+    buttons.forEach(function(button){
 
-                    }
-                );
+
+        button.addEventListener("click", function(){
+
+
+            const oldText = button.innerHTML;
+
+
+            button.innerHTML = "Added ✓";
+
+
+            button.style.transform = "scale(0.95)";
+
+
+
+            setTimeout(function(){
+
+
+                button.innerHTML = oldText;
+
+
+                button.style.transform = "scale(1)";
+
+
+            },1200);
+
+
+
+        });
+
+
+    });
+
+
+
+    // Smooth scroll for Order Now button
+
+    const orderBtn = document.querySelector(".order-btn");
+
+
+    if(orderBtn){
+
+
+        orderBtn.addEventListener("click", function(e){
+
+
+            const target = document.querySelector("#products");
+
+
+            if(target){
+
+
+                e.preventDefault();
+
+
+                target.scrollIntoView({
+
+                    behavior:"smooth"
+
+                });
+
 
             }
-        );
+
+
+        });
+
 
     }
-);
+
+
+
+});
