@@ -2,18 +2,14 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:"Inter","Segoe UI",Arial,sans-serif;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
 
 body{
-
-    background:#f6f8f6;
-
-    color:#1f2937;
-
+    background:#f5f7f6;
+    color:#222;
 }
-
 
 
 /* Header */
@@ -21,24 +17,19 @@ body{
 header{
 
     width:100%;
-
     padding:18px 8%;
 
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
 
     background:#ffffff;
 
     position:sticky;
-
     top:0;
-
     z-index:100;
 
-    box-shadow:0 4px 18px rgba(0,0,0,.08);
+    box-shadow:0 2px 15px rgba(0,0,0,0.08);
 
 }
 
@@ -47,27 +38,23 @@ header{
 .logo{
 
     font-size:24px;
-
     font-weight:700;
-
     color:#166534;
 
 }
 
 
 
-/* Header Actions */
 
 
 .admin-actions{
 
     display:flex;
-
     align-items:center;
-
     gap:12px;
 
 }
+
 
 
 
@@ -79,16 +66,17 @@ header{
 
     color:white;
 
-    padding:11px 22px;
+    padding:12px 25px;
 
     border-radius:8px;
+
+    font-size:15px;
 
     font-weight:600;
 
     transition:.3s;
 
 }
-
 
 
 .cart-btn:hover{
@@ -99,32 +87,24 @@ header{
 
 
 
+
 .logout-btn{
 
-    width:42px;
-
-    height:42px;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
+    text-decoration:none;
 
     background:#dc2626;
 
     color:white;
 
-    border-radius:50%;
+    padding:12px 18px;
 
-    text-decoration:none;
+    border-radius:8px;
 
-    font-size:18px;
+    font-size:14px;
 
-    transition:.3s;
+    font-weight:600;
 
 }
-
 
 
 .logout-btn:hover{
@@ -135,106 +115,14 @@ header{
 
 
 
-/* Hero */
 
 
-.hero{
-
-    min-height:65vh;
-
-    display:flex;
-
-    flex-direction:column;
-
-    justify-content:center;
-
-    align-items:center;
-
-    text-align:center;
-
-    padding:40px;
-
-    background:
-
-    linear-gradient(
-
-    180deg,
-
-    #ffffff,
-
-    #ecfdf5
-
-    );
-
-}
-
-
-
-.hero h1{
-
-    font-size:48px;
-
-    color:#14532d;
-
-    max-width:800px;
-
-}
-
-
-
-.hero p{
-
-    margin-top:20px;
-
-    font-size:20px;
-
-    color:#6b7280;
-
-}
-
-
-
-/* Main Buttons */
-
-
-.order-btn{
-
-    display:inline-block;
-
-    margin-top:20px;
-
-    padding:14px 32px;
-
-    background:#15803d;
-
-    color:white;
-
-    text-decoration:none;
-
-    border-radius:8px;
-
-    font-weight:600;
-
-    transition:.3s;
-
-}
-
-
-
-.order-btn:hover{
-
-    background:#166534;
-
-}
-
-
-
-/* Products */
+/* Dashboard */
 
 
 #products{
 
-    padding:60px 8%;
+    padding:50px 8%;
 
 }
 
@@ -244,45 +132,45 @@ header{
 
     text-align:center;
 
-    font-size:34px;
+    font-size:32px;
 
     color:#14532d;
 
-    margin-bottom:40px;
+    margin-bottom:35px;
 
 }
 
 
 
+
 .products-container{
+
 
     display:grid;
 
     grid-template-columns:
     repeat(auto-fit,minmax(260px,1fr));
 
-    gap:30px;
+    gap:25px;
 
 }
 
 
 
-/* Cards */
 
 
 .card{
 
-    background:#ffffff;
-
-    border-radius:16px;
+    background:white;
 
     padding:25px;
 
-    text-align:center;
+    border-radius:14px;
 
     box-shadow:
+    0 5px 20px rgba(0,0,0,.06);
 
-    0 8px 25px rgba(0,0,0,.08);
+    border:1px solid #eeeeee;
 
     transition:.3s;
 
@@ -292,43 +180,19 @@ header{
 
 .card:hover{
 
-    transform:translateY(-5px);
+    transform:translateY(-4px);
 
 }
 
 
-
-.card img{
-
-    width:100%;
-
-    height:220px;
-
-    object-fit:cover;
-
-    border-radius:12px;
-
-}
 
 
 
 .card h3{
 
-    margin-top:18px;
-
-    font-size:22px;
-
     color:#166534;
 
-}
-
-
-
-.card p{
-
-    margin:10px 0;
-
-    color:#6b7280;
+    margin-bottom:15px;
 
 }
 
@@ -344,31 +208,82 @@ header{
 
 
 
-/* Delete */
+.card p{
+
+    color:#555;
+
+    margin:10px 0;
+
+    line-height:1.5;
+
+}
+
+
+
+
+hr{
+
+    border:none;
+
+    border-top:1px solid #ddd;
+
+    margin:20px 0;
+
+}
+
+
+
+
+
+/* Buttons */
+
+
+.order-btn{
+
+    display:inline-block;
+
+    text-decoration:none;
+
+    background:#16a34a;
+
+    color:white;
+
+    padding:12px 22px;
+
+    border-radius:8px;
+
+    font-weight:600;
+
+}
+
+
+
+.order-btn:hover{
+
+    background:#15803d;
+
+}
+
+
 
 
 .delete-btn{
 
-    width:42px;
-
-    height:42px;
-
     display:inline-flex;
 
-    justify-content:center;
-
-    align-items:center;
+    text-decoration:none;
 
     background:#dc2626;
 
     color:white;
 
-    border-radius:50%;
+    padding:12px 22px;
 
-    text-decoration:none;
+    border-radius:8px;
+
+    font-weight:600;
 
 }
-
 
 
 .delete-btn:hover{
@@ -379,76 +294,6 @@ header{
 
 
 
-/* Status */
-
-
-.status{
-
-    display:inline-block;
-
-    padding:6px 14px;
-
-    border-radius:20px;
-
-    font-size:14px;
-
-    font-weight:600;
-
-}
-
-
-
-.pending{
-
-    background:#fef3c7;
-
-    color:#92400e;
-
-}
-
-
-
-.delivered{
-
-    background:#dcfce7;
-
-    color:#166534;
-
-}
-
-
-
-/* Forms */
-
-
-input,
-textarea{
-
-    width:100%;
-
-    padding:14px;
-
-    margin:10px 0;
-
-    border:1px solid #d1d5db;
-
-    border-radius:8px;
-
-    font-size:16px;
-
-}
-
-
-
-input:focus,
-textarea:focus{
-
-    outline:none;
-
-    border-color:#15803d;
-
-}
-
 
 
 /* Footer */
@@ -458,7 +303,7 @@ footer{
 
     margin-top:50px;
 
-    padding:30px;
+    padding:25px;
 
     text-align:center;
 
@@ -467,6 +312,8 @@ footer{
     color:white;
 
 }
+
+
 
 
 
@@ -485,35 +332,35 @@ header{
 
 .logo{
 
-    font-size:20px;
+    font-size:18px;
 
 }
 
 
 .cart-btn{
 
-    padding:10px 16px;
+    padding:10px 15px;
 
 }
 
 
-.hero h1{
+.logout-btn{
 
-    font-size:32px;
+    padding:10px 12px;
 
 }
 
 
 #products{
 
-    padding:40px 5%;
+    padding:35px 5%;
 
 }
 
 
-.card img{
+#products > h2{
 
-    height:180px;
+    font-size:26px;
 
 }
 
