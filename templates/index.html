@@ -7,9 +7,15 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>KSR Dairy Foods</title>
+
+<title>KSR Dairy Foods | Fresh Milk Delivery</title>
+
+
+<link rel="icon" type="image/png" href="/static/images/favicon.png">
+
 
 <link rel="stylesheet" href="/static/css/style.css">
+
 
 </head>
 
@@ -17,21 +23,87 @@
 <body>
 
 
+
 <header>
 
 
-<div class="logo">
+<a href="/" class="logo">
+
+<img src="/static/images/logo.png" alt="KSR Dairy Foods">
+
+<span>
 KSR Dairy Foods
-</div>
-
-
-
-
-<a href="/cart" class="cart-btn">
-
-Cart
+</span>
 
 </a>
+
+
+
+
+
+<nav class="navbar">
+
+
+<a href="/">
+Home
+</a>
+
+
+<a href="#products">
+Products
+</a>
+
+
+<a href="#categories">
+Categories
+</a>
+
+
+<a href="#">
+Profile
+</a>
+
+
+
+</nav>
+
+
+
+
+
+<div class="header-actions">
+
+
+<a href="/cart" class="cart-icon">
+
+
+<svg viewBox="0 0 24 24" fill="none">
+
+<path d="M3 3H5L7.5 15H17.5L21 6H6"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+
+<circle cx="9" cy="20" r="1.5" fill="currentColor"/>
+
+<circle cx="17" cy="20" r="1.5" fill="currentColor"/>
+
+</svg>
+
+
+
+<span class="cart-count">
+0
+</span>
+
+
+</a>
+
+
+
+</div>
 
 
 
@@ -49,7 +121,6 @@ Cart
 <h1>
 Fresh Milk Delivered To Your Doorstep
 </h1>
-
 
 
 <p>
@@ -94,6 +165,7 @@ Our Products
 
 
 {% for product in products %}
+
 
 
 
@@ -213,6 +285,34 @@ Add To Cart
 
 
 
+
+<section id="categories">
+
+
+<div class="card">
+
+
+<h3>
+Milk Categories
+</h3>
+
+
+<p>
+Fresh Cow Milk, Buffalo Milk and Premium Quality Milk
+</p>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
 <footer>
 
 
@@ -230,6 +330,100 @@ Fresh Milk • Pure Quality • Fast Delivery
 
 
 </footer>
+
+
+
+
+
+
+
+
+<nav class="bottom-nav">
+
+
+<a href="/">
+
+
+<svg viewBox="0 0 24 24" fill="none">
+
+<path d="M3 11L12 3L21 11V21H14V15H10V21H3V11Z"
+stroke="currentColor"
+stroke-width="2"/>
+
+</svg>
+
+
+Home
+
+</a>
+
+
+
+
+
+<a href="#products">
+
+
+<svg viewBox="0 0 24 24" fill="none">
+
+<path d="M4 6H20M4 12H20M4 18H20"
+stroke="currentColor"
+stroke-width="2"/>
+
+</svg>
+
+
+Products
+
+</a>
+
+
+
+
+
+<a href="#categories">
+
+
+<svg viewBox="0 0 24 24" fill="none">
+
+<circle cx="12" cy="12" r="9"
+stroke="currentColor"
+stroke-width="2"/>
+
+</svg>
+
+
+Categories
+
+</a>
+
+
+
+
+
+<a href="#">
+
+
+<svg viewBox="0 0 24 24" fill="none">
+
+<circle cx="12" cy="8" r="4"
+stroke="currentColor"
+stroke-width="2"/>
+
+<path d="M4 21C4 17 7 15 12 15C17 15 20 17 20 21"
+stroke="currentColor"
+stroke-width="2"/>
+
+</svg>
+
+
+Profile
+
+</a>
+
+
+
+</nav>
 
 
 
