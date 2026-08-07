@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Your Cart - KSR Dairy Foods</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<div class="logo">
+🥛 KSR Dairy Foods
+</div>
+
+
+<a href="/" class="cart-btn">
+Home
+</a>
+
+
+</header>
+
+
+
+<section id="products">
+
+
+<h2>
+🛒 Your Cart
+</h2>
+
+
+
+{% if cart %}
+
+
+<div class="products-container">
+
+
+{% for item in cart %}
+
+
+<div class="card">
+
+
+<img src="/static/images/{{item.image}}">
+
+
+<h3>
+{{item.name}}
+</h3>
+
+
+<p>
+Quantity : {{item.qty}}
+</p>
+
+
+<h2>
+₹{{item.price * item.qty}}
+</h2>
+
+
+<a 
+href="/remove/{{item.id}}"
+class="cart-btn">
+
+Remove
+
+</a>
+
+
+</div>
+
+
+{% endfor %}
+
+
+
+</div>
+
+
+<br>
+
+
+<h2>
+Total : ₹{{total}}
+</h2>
+
+
+<center>
+
+<a 
+href="/checkout"
+class="order-btn">
+
+Proceed To Checkout
+
+</a>
+
+</center>
+
+
+
+{% else %}
+
+
+<h2>
+Your cart is empty 🥛
+</h2>
+
+
+<center>
+
+<a 
+href="/"
+class="order-btn">
+
+Continue Shopping
+
+</a>
+
+</center>
+
+
+
+{% endif %}
+
+
+
+</section>
+
+
+
+</body>
+
+</html>
