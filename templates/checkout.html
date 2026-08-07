@@ -19,17 +19,22 @@
 
 <header>
 
+
 <div class="logo">
-🥛 KSR Dairy Foods
+KSR Dairy Foods
 </div>
 
 
+
 <a href="/cart" class="cart-btn">
-🛒 Cart
+Cart
 </a>
 
 
+
 </header>
+
+
 
 
 
@@ -39,8 +44,11 @@
 
 
 <h2>
-Checkout 🥛
+Checkout
 </h2>
+
+
+
 
 
 
@@ -48,13 +56,18 @@ Checkout 🥛
 
 
 
+
+
 <h3>
-📦 Order Summary
+Order Summary
 </h3>
 
 
 
+
+
 {% for item in cart %}
+
 
 
 <p>
@@ -62,12 +75,15 @@ Checkout 🥛
 </p>
 
 
+
 <p>
 ₹{{item.price * item.qty}}
 </p>
 
 
+
 <hr>
+
 
 
 {% endfor %}
@@ -75,9 +91,14 @@ Checkout 🥛
 
 
 
+
+
 <h2>
-Total : ₹{{total}}
+Total Amount: ₹{{total}}
 </h2>
+
+
+
 
 
 
@@ -92,8 +113,9 @@ Total : ₹{{total}}
 <input
 type="text"
 name="name"
-placeholder="Enter Your Name"
-required>
+placeholder="Full Name"
+required
+>
 
 
 
@@ -101,16 +123,19 @@ required>
 <input
 type="tel"
 name="phone"
-placeholder="Enter Phone Number"
-required>
+placeholder="Phone Number"
+required
+>
+
 
 
 
 
 <textarea
 name="address"
-placeholder="Enter Delivery Address"
+placeholder="Delivery Address"
 required></textarea>
+
 
 
 
@@ -118,9 +143,10 @@ required></textarea>
 
 <button type="submit">
 
-Place Order ✅
+Place Order
 
 </button>
+
 
 
 
@@ -130,11 +156,17 @@ Place Order ✅
 
 
 
+
 </div>
 
 
 
+
+
+
 </section>
+
+
 
 
 
@@ -149,11 +181,13 @@ Place Order ✅
 
 
 <p>
-Fresh Milk Delivered Daily 🥛
+Fresh Milk • Pure Quality • Fast Delivery
 </p>
 
 
 </footer>
+
+
 
 
 
