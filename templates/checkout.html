@@ -25,11 +25,13 @@
 
 
 <a href="/cart" class="cart-btn">
-Cart
+🛒 Cart
 </a>
 
 
 </header>
+
+
 
 
 
@@ -42,23 +44,35 @@ Checkout 🥛
 
 
 
-<div class="card">
+<div class="card checkout-card">
+
 
 
 <h3>
-Order Summary
+📦 Order Summary
 </h3>
+
 
 
 {% for item in cart %}
 
+
 <p>
 {{item.name}} × {{item.qty}}
--
+</p>
+
+
+<p>
 ₹{{item.price * item.qty}}
 </p>
 
+
+<hr>
+
+
 {% endfor %}
+
+
 
 
 <h2>
@@ -67,43 +81,53 @@ Total : ₹{{total}}
 
 
 
+
+
 <form action="/place-order" method="POST">
 
 
-<input 
+
+
+
+<input
 type="text"
 name="name"
-placeholder="Your Name"
-required
-style="padding:12px;width:100%;margin:10px 0;border-radius:10px;border:1px solid #ccc;">
+placeholder="Enter Your Name"
+required>
 
 
 
-<input 
+
+<input
 type="tel"
 name="phone"
-placeholder="Phone Number"
-required
-style="padding:12px;width:100%;margin:10px 0;border-radius:10px;border:1px solid #ccc;">
+placeholder="Enter Phone Number"
+required>
+
 
 
 
 <textarea
 name="address"
-placeholder="Delivery Address"
-required
-style="padding:12px;width:100%;height:100px;margin:10px 0;border-radius:10px;border:1px solid #ccc;">
-</textarea>
+placeholder="Enter Delivery Address"
+required></textarea>
+
+
 
 
 
 <button type="submit">
+
 Place Order ✅
+
 </button>
 
 
 
+
 </form>
+
+
 
 
 </div>
@@ -111,6 +135,26 @@ Place Order ✅
 
 
 </section>
+
+
+
+
+
+<footer>
+
+
+<p>
+© 2026 KSR Dairy Foods
+</p>
+
+
+<p>
+Fresh Milk Delivered Daily 🥛
+</p>
+
+
+</footer>
+
 
 
 
