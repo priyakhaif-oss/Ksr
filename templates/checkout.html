@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Checkout - KSR Dairy Foods</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<div class="logo">
+🥛 KSR Dairy Foods
+</div>
+
+
+<a href="/cart" class="cart-btn">
+Cart
+</a>
+
+
+</header>
+
+
+
+<section id="products">
+
+
+<h2>
+Checkout 🥛
+</h2>
+
+
+
+<div class="card">
+
+
+<h3>
+Order Summary
+</h3>
+
+
+{% for item in cart %}
+
+<p>
+{{item.name}} × {{item.qty}}
+-
+₹{{item.price * item.qty}}
+</p>
+
+{% endfor %}
+
+
+<h2>
+Total : ₹{{total}}
+</h2>
+
+
+
+<form action="/place-order" method="POST">
+
+
+<input 
+type="text"
+name="name"
+placeholder="Your Name"
+required
+style="padding:12px;width:100%;margin:10px 0;border-radius:10px;border:1px solid #ccc;">
+
+
+
+<input 
+type="tel"
+name="phone"
+placeholder="Phone Number"
+required
+style="padding:12px;width:100%;margin:10px 0;border-radius:10px;border:1px solid #ccc;">
+
+
+
+<textarea
+name="address"
+placeholder="Delivery Address"
+required
+style="padding:12px;width:100%;height:100px;margin:10px 0;border-radius:10px;border:1px solid #ccc;">
+</textarea>
+
+
+
+<button type="submit">
+Place Order ✅
+</button>
+
+
+
+</form>
+
+
+</div>
+
+
+
+</section>
+
+
+
+</body>
+
+</html>
