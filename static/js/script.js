@@ -1,25 +1,47 @@
-// KSR Dairy Foods JavaScript
-
-
 document.addEventListener("DOMContentLoaded", function(){
 
 
-    const buttons = document.querySelectorAll("button");
+const forms = document.querySelectorAll(".cart-form");
 
 
-    buttons.forEach(function(button){
+forms.forEach(function(form){
 
 
-        button.addEventListener("click", function(){
+form.addEventListener("submit", function(e){
 
 
-            showMessage("🥛 Product added to cart successfully! 🛒");
+e.preventDefault();
 
 
-        });
+let data = new FormData(form);
 
 
-    });
+fetch("/add-cart", {
+
+method:"POST",
+
+body:data
+
+})
+
+
+.then(response => response.json())
+
+
+.then(result => {
+
+
+showMessage("🥛 Added to cart successfully! 🛒");
+
+
+});
+
+
+
+});
+
+
+});
 
 
 
@@ -27,43 +49,35 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
-// Pretty Toast Message
-
 function showMessage(message){
 
 
-    const toast = document.createElement("div");
+const toast = document.createElement("div");
 
 
-    toast.innerHTML = message;
+toast.innerHTML = message;
 
 
-    toast.style.position = "fixed";
-    toast.style.top = "80px";
-    toast.style.right = "20px";
-    toast.style.background = "#16a34a";
-    toast.style.color = "white";
-    toast.style.padding = "15px 25px";
-    toast.style.borderRadius = "30px";
-    toast.style.fontSize = "16px";
-    toast.style.fontWeight = "bold";
-    toast.style.boxShadow = "0 10px 25px rgba(0,0,0,0.2)";
-    toast.style.zIndex = "9999";
-    toast.style.animation = "slideIn .3s ease";
+toast.style.position="fixed";
+toast.style.top="80px";
+toast.style.right="20px";
+toast.style.background="#16a34a";
+toast.style.color="white";
+toast.style.padding="15px 25px";
+toast.style.borderRadius="30px";
+toast.style.fontWeight="bold";
+toast.style.zIndex="9999";
 
 
-    document.body.appendChild(toast);
+document.body.appendChild(toast);
 
 
 
-    setTimeout(function(){
+setTimeout(()=>{
 
+toast.remove();
 
-        toast.remove();
-
-
-    },2500);
-
+},2500);
 
 
 }
