@@ -1,10 +1,11 @@
-/* ==========================================
-   KSR Dairy Foods
-   Premium Luxury Green UI
-========================================== */
+/*==================================================
+ KSR Dairy Foods
+ Premium Green + Luxury White UI
+ CSS Part 1/5
+==================================================*/
 
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 
 :root{
@@ -25,7 +26,7 @@
     --danger:#dc2626;
 
     --shadow:
-    0 12px 35px rgba(0,0,0,.08);
+    0 12px 30px rgba(0,0,0,0.08);
 
     --transition:.35s ease;
 
@@ -53,7 +54,7 @@ html{
 
 body{
 
-    font-family:"Inter",sans-serif;
+    font-family:"Inter",Arial,sans-serif;
 
     background:var(--bg);
 
@@ -65,11 +66,9 @@ body{
 
 
 
-
-
-/* ==========================================
+/* ===============================
    HEADER
-========================================== */
+================================ */
 
 
 header{
@@ -84,28 +83,32 @@ header{
 
     padding:0 7%;
 
-    background:rgba(255,255,255,.95);
-
-    backdrop-filter:blur(15px);
-
     display:flex;
 
     align-items:center;
 
     justify-content:space-between;
 
-    z-index:9999;
+    background:rgba(255,255,255,.96);
+
+    backdrop-filter:blur(15px);
+
+    border-bottom:1px solid var(--border);
 
     box-shadow:
-    0 5px 20px rgba(0,0,0,.08);
+    0 5px 20px rgba(0,0,0,.06);
+
+    z-index:9999;
 
 }
 
 
 
-/* ==========================================
+
+
+/* ===============================
    LOGO
-========================================== */
+================================ */
 
 
 .logo{
@@ -152,9 +155,9 @@ header{
 
 
 
-/* ==========================================
+/* ===============================
    HEADER ACTIONS
-========================================== */
+================================ */
 
 
 .header-actions,
@@ -172,22 +175,24 @@ header{
 
 
 
-/* ==========================================
+/* ===============================
    CART ICON
-========================================== */
+================================ */
+
+
+.cart-wrapper{
+
+    position:relative;
+
+}
+
 
 
 .cart-icon{
 
-    width:46px;
+    width:48px;
 
-    height:46px;
-
-    border-radius:14px;
-
-    background:var(--green);
-
-    color:white;
+    height:48px;
 
     display:flex;
 
@@ -195,7 +200,11 @@ header{
 
     justify-content:center;
 
-    position:relative;
+    background:var(--green);
+
+    color:white;
+
+    border-radius:14px;
 
     text-decoration:none;
 
@@ -226,6 +235,10 @@ header{
 
 
 
+
+/* Cart Count */
+
+
 .cart-count{
 
     position:absolute;
@@ -238,25 +251,25 @@ header{
 
     height:22px;
 
-    padding:0 5px;
+    padding:0 6px;
 
-    border-radius:50%;
+    border-radius:50px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
 
     background:#ef4444;
 
     color:white;
 
-    border:2px solid white;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-size:11px;
+    font-size:12px;
 
     font-weight:700;
+
+    border:2px solid white;
 
 }
 
@@ -264,14 +277,90 @@ header{
 
 
 
-/* ==========================================
-   BUTTONS
-========================================== */
+/* ===============================
+   NAVIGATION
+================================ */
 
 
+.navbar{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:30px;
+
+}
+
+
+
+.navbar a{
+
+    text-decoration:none;
+
+    color:#374151;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    position:relative;
+
+    transition:.3s;
+
+}
+
+
+
+.navbar a:hover{
+
+    color:var(--green);
+
+}
+
+
+
+.navbar a::after{
+
+    content:"";
+
+    position:absolute;
+
+    bottom:-8px;
+
+    left:0;
+
+    width:0;
+
+    height:2px;
+
+    background:var(--green);
+
+    transition:.3s;
+
+}
+
+
+
+.navbar a:hover::after{
+
+    width:100%;
+
+}
+
+
+
+
+
+/* ===============================
+   COMMON BUTTONS
+================================ */
+
+
+button,
 .cart-btn,
 .order-btn,
-button{
+.delete-btn{
 
 
     display:inline-flex;
@@ -280,29 +369,19 @@ button{
 
     justify-content:center;
 
-
-    padding:13px 28px;
-
+    text-decoration:none;
 
     border:none;
 
-    border-radius:14px;
-
-
-    background:var(--green);
-
-    color:white;
-
-
-    text-decoration:none;
-
     cursor:pointer;
 
+    padding:13px 28px;
+
+    border-radius:14px;
 
     font-size:15px;
 
     font-weight:700;
-
 
     transition:var(--transition);
 
@@ -310,10 +389,26 @@ button{
 
 
 
-.cart-btn:hover,
-.order-btn:hover,
-button:hover{
 
+
+/* Green Buttons */
+
+
+button,
+.cart-btn,
+.order-btn{
+
+    background:var(--green);
+
+    color:white;
+
+}
+
+
+
+button:hover,
+.cart-btn:hover,
+.order-btn:hover{
 
     background:var(--dark-green);
 
@@ -326,11 +421,1833 @@ button:hover{
 
 
 
+button:active,
 .cart-btn:active,
-.order-btn:active,
-button:active{
-
+.order-btn:active{
 
     transform:scale(.96);
 
 }
+
+
+
+
+
+/* Delete Button */
+
+
+.delete-btn{
+
+    background:var(--danger);
+
+    color:white;
+
+}
+
+
+
+.delete-btn:hover{
+
+    background:#991b1b;
+
+    transform:translateY(-3px);
+
+}
+
+
+
+
+
+/* ===============================
+   LOGOUT ICON BUTTON
+================================ */
+
+
+.logout-btn{
+
+    width:46px;
+
+    height:46px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:var(--danger);
+
+    color:white;
+
+    text-decoration:none;
+
+    transition:.3s;
+
+}
+
+
+
+.logout-btn:hover{
+
+    background:#991b1b;
+
+    transform:scale(1.1);
+
+}
+
+
+/*==================================================
+   KSR Dairy Foods Premium UI
+   PART 2
+==================================================*/
+
+
+/* =========================
+   HERO SECTION
+========================= */
+
+.hero{
+
+    min-height:75vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    padding:90px 8% 110px;
+
+    background:
+    linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #f0fdf4 100%
+    );
+
+}
+
+
+
+.hero h1{
+
+    font-size:58px;
+
+    font-weight:800;
+
+    color:#14532d;
+
+    max-width:850px;
+
+    line-height:1.15;
+
+    animation:fadeUp .7s ease;
+
+}
+
+
+
+.hero p{
+
+    margin-top:20px;
+
+    max-width:650px;
+
+    font-size:19px;
+
+    color:#64748b;
+
+    line-height:1.7;
+
+    animation:fadeUp .9s ease;
+
+}
+
+
+
+.hero .order-btn{
+
+    margin-top:35px;
+
+}
+
+
+
+
+
+/* =========================
+   SECTION STYLE
+========================= */
+
+
+section{
+
+    width:100%;
+
+}
+
+
+
+#products{
+
+    padding:70px 8%;
+
+}
+
+
+
+#products > h2{
+
+    text-align:center;
+
+    font-size:38px;
+
+    font-weight:800;
+
+    color:#14532d;
+
+    margin-bottom:50px;
+
+}
+
+
+
+
+
+/* =========================
+   PRODUCT GRID
+========================= */
+
+
+.products-container{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(
+        auto-fit,
+        minmax(290px,1fr)
+    );
+
+    gap:30px;
+
+}
+
+
+
+
+
+/* =========================
+   CARD DESIGN
+========================= */
+
+
+.card{
+
+    background:#ffffff;
+
+    padding:28px;
+
+    border-radius:22px;
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:
+    0 12px 35px rgba(0,0,0,.06);
+
+    transition:.35s ease;
+
+    animation:fadeUp .5s ease;
+
+}
+
+
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:
+    0 20px 45px rgba(0,0,0,.12);
+
+}
+
+
+
+
+
+.card img{
+
+    width:100%;
+
+    height:230px;
+
+    object-fit:contain;
+
+    margin-bottom:22px;
+
+}
+
+
+
+
+
+.card h3{
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#14532d;
+
+    margin-bottom:12px;
+
+}
+
+
+
+
+
+.card p{
+
+    color:#64748b;
+
+    line-height:1.7;
+
+    margin:10px 0;
+
+}
+
+
+
+
+
+.card h2{
+
+    color:#15803d;
+
+    font-size:28px;
+
+    margin:18px 0;
+
+}
+
+
+
+
+
+/* =========================
+   QUANTITY BOX
+========================= */
+
+
+.quantity-box{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:18px;
+
+    margin:25px 0;
+
+}
+
+
+
+.quantity-box a{
+
+    width:42px;
+
+    height:42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    text-decoration:none;
+
+    font-size:22px;
+
+    font-weight:700;
+
+}
+
+
+
+.quantity-box .minus{
+
+    background:#dc2626;
+
+    color:white;
+
+}
+
+
+
+.quantity-box .plus{
+
+    background:#15803d;
+
+    color:white;
+
+}
+
+
+
+
+
+/* =========================
+   CHECKOUT FORM
+========================= */
+
+
+.checkout-card{
+
+    max-width:650px;
+
+    margin:auto;
+
+}
+
+
+
+input,
+textarea{
+
+
+    width:100%;
+
+    padding:16px;
+
+    margin:12px 0;
+
+    border-radius:14px;
+
+    border:1px solid #d1d5db;
+
+    outline:none;
+
+    font-size:16px;
+
+    background:#fff;
+
+    transition:.3s;
+
+}
+
+
+
+input:focus,
+textarea:focus{
+
+    border-color:#15803d;
+
+    box-shadow:
+    0 0 10px rgba(21,128,61,.15);
+
+}
+
+
+
+textarea{
+
+    min-height:120px;
+
+    resize:none;
+
+}
+
+
+/*==================================================
+   KSR Dairy Foods Premium UI
+   PART 3
+==================================================*/
+
+
+/* =========================
+   TOAST MESSAGE
+========================= */
+
+
+.toast-message{
+
+    position:fixed;
+
+    top:90px;
+
+    right:25px;
+
+    background:#15803d;
+
+    color:white;
+
+    padding:15px 25px;
+
+    border-radius:14px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    z-index:99999;
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,.18);
+
+    animation:toastIn .4s ease;
+
+}
+
+
+
+.toast-message.hide{
+
+    opacity:0;
+
+    transform:translateX(120px);
+
+    transition:.4s;
+
+}
+
+
+
+
+
+/* =========================
+   ADMIN DASHBOARD
+========================= */
+
+
+.dashboard-card{
+
+    text-align:center;
+
+}
+
+
+
+.dashboard-card h2{
+
+    font-size:42px;
+
+    color:#15803d;
+
+    margin-bottom:10px;
+
+}
+
+
+
+.dashboard-card p{
+
+    color:#64748b;
+
+    font-size:16px;
+
+}
+
+
+
+
+
+/* =========================
+   ORDER CARD
+========================= */
+
+
+.order-card{
+
+    position:relative;
+
+}
+
+
+
+.order-card h3{
+
+    color:#14532d;
+
+}
+
+
+
+.order-card hr{
+
+    border:none;
+
+    border-top:1px solid #e5e7eb;
+
+    margin:20px 0;
+
+}
+
+
+
+
+
+/* =========================
+   STATUS BADGE
+========================= */
+
+
+.status{
+
+    display:inline-flex;
+
+    padding:8px 18px;
+
+    border-radius:50px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+}
+
+
+
+.status.pending{
+
+    background:#fef3c7;
+
+    color:#92400e;
+
+}
+
+
+
+.status.delivered{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+
+
+
+
+/* =========================
+   FOOTER
+========================= */
+
+
+footer{
+
+    margin-top:70px;
+
+    padding:35px 8%;
+
+    text-align:center;
+
+    background:#14532d;
+
+    color:white;
+
+}
+
+
+
+footer p{
+
+    margin:8px 0;
+
+    opacity:.9;
+
+}
+
+
+
+
+
+/* =========================
+   LOGIN CARD
+========================= */
+
+
+.login-card{
+
+    max-width:420px;
+
+    width:100%;
+
+    margin:auto;
+
+    text-align:center;
+
+}
+
+
+
+.login-card h2{
+
+    color:#14532d;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.login-card p{
+
+    color:#64748b;
+
+    margin-bottom:20px;
+
+}
+
+
+
+
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+
+@keyframes fadeUp{
+
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(35px);
+
+    }
+
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+
+}
+
+
+
+
+
+@keyframes toastIn{
+
+
+    from{
+
+        opacity:0;
+
+        transform:translateX(120px);
+
+    }
+
+
+    to{
+
+        opacity:1;
+
+        transform:translateX(0);
+
+    }
+
+
+}
+
+
+
+
+
+/* =========================
+   MOBILE BOTTOM NAV
+========================= */
+
+
+.bottom-nav{
+
+    display:none;
+
+    position:fixed;
+
+    bottom:0;
+
+    left:0;
+
+    width:100%;
+
+    height:70px;
+
+    background:white;
+
+    border-top:1px solid #e5e7eb;
+
+    box-shadow:
+    0 -5px 20px rgba(0,0,0,.08);
+
+    z-index:9999;
+
+    justify-content:space-around;
+
+    align-items:center;
+
+}
+
+
+
+.bottom-nav a{
+
+    text-decoration:none;
+
+    color:#64748b;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+
+
+.bottom-nav a:hover{
+
+    color:#15803d;
+
+}
+
+
+
+.bottom-nav svg{
+
+    width:22px;
+
+    height:22px;
+
+    margin-bottom:5px;
+
+}
+
+
+
+
+
+/* =========================
+   IMAGE SETTINGS
+========================= */
+
+
+img{
+
+    user-select:none;
+
+    -webkit-user-drag:none;
+
+}
+
+
+
+
+
+/* =========================
+   SELECTION
+========================= */
+
+
+::selection{
+
+    background:#15803d;
+
+    color:white;
+
+}
+
+
+/*==================================================
+   KSR Dairy Foods Premium UI
+   PART 4
+==================================================*/
+
+
+/* =========================
+   TABLET RESPONSIVE
+========================= */
+
+
+@media(max-width:900px){
+
+
+header{
+
+    padding:0 5%;
+
+}
+
+
+
+.logo{
+
+    font-size:20px;
+
+}
+
+
+
+.navbar{
+
+    display:none;
+
+}
+
+
+
+.hero{
+
+    padding:90px 40px 80px;
+
+}
+
+
+
+.hero h1{
+
+    font-size:44px;
+
+}
+
+
+
+.hero p{
+
+    font-size:18px;
+
+}
+
+
+
+#products{
+
+    padding:55px 5%;
+
+}
+
+
+
+#products > h2{
+
+    font-size:32px;
+
+}
+
+
+
+.products-container{
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+    gap:22px;
+
+}
+
+
+
+.card{
+
+    padding:24px;
+
+}
+
+
+
+.card img{
+
+    height:210px;
+
+}
+
+
+
+.header-actions{
+
+    gap:10px;
+
+}
+
+
+
+}
+
+
+
+
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+
+@media(max-width:600px){
+
+
+body{
+
+    padding-bottom:80px;
+
+}
+
+
+
+/* Header */
+
+
+header{
+
+    height:68px;
+
+    padding:0 18px;
+
+}
+
+
+
+.logo{
+
+    font-size:18px;
+
+}
+
+
+
+.logo img{
+
+    width:35px;
+
+    height:35px;
+
+}
+
+
+
+.header-actions{
+
+    gap:8px;
+
+}
+
+
+
+
+
+/* Cart */
+
+
+.cart-icon{
+
+    width:42px;
+
+    height:42px;
+
+}
+
+
+
+.cart-count{
+
+    width:20px;
+
+    height:20px;
+
+    font-size:10px;
+
+}
+
+
+
+/* Hero */
+
+
+.hero{
+
+    min-height:65vh;
+
+    padding:90px 20px 70px;
+
+}
+
+
+
+.hero h1{
+
+    font-size:32px;
+
+    line-height:1.25;
+
+}
+
+
+
+.hero p{
+
+    font-size:16px;
+
+}
+
+
+
+/* Products */
+
+
+#products{
+
+    padding:40px 18px;
+
+}
+
+
+
+#products > h2{
+
+    font-size:28px;
+
+    margin-bottom:30px;
+
+}
+
+
+
+.products-container{
+
+    grid-template-columns:1fr;
+
+    gap:20px;
+
+}
+
+
+
+.card{
+
+    padding:20px;
+
+    border-radius:18px;
+
+}
+
+
+
+.card img{
+
+    height:180px;
+
+}
+
+
+
+.card h3{
+
+    font-size:21px;
+
+}
+
+
+
+.card h2{
+
+    font-size:24px;
+
+}
+
+
+
+
+
+/* Buttons */
+
+
+.cart-btn,
+.order-btn,
+button,
+.delete-btn{
+
+    padding:12px 18px;
+
+    font-size:14px;
+
+    border-radius:12px;
+
+}
+
+
+
+
+
+/* Forms */
+
+
+input,
+textarea{
+
+    padding:14px;
+
+    font-size:15px;
+
+}
+
+
+
+textarea{
+
+    min-height:100px;
+
+}
+
+
+
+
+
+/* Quantity */
+
+
+.quantity-box{
+
+    gap:14px;
+
+}
+
+
+
+.quantity-box a{
+
+    width:38px;
+
+    height:38px;
+
+}
+
+
+
+
+
+/* Toast */
+
+
+.toast-message{
+
+    left:15px;
+
+    right:15px;
+
+    top:80px;
+
+    text-align:center;
+
+}
+
+
+
+
+
+/* Bottom Navigation */
+
+
+.bottom-nav{
+
+    display:flex;
+
+}
+
+
+
+
+
+/* Footer */
+
+
+footer{
+
+    padding:25px 15px;
+
+    margin-top:40px;
+
+}
+
+
+
+footer p{
+
+    font-size:14px;
+
+}
+
+
+
+}
+
+
+
+
+
+/* =========================
+   LARGE DESKTOP
+========================= */
+
+
+@media(min-width:1200px){
+
+
+.hero h1{
+
+    font-size:64px;
+
+}
+
+
+
+.products-container{
+
+    gap:35px;
+
+}
+
+
+
+.card{
+
+    padding:32px;
+
+}
+
+
+}
+
+
+
+
+
+/* =========================
+   SMOOTH EFFECTS
+========================= */
+
+
+button,
+a,
+.card,
+.cart-icon{
+
+    -webkit-tap-highlight-color:transparent;
+
+}
+
+
+
+button:focus,
+a:focus{
+
+    outline:none;
+
+}
+
+
+/*==================================================
+   KSR Dairy Foods Premium UI
+   PART 5 - FINAL POLISH
+==================================================*/
+
+
+/* =========================
+   PREMIUM CARD EFFECT
+========================= */
+
+
+.card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-100%;
+
+    width:100%;
+
+    height:3px;
+
+    background:#22c55e;
+
+    transition:.5s;
+
+}
+
+
+.card:hover::before{
+
+    left:0;
+
+}
+
+
+
+
+
+/* =========================
+   IMAGE HOVER
+========================= */
+
+
+.card img{
+
+    transition:.4s ease;
+
+}
+
+
+.card:hover img{
+
+    transform:scale(1.05);
+
+}
+
+
+
+
+
+/* =========================
+   PREMIUM BUTTON SHINE
+========================= */
+
+
+.order-btn,
+.cart-btn,
+button{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+
+
+.order-btn::after,
+.cart-btn::after,
+button::after{
+
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:80%;
+
+    height:100%;
+
+    background:rgba(255,255,255,.25);
+
+    transform:skewX(-25deg);
+
+    transition:.5s;
+
+
+}
+
+
+
+.order-btn:hover::after,
+.cart-btn:hover::after,
+button:hover::after{
+
+
+    left:130%;
+
+
+}
+
+
+
+
+
+/* =========================
+   LOGIN CARD
+========================= */
+
+
+.login-card{
+
+    max-width:450px;
+
+    width:100%;
+
+    margin:auto;
+
+    text-align:center;
+
+}
+
+
+
+.login-card h2{
+
+    color:#14532d;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.login-card p{
+
+    margin-bottom:20px;
+
+}
+
+
+
+
+
+/* =========================
+   ADMIN PREMIUM
+========================= */
+
+
+.dashboard-card{
+
+    text-align:center;
+
+    background:
+    linear-gradient(
+    135deg,
+    #ffffff,
+    #f0fdf4
+    );
+
+}
+
+
+
+.order-card{
+
+    border-left:5px solid #15803d;
+
+}
+
+
+
+.order-card:hover{
+
+    border-left-color:#22c55e;
+
+}
+
+
+
+
+
+/* =========================
+   STATUS BADGES
+========================= */
+
+
+.status{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:8px 18px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+
+
+.status.pending{
+
+    background:#fef3c7;
+
+    color:#92400e;
+
+}
+
+
+
+.status.delivered{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+
+
+
+
+/* =========================
+   EMPTY CART
+========================= */
+
+
+.empty-cart{
+
+    text-align:center;
+
+    padding:60px 20px;
+
+}
+
+
+
+.empty-cart h2{
+
+    color:#14532d;
+
+    margin-bottom:15px;
+
+}
+
+
+
+
+
+/* =========================
+   LOADING EFFECT
+========================= */
+
+
+.loading{
+
+    width:40px;
+
+    height:40px;
+
+    border-radius:50%;
+
+    border:4px solid #dcfce7;
+
+    border-top-color:#15803d;
+
+    animation:spin 1s linear infinite;
+
+    margin:auto;
+
+}
+
+
+
+@keyframes spin{
+
+
+from{
+
+    transform:rotate(0deg);
+
+}
+
+
+to{
+
+    transform:rotate(360deg);
+
+}
+
+
+}
+
+
+
+
+
+/* =========================
+   PAGE FADE
+========================= */
+
+
+body{
+
+    animation:pageLoad .4s ease;
+
+}
+
+
+
+@keyframes pageLoad{
+
+
+from{
+
+    opacity:0;
+
+}
+
+
+to{
+
+    opacity:1;
+
+}
+
+
+}
+
+
+
+
+
+/* =========================
+   SCROLLBAR PREMIUM
+========================= */
+
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+
+
+::-webkit-scrollbar-track{
+
+    background:#f1f5f2;
+
+}
+
+
+
+::-webkit-scrollbar-thumb{
+
+    background:#15803d;
+
+    border-radius:20px;
+
+}
+
+
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#14532d;
+
+}
+
+
+
+
+
+/* =========================
+   DISABLE IMAGE DRAG
+========================= */
+
+
+img{
+
+    user-select:none;
+
+    -webkit-user-drag:none;
+
+}
+
+
+
+
+
+/* =========================
+   SELECTION COLOR
+========================= */
+
+
+::selection{
+
+    background:#15803d;
+
+    color:white;
+
+}
+
+
+
+
+
+/* =========================
+   FINAL MOBILE TOUCH
+========================= */
+
+
+@media(max-width:600px){
+
+
+.card:hover{
+
+    transform:none;
+
+}
+
+
+
+.order-btn:hover,
+.cart-btn:hover,
+button:hover{
+
+    transform:none;
+
+}
+
+
+
+.hero .order-btn{
+
+    width:90%;
+
+}
+
+
+
+}
+
+
