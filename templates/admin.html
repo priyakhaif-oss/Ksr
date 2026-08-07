@@ -39,7 +39,6 @@ Logout
 
 </a>
 
-
 </div>
 
 </header>
@@ -54,7 +53,6 @@ Logout
 <h2>
 Admin Dashboard
 </h2>
-
 
 
 
@@ -121,8 +119,8 @@ Orders List
 
 
 
-{% if orders %}
 
+{% if orders %}
 
 
 <div class="products-container">
@@ -174,9 +172,11 @@ Products
 
 
 
+
 <h2>
 ₹{{order.total}}
 </h2>
+
 
 
 
@@ -187,14 +187,14 @@ Status:
 
 {% if order.status == "Delivered" %}
 
-<strong style="color:green;">
+<strong style="color:#15803d;">
 Delivered
 </strong>
 
 
 {% else %}
 
-<strong style="color:orange;">
+<strong style="color:#d97706;">
 Pending
 </strong>
 
@@ -203,6 +203,7 @@ Pending
 
 
 </p>
+
 
 
 
@@ -240,6 +241,7 @@ Mark Delivered
 
 
 
+
 <a 
 href="/update-status/{{order._id}}/Pending"
 class="cart-btn">
@@ -252,6 +254,7 @@ Mark Pending
 
 
 <br><br>
+
 
 
 
@@ -289,10 +292,19 @@ Delete
 No Orders Found
 </h2>
 
+
+<p>
+Orders will appear here after customers place orders.
+</p>
+
+
 </div>
 
 
+
 {% endif %}
+
+
 
 
 
@@ -310,6 +322,7 @@ No Orders Found
 </p>
 
 </footer>
+
 
 
 
