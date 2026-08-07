@@ -2251,3 +2251,505 @@ button:hover{
 }
 
 
+
+/*==================================================
+ ADMIN PANEL V2 - STOCK + GRAPH + PRODUCTS
+==================================================*/
+
+
+/* =========================
+   ADMIN ACTIONS
+========================= */
+
+
+.admin-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+
+
+.admin-actions .cart-btn{
+
+    padding:11px 22px;
+
+}
+
+
+
+/* =========================
+   LOGOUT SVG ICON
+========================= */
+
+
+.logout-btn svg{
+
+    width:22px;
+
+    height:22px;
+
+}
+
+
+
+.logout-btn{
+
+    box-shadow:
+    0 8px 20px rgba(220,38,38,.25);
+
+}
+
+
+
+
+
+/* =========================
+   ADMIN STAT CARDS
+========================= */
+
+
+.dashboard-card{
+
+    min-height:150px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+
+.dashboard-card h2{
+
+    font-size:38px;
+
+    font-weight:800;
+
+}
+
+
+
+
+
+/* =========================
+   SALES CHART CARD
+========================= */
+
+
+canvas{
+
+    max-height:350px;
+
+    margin-top:20px;
+
+}
+
+
+
+
+
+/* =========================
+   PRODUCT ADMIN CARD
+========================= */
+
+
+.product-card{
+
+    position:relative;
+
+}
+
+
+
+.product-card img{
+
+    border-radius:18px;
+
+}
+
+
+
+.product-card form{
+
+    margin-top:20px;
+
+}
+
+
+
+.product-card input{
+
+    margin-bottom:15px;
+
+}
+
+
+
+
+
+/* =========================
+   STOCK BADGES
+========================= */
+
+
+.stock-success{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+    padding:8px 15px;
+
+    border-radius:50px;
+
+    font-weight:700;
+
+}
+
+
+
+.stock-danger{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+    padding:8px 15px;
+
+    border-radius:50px;
+
+    font-weight:700;
+
+}
+
+
+
+
+
+/* =========================
+   OUT OF STOCK BUTTON
+========================= */
+
+
+button:disabled{
+
+    background:#9ca3af;
+
+    cursor:not-allowed;
+
+    transform:none;
+
+    box-shadow:none;
+
+}
+
+
+
+
+
+/* =========================
+   ADMIN FORM
+========================= */
+
+
+.admin-form{
+
+    max-width:650px;
+
+    margin:auto;
+
+}
+
+
+
+.admin-form input,
+.admin-form textarea{
+
+    background:#fff;
+
+}
+
+
+
+
+
+/* =========================
+   ADMIN MOBILE
+========================= */
+
+
+@media(max-width:600px){
+
+
+.admin-actions .cart-btn{
+
+    display:none;
+
+}
+
+
+
+.dashboard-card h2{
+
+    font-size:32px;
+
+}
+
+
+
+canvas{
+
+    height:220px!important;
+
+}
+
+
+}
+
+
+
+/*==================================================
+   STOCK SYSTEM + PRODUCT STATUS UI
+==================================================*/
+
+
+/* =========================
+   PRODUCT STOCK BADGE
+========================= */
+
+
+.product-stock{
+
+    position:absolute;
+
+    top:15px;
+
+    right:15px;
+
+    padding:8px 16px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:800;
+
+    z-index:5;
+
+}
+
+
+
+.product-stock.available{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+
+
+.product-stock.out{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+}
+
+
+
+
+
+/* =========================
+   PRODUCT IMAGE WRAPPER
+========================= */
+
+
+.product-image-box{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:20px;
+
+}
+
+
+
+
+
+/* =========================
+   DISABLED CART BUTTON
+========================= */
+
+
+.out-stock-btn{
+
+    background:#9ca3af!important;
+
+    color:white;
+
+    cursor:not-allowed!important;
+
+    pointer-events:none;
+
+}
+
+
+
+
+
+/* =========================
+   ADMIN PRODUCT TABLE
+========================= */
+
+
+.admin-product-box{
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(280px,1fr));
+
+    gap:25px;
+
+}
+
+
+
+
+
+.admin-product-box .card{
+
+    text-align:center;
+
+}
+
+
+
+
+
+/* =========================
+   STOCK UPDATE INPUT
+========================= */
+
+
+.stock-input{
+
+    display:flex;
+
+    gap:10px;
+
+    align-items:center;
+
+}
+
+
+
+.stock-input input{
+
+    margin:0;
+
+}
+
+
+
+
+
+/* =========================
+   GRAPH CONTAINER
+========================= */
+
+
+.chart-card{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:22px;
+
+    box-shadow:
+
+    0 12px 35px rgba(0,0,0,.08);
+
+    margin-bottom:40px;
+
+}
+
+
+
+
+
+/* =========================
+   ADMIN TOP HEADER
+========================= */
+
+
+.admin-actions a{
+
+    transition:.3s ease;
+
+}
+
+
+
+.admin-actions a:hover{
+
+    transform:translateY(-3px);
+
+}
+
+
+
+
+
+/* =========================
+   MOBILE ADMIN PRODUCT
+========================= */
+
+
+@media(max-width:600px){
+
+
+.admin-product-box{
+
+    grid-template-columns:1fr;
+
+}
+
+
+
+.stock-input{
+
+    flex-direction:column;
+
+}
+
+
+
+.stock-input input,
+.stock-input button{
+
+    width:100%;
+
+}
+
+
+}
+
+
