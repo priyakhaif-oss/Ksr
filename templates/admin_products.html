@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>KSR Dairy Foods | Admin Products</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<a href="/admin" class="logo">
+
+KSR Dairy Foods Admin
+
+</a>
+
+
+<a href="/admin-logout" class="delete-btn">
+
+Logout
+
+</a>
+
+
+</header>
+
+
+
+
+<section id="products">
+
+
+<h2>
+Manage Products
+</h2>
+
+
+
+
+<div class="card">
+
+
+<h3>
+Add New Product
+</h3>
+
+
+
+<form 
+action="/add-product"
+method="POST"
+enctype="multipart/form-data">
+
+
+
+<input
+
+type="text"
+
+name="name"
+
+placeholder="Product Name"
+
+required
+
+>
+
+
+
+<input
+
+type="number"
+
+name="price"
+
+placeholder="Price"
+
+required
+
+>
+
+
+
+<textarea
+
+name="description"
+
+placeholder="Product Description"
+
+required></textarea>
+
+
+
+
+<input
+
+type="file"
+
+name="image"
+
+accept="image/*"
+
+required
+
+>
+
+
+
+
+<button type="submit">
+
+Add Product
+
+</button>
+
+
+
+</form>
+
+
+
+</div>
+
+
+
+
+
+
+
+<h2 style="margin-top:40px;">
+Products List
+</h2>
+
+
+
+
+
+<div class="products-container">
+
+
+
+{% for product in products %}
+
+
+
+
+<div class="card">
+
+
+<img 
+src="{{product.image}}"
+alt="{{product.name}}"
+>
+
+
+
+<h3>
+
+{{product.name}}
+
+</h3>
+
+
+<p>
+
+₹{{product.price}}
+
+</p>
+
+
+<p>
+
+{{product.description}}
+
+</p>
+
+
+
+
+<a
+
+href="/delete-product/{{product._id}}"
+
+class="delete-btn"
+
+onclick="return confirm('Delete product?')">
+
+Delete
+
+</a>
+
+
+
+</div>
+
+
+
+{% endfor %}
+
+
+
+</div>
+
+
+
+
+
+</section>
+
+
+
+
+
+<footer>
+
+<p>
+© 2026 KSR Dairy Foods
+</p>
+
+</footer>
+
+
+
+</body>
+
+</html>
