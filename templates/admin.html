@@ -19,9 +19,14 @@
 
 <header>
 
+
 <div class="logo">
 🥛 KSR Dairy Foods Admin
 </div>
+
+
+
+<div>
 
 
 <a href="/" class="cart-btn">
@@ -29,8 +34,15 @@
 </a>
 
 
-</header>
+<a href="/admin-logout" class="cart-btn">
+🚪 Logout
+</a>
 
+
+</div>
+
+
+</header>
 
 
 
@@ -86,6 +98,9 @@
 
 
 
+<hr>
+
+
 
 <h3>
 🥛 Products
@@ -106,11 +121,9 @@
 
 
 
-
 <h2>
 💰 ₹{{order.total}}
 </h2>
-
 
 
 
@@ -120,11 +133,23 @@
 
 Status:
 
-<strong>
+{% if order.status == "Delivered" %}
 
-{{order.status}}
-
+<strong style="color:green;">
+✅ Delivered
 </strong>
+
+
+{% else %}
+
+
+<strong style="color:orange;">
+⏳ Pending
+</strong>
+
+
+{% endif %}
+
 
 </p>
 
@@ -132,12 +157,27 @@ Status:
 
 
 
+{% if order.date %}
+
+<p>
+📅 {{order.date}}
+</p>
+
+{% endif %}
+
+
+
+
+
+<br>
+
+
 
 <a 
 href="/update-status/{{order._id}}/Delivered"
 class="order-btn">
 
-✅ Mark Delivered
+✅ Delivered
 
 </a>
 
@@ -154,6 +194,22 @@ href="/update-status/{{order._id}}/Pending"
 class="cart-btn">
 
 ⏳ Pending
+
+</a>
+
+
+
+<br><br>
+
+
+
+
+<a 
+href="/delete-order/{{order._id}}"
+class="cart-btn"
+onclick="return confirm('Delete this order?')">
+
+🗑 Delete
 
 </a>
 
