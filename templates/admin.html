@@ -26,7 +26,7 @@
 
 
 
-<div>
+<div class="admin-actions">
 
 
 <a href="/" class="cart-btn">
@@ -34,8 +34,13 @@
 </a>
 
 
-<a href="/admin-logout" class="cart-btn">
-🚪 Logout
+
+<a href="/admin-logout" 
+class="logout-btn"
+title="Logout">
+
+🚪
+
 </a>
 
 
@@ -102,9 +107,11 @@
 
 
 
+
 <h3>
 🥛 Products
 </h3>
+
 
 
 
@@ -124,6 +131,7 @@
 <h2>
 💰 ₹{{order.total}}
 </h2>
+
 
 
 
@@ -160,7 +168,7 @@ Status:
 {% if order.date %}
 
 <p>
-📅 {{order.date}}
+📅 {{order.date.strftime("%d-%m-%Y %I:%M %p")}}
 </p>
 
 {% endif %}
@@ -170,6 +178,7 @@ Status:
 
 
 <br>
+
 
 
 
@@ -206,10 +215,10 @@ class="cart-btn">
 
 <a 
 href="/delete-order/{{order._id}}"
-class="cart-btn"
+class="delete-btn"
 onclick="return confirm('Delete this order?')">
 
-🗑 Delete
+🗑
 
 </a>
 
