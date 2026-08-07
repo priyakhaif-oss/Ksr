@@ -4,8 +4,6 @@
 document.addEventListener("DOMContentLoaded", function(){
 
 
-    // Add to cart button animation
-
     const buttons = document.querySelectorAll("button");
 
 
@@ -15,27 +13,7 @@ document.addEventListener("DOMContentLoaded", function(){
         button.addEventListener("click", function(){
 
 
-            const oldText = button.innerHTML;
-
-
-            button.innerHTML = "Added ✓";
-
-
-            button.style.transform = "scale(0.95)";
-
-
-
-            setTimeout(function(){
-
-
-                button.innerHTML = oldText;
-
-
-                button.style.transform = "scale(1)";
-
-
-            },1200);
-
+            showMessage("🥛 Product added to cart successfully! 🛒");
 
 
         });
@@ -45,41 +23,47 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
-    // Smooth scroll for Order Now button
-
-    const orderBtn = document.querySelector(".order-btn");
-
-
-    if(orderBtn){
-
-
-        orderBtn.addEventListener("click", function(e){
-
-
-            const target = document.querySelector("#products");
-
-
-            if(target){
-
-
-                e.preventDefault();
-
-
-                target.scrollIntoView({
-
-                    behavior:"smooth"
-
-                });
-
-
-            }
-
-
-        });
-
-
-    }
-
-
-
 });
+
+
+
+// Pretty Toast Message
+
+function showMessage(message){
+
+
+    const toast = document.createElement("div");
+
+
+    toast.innerHTML = message;
+
+
+    toast.style.position = "fixed";
+    toast.style.top = "80px";
+    toast.style.right = "20px";
+    toast.style.background = "#16a34a";
+    toast.style.color = "white";
+    toast.style.padding = "15px 25px";
+    toast.style.borderRadius = "30px";
+    toast.style.fontSize = "16px";
+    toast.style.fontWeight = "bold";
+    toast.style.boxShadow = "0 10px 25px rgba(0,0,0,0.2)";
+    toast.style.zIndex = "9999";
+    toast.style.animation = "slideIn .3s ease";
+
+
+    document.body.appendChild(toast);
+
+
+
+    setTimeout(function(){
+
+
+        toast.remove();
+
+
+    },2500);
+
+
+
+}
