@@ -35,19 +35,86 @@ header{
 }
 
 
+
+.admin-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+
+
+/* Buttons */
+
 .cart-btn{
+
     text-decoration:none;
+
     background:#16a34a;
+
     color:white;
+
     padding:12px 24px;
+
     border-radius:30px;
+
     font-weight:bold;
+
     transition:.3s;
+
 }
 
 
 .cart-btn:hover{
+
     background:#166534;
+
+}
+
+
+
+
+.logout-btn{
+
+    width:45px;
+
+    height:45px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+    background:#dc2626;
+
+    color:white;
+
+
+    border-radius:50%;
+
+
+    text-decoration:none;
+
+    font-size:22px;
+
+    transition:.3s;
+
+}
+
+
+
+.logout-btn:hover{
+
+    background:#991b1b;
+
+    transform:scale(1.1);
+
 }
 
 
@@ -55,35 +122,60 @@ header{
 /* Hero */
 
 .hero{
+
     min-height:65vh;
+
     display:flex;
+
     flex-direction:column;
+
     justify-content:center;
+
     align-items:center;
+
     text-align:center;
+
     padding:30px;
 
+
     background:
+
     linear-gradient(
+
     180deg,
+
     #ffffff,
+
     #ecfdf5
+
     );
+
 }
+
 
 
 .hero h1{
+
     font-size:48px;
+
     color:#14532d;
+
     max-width:750px;
+
     line-height:1.2;
+
 }
 
 
+
 .hero p{
+
     margin:20px 0;
+
     font-size:21px;
+
     color:#555;
+
 }
 
 
@@ -91,7 +183,9 @@ header{
 .order-btn{
 
     display:inline-block;
+
     background:#16a34a;
+
     color:white;
 
     padding:15px 35px;
@@ -105,6 +199,7 @@ header{
     font-weight:bold;
 
     transition:.3s;
+
 }
 
 
@@ -118,11 +213,13 @@ header{
 
 /* Products */
 
+
 #products{
 
     padding:60px 8%;
 
 }
+
 
 
 #products > h2{
@@ -144,6 +241,7 @@ header{
     display:grid;
 
     grid-template-columns:
+
     repeat(auto-fit,minmax(260px,1fr));
 
     gap:30px;
@@ -152,7 +250,8 @@ header{
 
 
 
-/* Product Card */
+/* Cards */
+
 
 .card{
 
@@ -165,11 +264,13 @@ header{
     text-align:center;
 
     box-shadow:
+
     0 10px 30px rgba(0,0,0,.08);
 
     transition:.3s;
 
 }
+
 
 
 .card:hover{
@@ -226,8 +327,52 @@ header{
 
 
 
+/* Delete Button */
 
-/* Buttons */
+
+.delete-btn{
+
+    width:45px;
+
+    height:45px;
+
+    display:inline-flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+
+    background:#dc2626;
+
+    color:white;
+
+
+    border-radius:50%;
+
+
+    text-decoration:none;
+
+    font-size:20px;
+
+    transition:.3s;
+
+}
+
+
+
+.delete-btn:hover{
+
+    background:#991b1b;
+
+    transform:scale(1.1);
+
+}
+
+
+
+/* Normal Button */
+
 
 button{
 
@@ -293,8 +438,8 @@ textarea:focus{
 
 
 
-
 /* Footer */
+
 
 footer{
 
@@ -313,6 +458,7 @@ footer{
 
 
 /* Mobile */
+
 
 @media(max-width:600px){
 
@@ -338,6 +484,15 @@ footer{
 }
 
 
+.logout-btn{
+
+    width:40px;
+
+    height:40px;
+
+}
+
+
 .card img{
 
     width:150px;
@@ -356,16 +511,26 @@ footer{
 
 }
 
+
 @keyframes slideIn{
 
-    from{
-        transform:translateX(100px);
-        opacity:0;
-    }
 
-    to{
-        transform:translateX(0);
-        opacity:1;
-    }
+from{
+
+    transform:translateX(100px);
+
+    opacity:0;
+
+}
+
+
+to{
+
+    transform:translateX(0);
+
+    opacity:1;
+
+}
+
 
 }
