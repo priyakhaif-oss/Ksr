@@ -143,6 +143,16 @@ def get_orders_collection():
 
 
 
+def get_products_collection():
+
+    client = MongoClient(mongo_uri)
+
+    db = client["ksr_dairy"]
+
+    return db["products"]
+
+
+
 
 def get_products_collection():
 
@@ -273,20 +283,16 @@ create_default_products()
 @app.route("/")
 def home():
 
-
-    products = get_all_products()
+    products = list(
+        get_products_collection().find()
+    )
 
 
     return render_template(
-
         "index.html",
-
         products=products,
-
         categories=CATEGORIES
-
     )
-
 
 
 
@@ -1090,11 +1096,9 @@ def admin_products():
 @app.route("/add-product", methods=["POST"])
 def add_product():
 
-
     if not session.get("admin"):
 
         return redirect("/admin")
-
 
 
     name = request.form.get("name")
@@ -1104,30 +1108,25 @@ def add_product():
     description = request.form.get("description")
 
 
-
-    image_file = request.files.get("image")
-
+    image = request.files.get("image")
 
 
     image_path = "/static/images/default.png"
 
 
 
-    if image_file and allowed_file(image_file.filename):
-
+    if image and allowed_file(image.filename):
 
         filename = secure_filename(
-            image_file.filename
+            image.filename
         )
 
 
-        image_file.save(
-
+        image.save(
             os.path.join(
                 app.config["UPLOAD_FOLDER"],
                 filename
             )
-
         )
 
 
@@ -1135,10 +1134,7 @@ def add_product():
 
 
 
-
-
     product = {
-
 
         "name":name,
 
@@ -1151,19 +1147,10 @@ def add_product():
     }
 
 
-
-
     get_products_collection().insert_one(product)
 
 
-
-    return redirect(
-        "/admin-products"
-    )
-
-
-
-
+    return redirect("/admin-products")
 
 
 
