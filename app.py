@@ -6,13 +6,16 @@ from werkzeug.utils import secure_filename
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
+from bson.errors import InvalidId
 
 
 load_dotenv()
 
 
 
-# ================= APP CONFIG =================
+# ==================================================
+# APP CONFIG
+# ==================================================
 
 app = Flask(__name__)
 
@@ -31,7 +34,9 @@ app.permanent_session_lifetime = timedelta(
 
 
 
-# ================= IMAGE UPLOAD =================
+# ==================================================
+# IMAGE UPLOAD CONFIG
+# ==================================================
 
 UPLOAD_FOLDER = "static/uploads"
 
@@ -55,18 +60,14 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 
 
+
 def allowed_file(filename):
 
     return (
-
         "." in filename
-
         and
-
         filename.rsplit(".",1)[1].lower()
-
         in ALLOWED_EXTENSIONS
-
     )
 
 
@@ -74,11 +75,12 @@ def allowed_file(filename):
 
 
 
-# ================= BRANDING =================
 
+# ==================================================
+# BRANDING
+# ==================================================
 
 SITE_NAME = "KSR Dairy Foods"
-
 
 SITE_TAGLINE = "Fresh Milk Delivered To Your Doorstep"
 
@@ -97,11 +99,8 @@ def inject_brand():
 
 
     cart_count = sum(
-
-        item["qty"]
-
+        item.get("qty",0)
         for item in cart
-
     )
 
 
@@ -120,8 +119,11 @@ def inject_brand():
 
 
 
-# ================= ADMIN LOGIN =================
 
+
+# ==================================================
+# ADMIN LOGIN
+# ==================================================
 
 ADMIN_USERNAME = "ksr"
 
@@ -133,12 +135,14 @@ ADMIN_PASSWORD = "123"
 
 
 
-# ================= DATABASE =================
-
+# ==================================================
+# DATABASE
+# ==================================================
 
 mongo_uri = os.environ.get(
     "MONGO_URI"
 )
+
 
 
 
@@ -149,7 +153,6 @@ def get_database():
         mongo_uri
     )
 
-
     return client["ksr_dairy"]
 
 
@@ -158,9 +161,7 @@ def get_database():
 
 def get_orders_collection():
 
-    db = get_database()
-
-    return db["orders"]
+    return get_database()["orders"]
 
 
 
@@ -168,9 +169,7 @@ def get_orders_collection():
 
 def get_products_collection():
 
-    db = get_database()
-
-    return db["products"]
+    return get_database()["products"]
 
 
 
@@ -178,15 +177,14 @@ def get_products_collection():
 
 
 
-
-# ================= DEFAULT PRODUCTS =================
-
+# ==================================================
+# DEFAULT PRODUCTS
+# ==================================================
 
 DEFAULT_PRODUCTS = [
 
 
     {
-
 
         "name":"Cow Milk",
 
@@ -205,7 +203,6 @@ DEFAULT_PRODUCTS = [
 
     {
 
-
         "name":"Buffalo Milk",
 
         "price":80,
@@ -222,7 +219,6 @@ DEFAULT_PRODUCTS = [
 
 
     {
-
 
         "name":"Premium Buffalo Milk",
 
@@ -266,6 +262,7 @@ def create_default_products():
 
 
 
+
 def get_all_products():
 
 
@@ -275,6 +272,11 @@ def get_all_products():
 
         .find()
 
+        .sort(
+            "_id",
+            -1
+        )
+
     )
 
 
@@ -283,8 +285,9 @@ def get_all_products():
 
 
 
-# ================= CATEGORIES =================
-
+# ==================================================
+# CATEGORY LIST
+# ==================================================
 
 CATEGORIES = [
 
@@ -301,32 +304,28 @@ CATEGORIES = [
 
 
 
-# ================= STARTUP =================
 
+# ==================================================
+# STARTUP
+# ==================================================
 
 create_default_products()
 
 
-
-# ================= HOME =================
-
+# ==================================================
+# HOME PAGE
+# ==================================================
 
 @app.route("/")
 def home():
 
-
     products = get_all_products()
 
 
-
     return render_template(
-
         "index.html",
-
         products=products,
-
         categories=CATEGORIES
-
     )
 
 
@@ -335,17 +334,15 @@ def home():
 
 
 
-# ================= PROFILE =================
-
+# ==================================================
+# PROFILE
+# ==================================================
 
 @app.route("/profile")
 def profile():
 
-
     return render_template(
-
         "profile.html"
-
     )
 
 
@@ -354,8 +351,9 @@ def profile():
 
 
 
-# ================= ADD CART =================
-
+# ==================================================
+# ADD TO CART
+# ==================================================
 
 @app.route("/add-cart", methods=["POST"])
 def add_cart():
@@ -367,15 +365,27 @@ def add_cart():
 
 
 
-    product = get_products_collection().find_one(
+    try:
 
-        {
+        product = get_products_collection().find_one(
+            {
+                "_id":ObjectId(product_id)
+            }
+        )
 
-            "_id":ObjectId(product_id)
 
-        }
+    except InvalidId:
 
-    )
+
+        return jsonify({
+
+            "status":"error",
+
+            "message":"Invalid Product"
+
+        })
+
+
 
 
 
@@ -396,11 +406,8 @@ def add_cart():
 
 
     stock = product.get(
-
         "stock",
-
         0
-
     )
 
 
@@ -412,7 +419,7 @@ def add_cart():
 
             "status":"out",
 
-            "message":"Out of Stock"
+            "message":"Out Of Stock"
 
         })
 
@@ -423,39 +430,25 @@ def add_cart():
 
 
     cart = session.get(
-
         "cart",
-
         []
-
     )
 
 
 
-
-
-    added = False
-
-
+    found = False
 
 
 
     for item in cart:
 
 
+
         if item["id"] == product_id:
 
 
-            if item["qty"] < stock:
 
-
-                item["qty"] += 1
-
-
-                added = True
-
-
-            else:
+            if item["qty"] >= stock:
 
 
                 return jsonify({
@@ -467,6 +460,11 @@ def add_cart():
                 })
 
 
+
+            item["qty"] += 1
+
+            found = True
+
             break
 
 
@@ -474,7 +472,7 @@ def add_cart():
 
 
 
-    if not added:
+    if not found:
 
 
         cart.append({
@@ -495,9 +493,8 @@ def add_cart():
 
 
 
+
     session["cart"] = cart
-
-
 
 
 
@@ -516,12 +513,12 @@ def add_cart():
 
 
 
-# ================= CART =================
-
+# ==================================================
+# CART PAGE
+# ==================================================
 
 @app.route("/cart")
 def cart():
-
 
     return cart_page()
 
@@ -534,11 +531,8 @@ def cart_page():
 
 
     cart = session.get(
-
         "cart",
-
         []
-
     )
 
 
@@ -570,48 +564,60 @@ def cart_page():
 
 
 
-# ================= INCREASE =================
-
+# ==================================================
+# INCREASE CART QUANTITY
+# ==================================================
 
 @app.route("/increase/<id>")
 def increase(id):
 
 
     cart = session.get(
-
         "cart",
-
         []
-
     )
 
 
 
-    product = get_products_collection().find_one(
+    try:
 
-        {
+        product = get_products_collection().find_one(
+            {
+                "_id":ObjectId(id)
+            }
+        )
 
-            "_id":ObjectId(id)
 
-        }
+    except InvalidId:
 
-    )
+
+        return redirect("/cart")
+
+
 
 
 
     for item in cart:
 
 
+
         if item["id"] == id:
 
 
-            if product and item["qty"] < product.get("stock",0):
 
+            current_stock = product.get(
+                "stock",
+                0
+            )
+
+
+            if item["qty"] < current_stock:
 
                 item["qty"] += 1
 
 
             break
+
 
 
 
@@ -629,19 +635,18 @@ def increase(id):
 
 
 
-# ================= DECREASE =================
 
+# ==================================================
+# DECREASE CART QUANTITY
+# ==================================================
 
 @app.route("/decrease/<id>")
 def decrease(id):
 
 
     cart = session.get(
-
         "cart",
-
         []
-
     )
 
 
@@ -649,7 +654,9 @@ def decrease(id):
     for item in cart:
 
 
+
         if item["id"] == id:
+
 
 
             if item["qty"] > 1:
@@ -669,6 +676,8 @@ def decrease(id):
 
 
 
+
+
     session["cart"] = cart
 
 
@@ -681,19 +690,18 @@ def decrease(id):
 
 
 
-# ================= REMOVE =================
 
+# ==================================================
+# REMOVE CART ITEM
+# ==================================================
 
 @app.route("/remove/<id>")
 def remove(id):
 
 
     cart = session.get(
-
         "cart",
-
         []
-
     )
 
 
@@ -718,19 +726,22 @@ def remove(id):
 
 
 
-# ================= CHECKOUT =================
 
+
+
+
+
+# ==================================================
+# CHECKOUT PAGE
+# ==================================================
 
 @app.route("/checkout")
 def checkout():
 
 
     cart = session.get(
-
         "cart",
-
         []
-
     )
 
 
@@ -771,19 +782,17 @@ def checkout():
 
 
 
-# ================= PLACE ORDER =================
-
+# ==================================================
+# PLACE ORDER
+# ==================================================
 
 @app.route("/place-order", methods=["POST"])
 def place_order():
 
 
     cart = session.get(
-
         "cart",
-
         []
-
     )
 
 
@@ -799,30 +808,31 @@ def place_order():
 
 
     name = request.form.get(
-
         "name"
-
     )
 
 
     phone = request.form.get(
-
         "phone"
-
     )
 
 
     address = request.form.get(
-
         "address"
-
     )
 
 
 
 
 
-    if not phone or not phone.isdigit() or len(phone) != 10:
+
+    if (
+        not phone
+        or
+        not phone.isdigit()
+        or
+        len(phone) != 10
+    ):
 
 
         total = sum(
@@ -851,28 +861,27 @@ def place_order():
 
 
 
-
-    # ===== FINAL STOCK CHECK =====
-
+    # STOCK FINAL CHECK
 
     for item in cart:
+
 
 
         product = get_products_collection().find_one(
 
             {
-
                 "_id":ObjectId(item["id"])
-
             }
 
         )
+
 
 
         if not product:
 
 
             return redirect("/cart")
+
 
 
 
@@ -894,7 +903,7 @@ def place_order():
 
                 ),
 
-                error=f"{item['name']} stock not available"
+                error=f"{item['name']} stock unavailable"
 
             )
 
@@ -917,30 +926,22 @@ def place_order():
 
 
 
-
     order = {
 
 
         "name":name,
 
-
         "phone":phone,
-
 
         "address":address,
 
-
         "products":cart,
-
 
         "total":total,
 
-
         "status":"Pending",
 
-
         "date":datetime.now()
-
 
     }
 
@@ -949,11 +950,10 @@ def place_order():
 
 
 
-
-    # ===== REDUCE STOCK =====
-
+    # REDUCE STOCK
 
     for item in cart:
+
 
 
         get_products_collection().update_one(
@@ -969,14 +969,13 @@ def place_order():
 
                 "$inc":{
 
-                    "stock": -item["qty"]
+                    "stock":-item["qty"]
 
                 }
 
             }
 
         )
-
 
 
 
@@ -993,7 +992,6 @@ def place_order():
 
 
 
-
     session.clear()
 
 
@@ -1002,16 +1000,12 @@ def place_order():
 
         "success.html"
 
-    )
+)
 
 
-
-
-
-
-
-# ================= ADMIN DASHBOARD =================
-
+# ==================================================
+# ADMIN DASHBOARD
+# ==================================================
 
 @app.route("/admin")
 def admin():
@@ -1021,12 +1015,8 @@ def admin():
 
 
         return render_template(
-
             "admin_login.html"
-
         )
-
-
 
 
 
@@ -1037,15 +1027,11 @@ def admin():
         .find()
 
         .sort(
-
             "date",
-
             -1
-
         )
 
     )
-
 
 
 
@@ -1055,17 +1041,13 @@ def admin():
 
 
 
-
     total_orders = len(orders)
-
 
 
 
     pending_orders = len([
 
-        o
-
-        for o in orders
+        o for o in orders
 
         if o.get("status") == "Pending"
 
@@ -1074,12 +1056,9 @@ def admin():
 
 
 
-
     delivered_orders = len([
 
-        o
-
-        for o in orders
+        o for o in orders
 
         if o.get("status") == "Delivered"
 
@@ -1097,13 +1076,24 @@ def admin():
 
     out_of_stock = len([
 
-        p
-
-        for p in products
+        p for p in products
 
         if p.get("stock",0) <= 0
 
     ])
+
+
+
+
+
+    low_stock = len([
+
+        p for p in products
+
+        if 0 < p.get("stock",0) <= 10
+
+    ])
+
 
 
 
@@ -1118,6 +1108,7 @@ def admin():
         if o.get("status")=="Delivered"
 
     )
+
 
 
 
@@ -1141,14 +1132,22 @@ def admin():
 
         out_of_stock=out_of_stock,
 
+        low_stock=low_stock,
+
         total_revenue=total_revenue
 
     )
 
 
 
-# ================= ADMIN LOGIN =================
 
+
+
+
+
+# ==================================================
+# ADMIN LOGIN
+# ==================================================
 
 @app.route("/admin-login", methods=["POST"])
 def admin_login():
@@ -1166,13 +1165,9 @@ def admin_login():
 
 
     if (
-
         username == ADMIN_USERNAME
-
         and
-
         password == ADMIN_PASSWORD
-
     ):
 
 
@@ -1181,11 +1176,7 @@ def admin_login():
         session.permanent = True
 
 
-        return redirect(
-
-            "/admin"
-
-        )
+        return redirect("/admin")
 
 
 
@@ -1205,25 +1196,204 @@ def admin_login():
 
 
 
-# ================= ADMIN LOGOUT =================
-
+# ==================================================
+# ADMIN LOGOUT
+# ==================================================
 
 @app.route("/admin-logout")
 def admin_logout():
 
 
     session.pop(
-
         "admin",
-
         None
+    )
+
+
+    return redirect("/admin")
+
+
+
+
+
+
+
+
+# ==================================================
+# ADD PRODUCT
+# ==================================================
+
+@app.route("/add-product", methods=["POST"])
+def add_product():
+
+
+    if not session.get("admin"):
+
+
+        return redirect("/admin")
+
+
+
+
+
+    name = request.form.get(
+        "name"
+    )
+
+
+    price = request.form.get(
+        "price"
+    )
+
+
+    description = request.form.get(
+        "description"
+    )
+
+
+    stock = request.form.get(
+        "stock"
+    )
+
+
+    category = request.form.get(
+        "category",
+        "Milk"
+    )
+
+
+
+    image = request.files.get(
+        "image"
+    )
+
+
+
+    image_path = "/static/images/default.png"
+
+
+
+
+
+
+    if image and allowed_file(image.filename):
+
+
+        filename = secure_filename(
+            image.filename
+        )
+
+
+        image.save(
+
+            os.path.join(
+
+                app.config["UPLOAD_FOLDER"],
+
+                filename
+
+            )
+
+        )
+
+
+        image_path = "/static/uploads/" + filename
+
+
+
+
+
+
+    product = {
+
+
+        "name":name,
+
+        "price":int(price),
+
+        "description":description,
+
+        "image":image_path,
+
+        "stock":int(stock),
+
+        "category":category,
+
+        "created":datetime.now()
+
+    }
+
+
+
+
+
+
+    get_products_collection().insert_one(
+
+        product
 
     )
 
 
-    return redirect(
 
-        "/admin"
+    return redirect("/admin")
+
+
+
+
+
+
+
+
+# ==================================================
+# EDIT PRODUCT PAGE
+# ==================================================
+
+@app.route("/edit-product/<id>")
+def edit_product(id):
+
+
+    if not session.get("admin"):
+
+
+        return redirect("/admin")
+
+
+
+    try:
+
+        product = get_products_collection().find_one(
+
+            {
+                "_id":ObjectId(id)
+            }
+
+        )
+
+
+    except InvalidId:
+
+
+        return redirect("/admin")
+
+
+
+
+
+    if not product:
+
+
+        return redirect("/admin")
+
+
+
+
+
+    return render_template(
+
+        "edit_product.html",
+
+        product=product
 
     )
 
@@ -1234,11 +1404,219 @@ def admin_logout():
 
 
 
-# ================= UPDATE ORDER STATUS =================
+# ==================================================
+# UPDATE PRODUCT
+# ==================================================
 
+@app.route("/update-product/<id>", methods=["POST"])
+def update_product(id):
+
+
+    if not session.get("admin"):
+
+
+        return redirect("/admin")
+
+
+
+    try:
+
+        product_id = ObjectId(id)
+
+
+    except InvalidId:
+
+
+        return redirect("/admin")
+
+
+
+
+
+    name = request.form.get(
+        "name"
+    )
+
+
+    price = request.form.get(
+        "price"
+    )
+
+
+    description = request.form.get(
+        "description"
+    )
+
+
+    category = request.form.get(
+        "category"
+    )
+
+
+
+    get_products_collection().update_one(
+
+        {
+            "_id":product_id
+        },
+
+
+        {
+            "$set":{
+
+                "name":name,
+
+                "price":int(price),
+
+                "description":description,
+
+                "category":category
+
+            }
+
+        }
+
+    )
+
+
+
+    return redirect("/admin")
+
+
+
+
+
+
+
+
+# ==================================================
+# UPDATE STOCK
+# ==================================================
+
+@app.route("/update-stock/<id>", methods=["POST"])
+def update_stock(id):
+
+
+    if not session.get("admin"):
+
+
+        return redirect("/admin")
+
+
+
+    try:
+
+        product_id = ObjectId(id)
+
+
+    except InvalidId:
+
+
+        return redirect("/admin")
+
+
+
+
+
+    stock = request.form.get(
+        "stock"
+    )
+
+
+
+    if stock is None:
+
+
+        return redirect("/admin")
+
+
+
+
+
+    get_products_collection().update_one(
+
+        {
+            "_id":product_id
+        },
+
+
+        {
+
+            "$set":{
+
+                "stock":int(stock)
+
+            }
+
+        }
+
+    )
+
+
+
+    return redirect("/admin")
+
+
+
+
+
+
+
+
+# ==================================================
+# DELETE PRODUCT
+# ==================================================
+
+@app.route("/delete-product/<id>")
+def delete_product(id):
+
+
+    if not session.get("admin"):
+
+
+        return redirect("/admin")
+
+
+
+    try:
+
+        product_id = ObjectId(id)
+
+
+    except InvalidId:
+
+
+        return redirect("/admin")
+
+
+
+
+
+    get_products_collection().delete_one(
+
+        {
+            "_id":product_id
+        }
+
+    )
+
+
+    return redirect("/admin")
+
+
+
+# ==================================================
+# UPDATE ORDER STATUS
+# ==================================================
 
 @app.route("/update-status/<id>/<status>")
-def update_status(id,status):
+def update_status(id, status):
+
+
+    if not session.get("admin"):
+
+        return redirect("/admin")
+
 
 
     if status not in [
@@ -1249,8 +1627,19 @@ def update_status(id,status):
 
     ]:
 
+        return redirect("/admin")
+
+
+
+    try:
+
+        order_id = ObjectId(id)
+
+
+    except InvalidId:
 
         return redirect("/admin")
+
 
 
 
@@ -1259,7 +1648,7 @@ def update_status(id,status):
 
         {
 
-            "_id":ObjectId(id)
+            "_id":order_id
 
         },
 
@@ -1287,42 +1676,26 @@ def update_status(id,status):
 
 
 
-# ================= DELETE ORDER =================
-
+# ==================================================
+# DELETE ORDER + RESTORE STOCK
+# ==================================================
 
 @app.route("/delete-order/<id>")
 def delete_order(id):
 
 
-    get_orders_collection().delete_one(
-
-        {
-
-            "_id":ObjectId(id)
-
-        }
-
-    )
-
-
-    return redirect("/admin")
-
-
-
-
-
-
-
-
-# ================= ADD PRODUCT =================
-
-
-@app.route("/add-product", methods=["POST"])
-def add_product():
-
-
     if not session.get("admin"):
 
+        return redirect("/admin")
+
+
+
+    try:
+
+        order_id = ObjectId(id)
+
+
+    except InvalidId:
 
         return redirect("/admin")
 
@@ -1330,143 +1703,11 @@ def add_product():
 
 
 
-    name = request.form.get(
-
-        "name"
-
-    )
-
-
-    price = request.form.get(
-
-        "price"
-
-    )
-
-
-    description = request.form.get(
-
-        "description"
-
-    )
-
-
-    stock = request.form.get(
-
-        "stock"
-
-    )
-
-
-
-    image = request.files.get(
-
-        "image"
-
-    )
-
-
-
-    image_path = "/static/images/default.png"
-
-
-
-
-
-    if image and allowed_file(image.filename):
-
-
-        filename = secure_filename(
-
-            image.filename
-
-        )
-
-
-        image.save(
-
-            os.path.join(
-
-                app.config["UPLOAD_FOLDER"],
-
-                filename
-
-            )
-
-        )
-
-
-        image_path = "/static/uploads/" + filename
-
-
-
-
-
-
-
-    product = {
-
-
-        "name":name,
-
-
-        "price":int(price),
-
-
-        "description":description,
-
-
-        "image":image_path,
-
-
-        "stock":int(stock),
-
-
-        "category":"Milk"
-
-    }
-
-
-
-
-
-    get_products_collection().insert_one(
-
-        product
-
-    )
-
-
-
-    return redirect("/admin")
-
-
-
-
-
-
-
-
-# ================= DELETE PRODUCT =================
-
-
-@app.route("/delete-product/<id>")
-def delete_product(id):
-
-
-    if not session.get("admin"):
-
-
-        return redirect("/admin")
-
-
-
-
-    get_products_collection().delete_one(
+    order = get_orders_collection().find_one(
 
         {
 
-            "_id":ObjectId(id)
+            "_id":order_id
 
         }
 
@@ -1474,7 +1715,42 @@ def delete_product(id):
 
 
 
-    return redirect("/admin")
+    if order:
+
+
+        # Restore product stock
+
+        for item in order.get("products",[]):
+
+
+            try:
+
+
+                get_products_collection().update_one(
+
+                    {
+
+                        "_id":ObjectId(item["id"])
+
+                    },
+
+
+                    {
+
+                        "$inc":{
+
+                            "stock":item["qty"]
+
+                        }
+
+                    }
+
+                )
+
+
+            except:
+
+                pass
 
 
 
@@ -1482,49 +1758,15 @@ def delete_product(id):
 
 
 
+        get_orders_collection().delete_one(
 
-# ================= UPDATE STOCK =================
+            {
 
-
-@app.route("/update-stock/<id>", methods=["POST"])
-def update_stock(id):
-
-
-    if not session.get("admin"):
-
-
-        return redirect("/admin")
-
-
-
-    stock = request.form.get(
-
-        "stock"
-
-    )
-
-
-
-    get_products_collection().update_one(
-
-        {
-
-            "_id":ObjectId(id)
-
-        },
-
-
-        {
-
-            "$set":{
-
-                "stock":int(stock)
+                "_id":order_id
 
             }
 
-        }
-
-    )
+        )
 
 
 
@@ -1532,69 +1774,15 @@ def update_stock(id):
 
 
 
-# ================= CART COUNT API =================
-
-
-@app.route("/cart-count")
-def cart_count():
-
-
-    cart = session.get(
-
-        "cart",
-
-        []
-
-    )
-
-
-    count = sum(
-
-        item["qty"]
-
-        for item in cart
-
-    )
-
-
-    return jsonify({
-
-        "count":count
-
-    })
 
 
 
 
 
 
-
-# ================= CLEAR CART =================
-
-
-@app.route("/clear-cart")
-def clear_cart():
-
-
-    session.pop(
-
-        "cart",
-
-        None
-
-    )
-
-
-    return redirect("/")
-
-
-
-
-
-
-
-# ================= ADMIN GRAPH DATA =================
-
+# ==================================================
+# ADMIN GRAPH DATA
+# ==================================================
 
 @app.route("/admin-chart-data")
 def admin_chart_data():
@@ -1613,6 +1801,7 @@ def admin_chart_data():
 
 
 
+
     orders = list(
 
         get_orders_collection()
@@ -1626,6 +1815,7 @@ def admin_chart_data():
 
 
     monthly_sales = {
+
 
         "Jan":0,
 
@@ -1651,7 +1841,45 @@ def admin_chart_data():
 
         "Dec":0
 
+
     }
+
+
+
+
+
+
+
+    monthly_orders = {
+
+
+        "Jan":0,
+
+        "Feb":0,
+
+        "Mar":0,
+
+        "Apr":0,
+
+        "May":0,
+
+        "Jun":0,
+
+        "Jul":0,
+
+        "Aug":0,
+
+        "Sep":0,
+
+        "Oct":0,
+
+        "Nov":0,
+
+        "Dec":0
+
+
+    }
+
 
 
 
@@ -1661,13 +1889,18 @@ def admin_chart_data():
     for order in orders:
 
 
-        date = order.get("date")
+
+        date = order.get(
+            "date"
+        )
+
 
 
         if date:
 
 
             month = date.strftime("%b")
+
 
 
             if month in monthly_sales:
@@ -1683,13 +1916,41 @@ def admin_chart_data():
 
 
 
+                monthly_orders[month] += 1
+
+
+
+
+
+
 
 
     return jsonify({
 
-        "labels":list(monthly_sales.keys()),
 
-        "values":list(monthly_sales.values())
+        "labels":list(
+
+            monthly_sales.keys()
+
+        ),
+
+
+
+        "sales":list(
+
+            monthly_sales.values()
+
+        ),
+
+
+
+        "orders":list(
+
+            monthly_orders.values()
+
+        )
+
+
 
     })
 
@@ -1700,8 +1961,160 @@ def admin_chart_data():
 
 
 
-# ================= DATABASE CHECK =================
 
+# ==================================================
+# PRODUCT STOCK STATUS API
+# ==================================================
+
+@app.route("/stock-status")
+def stock_status():
+
+
+    if not session.get("admin"):
+
+
+        return jsonify({
+
+            "error":"Unauthorized"
+
+        }),403
+
+
+
+
+
+
+    products = get_all_products()
+
+
+
+    data = []
+
+
+
+    for product in products:
+
+
+        stock = product.get(
+
+            "stock",
+
+            0
+
+        )
+
+
+
+        if stock <= 0:
+
+
+            status = "Out Of Stock"
+
+
+
+        elif stock <= 10:
+
+
+            status = "Low Stock"
+
+
+
+        else:
+
+
+            status = "In Stock"
+
+
+
+
+        data.append({
+
+            "name":product["name"],
+
+            "stock":stock,
+
+            "status":status
+
+        })
+
+
+
+
+
+    return jsonify(data)
+
+
+
+
+# ==================================================
+# CART COUNT API
+# ==================================================
+
+@app.route("/cart-count")
+def cart_count():
+
+
+    cart = session.get(
+
+        "cart",
+
+        []
+
+    )
+
+
+    count = sum(
+
+        item.get("qty",0)
+
+        for item in cart
+
+    )
+
+
+    return jsonify({
+
+        "count":count
+
+    })
+
+
+
+
+
+
+
+
+
+# ==================================================
+# CLEAR CART
+# ==================================================
+
+@app.route("/clear-cart")
+def clear_cart():
+
+
+    session.pop(
+
+        "cart",
+
+        None
+
+    )
+
+
+    return redirect("/")
+
+
+
+
+
+
+
+
+# ==================================================
+# DATABASE CHECK
+# ==================================================
 
 @app.route("/database-check")
 def database_check():
@@ -1710,10 +2123,9 @@ def database_check():
     try:
 
 
-        get_orders_collection().find_one()
-
-
         get_products_collection().find_one()
+
+        get_orders_collection().find_one()
 
 
 
@@ -1722,6 +2134,7 @@ def database_check():
             "database":"connected"
 
         })
+
 
 
 
@@ -1743,8 +2156,10 @@ def database_check():
 
 
 
-# ================= HEALTH CHECK =================
 
+# ==================================================
+# HEALTH CHECK
+# ==================================================
 
 @app.route("/health")
 def health():
@@ -1752,13 +2167,21 @@ def health():
 
     return jsonify({
 
-        "status":"KSR Dairy Foods is running",
 
-        "time":datetime.now().strftime(
+        "status":
+
+        "KSR Dairy Foods is running",
+
+
+
+        "time":
+
+        datetime.now().strftime(
 
             "%d-%m-%Y %H:%M:%S"
 
         )
+
 
     })
 
@@ -1769,8 +2192,10 @@ def health():
 
 
 
-# ================= ERROR HANDLING =================
 
+# ==================================================
+# ERROR HANDLING
+# ==================================================
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -1781,6 +2206,7 @@ def page_not_found(error):
         "404.html"
 
     ),404
+
 
 
 
@@ -1802,8 +2228,9 @@ def server_error(error):
 
 
 
-# ================= SESSION SETTINGS =================
-
+# ==================================================
+# SESSION SETTINGS
+# ==================================================
 
 @app.before_request
 def session_settings():
@@ -1817,10 +2244,12 @@ def session_settings():
 
 
 
-# ================= START SERVER =================
-
+# ==================================================
+# RUN SERVER
+# ==================================================
 
 if __name__ == "__main__":
+
 
 
     port = int(
@@ -1837,6 +2266,7 @@ if __name__ == "__main__":
 
 
 
+
     debug_mode = os.environ.get(
 
         "DEBUG",
@@ -1844,6 +2274,7 @@ if __name__ == "__main__":
         "False"
 
     ).lower() == "true"
+
 
 
 
@@ -1858,4 +2289,6 @@ if __name__ == "__main__":
         debug=debug_mode
 
     )
+
+
 
