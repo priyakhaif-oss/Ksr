@@ -15,6 +15,7 @@ app = Flask(__name__)
 app.secret_key = "ksr_dairy_secret_key"
 
 
+
 # ================= ADMIN LOGIN =================
 
 ADMIN_USERNAME = "ksr"
@@ -26,11 +27,15 @@ ADMIN_PASSWORD = "123"
 
 mongo_uri = os.environ.get("MONGO_URI")
 
-client = MongoClient(mongo_uri)
 
-db = client["ksr_dairy"]
+def get_orders_collection():
 
-orders_collection = db["orders"]
+    client = MongoClient(mongo_uri)
+
+    db = client["ksr_dairy"]
+
+    return db["orders"]
+
 
 
 
@@ -118,10 +123,8 @@ def add_cart():
 
 
     return jsonify({
-
-        "status": "success",
-        "message": "Added to cart"
-
+        "status":"success",
+        "message":"Added to cart"
     })
 
 
@@ -131,7 +134,6 @@ def add_cart():
 def cart():
 
     return cart_page()
-
 
 
 
@@ -150,7 +152,6 @@ def increase(id):
 
 
     session["cart"] = cart
-
 
     return cart_page()
 
@@ -180,7 +181,6 @@ def decrease(id):
 
     session["cart"] = cart
 
-
     return cart_page()
 
 
@@ -193,16 +193,12 @@ def remove(id):
 
 
     cart = [
-
         item for item in cart
-
         if item["id"] != id
-
     ]
 
 
     session["cart"] = cart
-
 
     return cart_page()
 
@@ -215,22 +211,15 @@ def cart_page():
 
 
     total = sum(
-
         item["price"] * item["qty"]
-
         for item in cart
-
     )
 
 
     return render_template(
-
         "cart.html",
-
         cart=cart,
-
         total=total
-
     )
 
 
@@ -245,22 +234,15 @@ def checkout():
 
 
     total = sum(
-
         item["price"] * item["qty"]
-
         for item in cart
-
     )
 
 
     return render_template(
-
         "checkout.html",
-
         cart=cart,
-
         total=total
-
     )
 
 
@@ -275,11 +257,8 @@ def place_order():
 
 
     total = sum(
-
         item["price"] * item["qty"]
-
         for item in cart
-
     )
 
 
@@ -301,6 +280,8 @@ def place_order():
 
     }
 
+
+    orders_collection = get_orders_collection()
 
     orders_collection.insert_one(order)
 
@@ -327,6 +308,9 @@ def admin():
         )
 
 
+    orders_collection = get_orders_collection()
+
+
     orders = list(
         orders_collection.find().sort(
             "date",
@@ -337,12 +321,10 @@ def admin():
 
     total_orders = len(orders)
 
-
     pending_orders = len([
         order for order in orders
         if order.get("status") == "Pending"
     ])
-
 
     delivered_orders = len([
         order for order in orders
@@ -364,6 +346,7 @@ def admin():
         delivered_orders=delivered_orders
 
     )
+
 
 
 
@@ -404,7 +387,10 @@ def admin_logout():
 
 
 @app.route("/update-status/<id>/<status>")
-def update_status(id, status):
+def update_status(id,status):
+
+    orders_collection = get_orders_collection()
+
 
     orders_collection.update_one(
 
@@ -413,8 +399,8 @@ def update_status(id, status):
         },
 
         {
-            "$set": {
-                "status": status
+            "$set":{
+                "status":status
             }
         }
 
@@ -425,16 +411,21 @@ def update_status(id, status):
 
 
 
-# ================= DELETE ORDER =================
 
 @app.route("/delete-order/<id>")
 def delete_order(id):
 
+    orders_collection = get_orders_collection()
+
+
     orders_collection.delete_one(
+
         {
             "_id": ObjectId(id)
         }
+
     )
+
 
     return redirect("/admin")
 
