@@ -1,143 +1,232 @@
 document.addEventListener("DOMContentLoaded", function(){
 
 
-const forms = document.querySelectorAll(".cart-form");
+    const forms = document.querySelectorAll(".cart-form");
+
+
+    updateCartCount();
 
 
 
-forms.forEach(function(form){
+    forms.forEach(function(form){
 
 
-form.addEventListener("submit", function(e){
+        form.addEventListener("submit", function(e){
 
 
-e.preventDefault();
-
-
-
-const button = form.querySelector("button");
+            e.preventDefault();
 
 
 
-button.style.transform = "scale(0.95)";
+            const button = form.querySelector("button");
 
 
 
-setTimeout(()=>{
-
-button.style.transform = "scale(1)";
-
-},150);
+            button.classList.add("clicked");
 
 
 
+            setTimeout(()=>{
 
+                button.classList.remove("clicked");
 
-let data = new FormData(form);
+            },200);
 
 
 
 
 
-fetch("/add-cart", {
-
-    method:"POST",
-
-    body:data
-
-})
+            const data = new FormData(form);
 
 
 
-.then(response => response.json())
+
+
+            fetch("/add-cart",{
+
+                method:"POST",
+
+                body:data
+
+            })
 
 
 
-.then(result => {
-
-
-showMessage("Added to cart successfully");
-
-
-})
+            .then(response => response.json())
 
 
 
-.catch(()=>{
+            .then(result => {
 
 
-showMessage("Something went wrong");
+
+                increaseCartCount();
+
+
+
+                showMessage("Added to cart successfully");
+
+
+
+            })
+
+
+
+            .catch(()=>{
+
+
+                showMessage("Something went wrong");
+
+
+            });
+
+
+
+        });
+
+
+
+    });
+
 
 
 });
 
 
 
-});
 
 
 
-});
+/* =========================
+   CART COUNT
+========================= */
+
+
+function increaseCartCount(){
+
+
+    let count = localStorage.getItem("cartCount");
+
+
+    count = count ? parseInt(count)+1 : 1;
 
 
 
-});
+    localStorage.setItem(
+        "cartCount",
+        count
+    );
 
 
 
+    updateCartCount();
 
-
-
-function showMessage(message){
-
-
-
-const oldToast = document.querySelector(".toast-message");
-
-
-if(oldToast){
-
-    oldToast.remove();
 
 }
 
 
 
 
-const toast = document.createElement("div");
+function updateCartCount(){
 
 
 
-toast.className = "toast-message";
-
-toast.innerText = message;
+    const badge = document.querySelector(".cart-count");
 
 
 
-document.body.appendChild(toast);
+    if(!badge){
+
+        return;
+
+    }
+
+
+
+
+    let count = localStorage.getItem("cartCount");
+
+
+
+    if(!count){
+
+        count = 0;
+
+    }
+
+
+
+
+    badge.innerText = count;
+
+
+
+}
 
 
 
 
 
-setTimeout(()=>{
+
+/* =========================
+   TOAST POPUP
+========================= */
 
 
-toast.classList.add("hide");
-
-
-
-setTimeout(()=>{
-
-
-toast.remove();
-
-
-},400);
+function showMessage(message){
 
 
 
-},2200);
+    const oldToast = document.querySelector(".toast-message");
+
+
+
+    if(oldToast){
+
+        oldToast.remove();
+
+    }
+
+
+
+
+
+    const toast = document.createElement("div");
+
+
+
+    toast.className="toast-message";
+
+
+
+    toast.innerText = message;
+
+
+
+    document.body.appendChild(toast);
+
+
+
+
+
+    setTimeout(()=>{
+
+
+        toast.classList.add("hide");
+
+
+
+        setTimeout(()=>{
+
+
+            toast.remove();
+
+
+        },400);
+
+
+
+    },2200);
 
 
 
