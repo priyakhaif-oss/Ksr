@@ -7,15 +7,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-<title>KSR Dairy Foods | Cart</title>
-
+<title>{{site_name}} | Cart</title>
 
 <link rel="icon" type="image/png" href="/static/images/favicon.png">
 
-
 <link rel="stylesheet" href="/static/css/style.css">
-
 
 </head>
 
@@ -25,24 +21,21 @@
 
 
 
-
 <header>
-
 
 
 <a href="/" class="logo">
 
 
-<img src="/static/images/logo.png" alt="KSR Dairy Foods">
+<img src="/static/images/logo.png" alt="{{site_name}}">
 
 
 <span>
-KSR Dairy Foods
+{{site_name}}
 </span>
 
 
 </a>
-
 
 
 
@@ -70,21 +63,21 @@ stroke-linejoin="round"/>
 </svg>
 
 
+
 <span class="cart-count">
-0
+
+{{cart_count}}
+
 </span>
 
 
 </a>
 
 
-
 </div>
 
 
-
 </header>
-
 
 
 
@@ -105,15 +98,11 @@ Your Cart
 
 
 
-
 {% if cart %}
 
 
 
-
 <div class="products-container">
-
-
 
 
 
@@ -122,23 +111,14 @@ Your Cart
 
 
 
-
 <div class="card">
 
 
 
-
-
 <img
-
 src="{{item.image}}"
-
 alt="{{item.name}}"
-
 >
-
-
-
 
 
 
@@ -146,8 +126,6 @@ alt="{{item.name}}"
 <h3>
 {{item.name}}
 </h3>
-
-
 
 
 
@@ -159,12 +137,7 @@ alt="{{item.name}}"
 
 
 
-
-
 <div class="quantity-box">
-
-
-
 
 
 <a href="/decrease/{{item.id}}"
@@ -177,12 +150,9 @@ class="delete-btn">
 
 
 
-
 <h3>
 {{item.qty}}
 </h3>
-
-
 
 
 
@@ -196,10 +166,7 @@ class="order-btn">
 
 
 
-
-
 </div>
-
 
 
 
@@ -215,11 +182,7 @@ class="order-btn">
 
 
 
-
-<a
-
-href="/remove/{{item.id}}"
-
+<a href="/remove/{{item.id}}"
 class="delete-btn">
 
 Remove
@@ -228,18 +191,12 @@ Remove
 
 
 
-
-
-
 </div>
 
 
 
 
-
 {% endfor %}
-
-
 
 
 
@@ -258,12 +215,9 @@ margin-top:40px;
 
 
 
-
-
 <h2>
 Total Amount: ₹{{total}}
 </h2>
-
 
 
 
@@ -273,11 +227,7 @@ Total Amount: ₹{{total}}
 
 
 
-
-<a
-
-href="/checkout"
-
+<a href="/checkout"
 class="order-btn">
 
 Proceed To Checkout
@@ -286,9 +236,7 @@ Proceed To Checkout
 
 
 
-
 </div>
-
 
 
 
@@ -301,7 +249,6 @@ Proceed To Checkout
 
 
 
-
 <div class="card">
 
 
@@ -310,15 +257,10 @@ Your cart is empty
 </h2>
 
 
-
 <br>
 
 
-
-<a
-
-href="/"
-
+<a href="/"
 class="order-btn">
 
 Continue Shopping
@@ -326,16 +268,12 @@ Continue Shopping
 </a>
 
 
-
 </div>
 
 
 
 
-
 {% endif %}
-
-
 
 
 
@@ -354,15 +292,13 @@ Continue Shopping
 
 
 <p>
-© 2026 KSR Dairy Foods
+© 2026 {{site_name}}
 </p>
-
 
 
 <p>
 Fresh Milk • Pure Quality • Fast Delivery
 </p>
-
 
 
 </footer>
@@ -383,11 +319,13 @@ Home
 </a>
 
 
+
 <a href="/#products">
 
 Products
 
 </a>
+
 
 
 <a href="/#categories">
@@ -397,11 +335,13 @@ Categories
 </a>
 
 
-<a href="#">
+
+<a href="/profile">
 
 Profile
 
 </a>
+
 
 
 </nav>
@@ -413,7 +353,6 @@ Profile
 
 
 <script src="/static/js/script.js"></script>
-
 
 
 
