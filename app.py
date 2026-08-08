@@ -578,6 +578,39 @@ def edit_profile():
 
 
 
+
+# ==================================================
+# USER ORDERS
+# ==================================================
+
+@app.route("/orders")
+def user_orders():
+
+    if not session.get("user_email"):
+        return redirect("/profile")
+
+    email = session["user_email"]
+
+    orders = list(
+        get_orders_collection()
+        .find({
+            "user_email": email
+        })
+        .sort(
+            "date",
+            -1
+        )
+    )
+
+    return render_template(
+        "orders.html",
+        orders=orders
+    )
+
+
+
+
+
 # ==================================================
 # ADD TO CART
 # ==================================================
@@ -1155,22 +1188,23 @@ def place_order():
 
     order = {
 
+    "name": name,
 
-        "name":name,
+    "phone": phone,
 
-        "phone":phone,
+    "address": address,
 
-        "address":address,
+    "products": cart,
 
-        "products":cart,
+    "total": total,
 
-        "total":total,
+    "status": "Pending",
 
-        "status":"Pending",
+    "date": datetime.now(),
 
-        "date":datetime.now()
+    "user_email": session.get("user_email")
 
-    }
+}
 
 
 
