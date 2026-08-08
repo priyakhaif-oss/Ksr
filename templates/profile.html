@@ -13,9 +13,119 @@
 
 <link rel="stylesheet" href="/static/css/style.css">
 
+<style>
+
+.profile-page {
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.profile-card {
+    text-align: center;
+    padding: 30px 20px;
+}
+
+.profile-avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 15px;
+}
+
+.profile-name {
+    margin: 0;
+    font-size: 24px;
+}
+
+.profile-email {
+    margin-top: 8px;
+    opacity: 0.7;
+}
+
+.profile-menu {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profile-menu a {
+    text-decoration: none;
+}
+
+.profile-menu-btn {
+    width: 100%;
+    min-height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    box-sizing: border-box;
+}
+
+.profile-menu-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-menu-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.profile-arrow {
+    width: 18px;
+    height: 18px;
+}
+
+.google-login-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 350px;
+    padding: 14px 20px;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #202124;
+    text-decoration: none;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+.logout-container {
+    margin-top: 35px;
+    text-align: center;
+}
+
+.logout-btn-profile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 12px 25px;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.logout-icon {
+    width: 20px;
+    height: 20px;
+}
+
+</style>
+
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -31,6 +141,7 @@ alt="{{site_name}}">
 
 </a>
 
+
 <div class="admin-actions">
 
 <a href="/" class="cart-btn">
@@ -44,21 +155,19 @@ Home
 
 <section id="products">
 
+
+<div class="profile-page">
+
+
 <h2>
 My Profile
 </h2>
 
 
-<div class="card checkout-card">
+<div class="card profile-card">
 
 
 {% if logged_in %}
-
-
-<div style="
-text-align:center;
-margin-bottom:30px;
-">
 
 
 {% if user_picture %}
@@ -66,124 +175,190 @@ margin-bottom:30px;
 <img
 src="{{user_picture}}"
 alt="Profile"
-style="
-width:90px;
-height:90px;
-border-radius:50%;
-object-fit:cover;
-margin-bottom:15px;
-">
+class="profile-avatar">
 
 {% endif %}
 
 
-<h2 style="margin-bottom:8px;">
+<h2 class="profile-name">
 {{user_name}}
 </h2>
 
 
-<p style="margin:0;">
-{{user_email}}
-</p>
-
-</div>
-
-
-<div style="
-margin-top:25px;
-">
-
-
-<h3>
-Account Details
-</h3>
-
-
-<p>
-<strong>Name</strong>
-<br>
-{{user_name}}
-</p>
-
-
-<p>
-<strong>Email</strong>
-<br>
+<p class="profile-email">
 {{user_email}}
 </p>
 
 
-<p>
-<strong>Mobile Number</strong>
-<br>
-
-{% if user and user.phone %}
-
-{{user.phone}}
-
-{% else %}
-
-Not added yet
-
-{% endif %}
-
-</p>
+<div class="profile-menu">
 
 
-<p>
-<strong>Delivery Address</strong>
-<br>
+<a href="/edit-profile">
 
-{% if user and user.address %}
+<div class="profile-menu-btn cart-btn">
 
-{{user.address}}
+<div class="profile-menu-left">
 
-{% else %}
 
-Not added yet
+<svg
+class="profile-menu-icon"
+viewBox="0 0 24 24"
+fill="none">
 
-{% endif %}
+<path
+d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
+stroke="currentColor"
+stroke-width="2"/>
 
-</p>
+<path
+d="M3 22C3 17.5817 7.02944 14 12 14C16.9706 14 21 17.5817 21 22"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"/>
+
+</svg>
+
+
+<span>
+Edit Profile
+</span>
 
 </div>
 
 
-<div style="
-margin-top:25px;
-display:flex;
-gap:15px;
-flex-wrap:wrap;
-">
+<svg
+class="profile-arrow"
+viewBox="0 0 24 24"
+fill="none">
 
+<path
+d="M9 18L15 12L9 6"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"
+stroke-linejoin="round"/>
 
-<a
-href="/checkout"
-class="cart-btn">
+</svg>
 
-Checkout
+</div>
 
 </a>
+
+
+<a href="/orders">
+
+<div class="profile-menu-btn cart-btn">
+
+<div class="profile-menu-left">
+
+
+<svg
+class="profile-menu-icon"
+viewBox="0 0 24 24"
+fill="none">
+
+<path
+d="M6 3H18C19.1046 3 20 3.89543 20 5V21H4V5C4 3.89543 4.89543 3 6 3Z"
+stroke="currentColor"
+stroke-width="2"/>
+
+<path
+d="M8 7H16"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"/>
+
+<path
+d="M8 11H16"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"/>
+
+<path
+d="M8 15H13"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"/>
+
+</svg>
+
+
+<span>
+Orders
+</span>
+
+</div>
+
+
+<svg
+class="profile-arrow"
+viewBox="0 0 24 24"
+fill="none">
+
+<path
+d="M9 18L15 12L9 6"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+</svg>
+
+</div>
+
+</a>
+
+
+</div>
+
+
+<div class="logout-container">
 
 
 <a
 href="/logout"
-class="logout-btn">
+class="logout-btn logout-btn-profile">
 
+
+<svg
+class="logout-icon"
+viewBox="0 0 24 24"
+fill="none">
+
+<path
+d="M9 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H9"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"/>
+
+<path
+d="M16 17L21 12L16 7"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"
+stroke-linejoin="round"/>
+
+<path
+d="M21 12H9"
+stroke="currentColor"
+stroke-width="2"
+stroke-linecap="round"/>
+
+</svg>
+
+
+<span>
 Logout
+</span>
+
 
 </a>
+
 
 </div>
 
 
 {% else %}
-
-
-<div style="
-text-align:center;
-padding:20px 0;
-">
 
 
 <h2>
@@ -191,34 +366,14 @@ Sign in to your account
 </h2>
 
 
-<p style="
-margin-bottom:25px;
-">
-
-Sign in with Google to manage your profile and delivery details.
-
+<p style="margin-bottom:25px;">
+Sign in with Google to manage your profile and orders.
 </p>
 
 
 <a
 href="/login/google"
-class="google-login-btn"
-style="
-display:inline-flex;
-align-items:center;
-justify-content:center;
-gap:12px;
-width:100%;
-max-width:350px;
-padding:14px 20px;
-border:1px solid #dadce0;
-border-radius:8px;
-background:#ffffff;
-color:#202124;
-text-decoration:none;
-font-weight:600;
-box-sizing:border-box;
-">
+class="google-login-btn">
 
 
 <svg
@@ -254,13 +409,13 @@ Continue with Google
 </a>
 
 
-</div>
-
-
 {% endif %}
 
 
 </div>
+
+</div>
+
 
 </section>
 
@@ -272,7 +427,7 @@ Continue with Google
 </p>
 
 <p>
-Fresh Milk Delivered To Your Doorstep
+{{site_tagline}}
 </p>
 
 </footer>
