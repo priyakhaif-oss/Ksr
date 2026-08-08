@@ -500,7 +500,9 @@ Category:
 
 Stock:
 
-{% if product.stock <= 0 %}
+{% set stock = product.get("stock", 0) %}
+
+{% if stock <= 0 %}
 
 
 
@@ -513,13 +515,13 @@ Out Of Stock
 
 
 
-{% elif product.stock <= 10 %}
+{% elif stock <= 10 %}
 
 
 
 <span class="status low-stock">
 
-{{product.stock}} Low Stock
+{{stock}} Low Stock
 
 </span>
 
@@ -532,7 +534,7 @@ Out Of Stock
 
 <span class="status delivered">
 
-{{product.stock}} Available
+{{stock}} Available
 
 </span>
 
