@@ -493,6 +493,90 @@ def google_callback():
 
 
 
+# ==================================================
+# EDIT PROFILE
+# ==================================================
+
+@app.route("/edit-profile", methods=["GET", "POST"])
+def edit_profile():
+
+    if not session.get("user_email"):
+        return redirect("/profile")
+
+    users = get_users_collection()
+
+    user = users.find_one(
+        {
+            "email": session["user_email"]
+        }
+    )
+
+    if not user:
+        return redirect("/profile")
+
+    if request.method == "POST":
+
+        name = request.form.get(
+            "name",
+            ""
+        ).strip()
+
+        phone = request.form.get(
+            "phone",
+            ""
+        ).strip()
+
+        address = request.form.get(
+            "address",
+            ""
+        ).strip()
+
+        if phone:
+
+            if not phone.isdigit() or len(phone) != 10:
+
+                return render_template(
+                    "edit_profile.html",
+                    user=user,
+                    error="Enter valid 10 digit mobile number"
+                )
+
+        users.update_one(
+
+            {
+                "email": session["user_email"]
+            },
+
+            {
+                "$set": {
+
+                    "name": name,
+
+                    "phone": phone,
+
+                    "address": address,
+
+                    "updated": datetime.now()
+
+                }
+            }
+
+        )
+
+        session["user_name"] = name
+
+        return redirect("/profile")
+
+    return render_template(
+
+        "edit_profile.html",
+
+        user=user
+
+    )
+
+
+
 
 # ==================================================
 # ADD TO CART
