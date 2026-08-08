@@ -368,19 +368,30 @@ def home():
 @app.route("/login/google")
 def login_google():
 
-    # Save the page where user started Google login
-    next_page = request.args.get("next")
+    next_page = request.args.get(
+        "next"
+    )
+
 
     if next_page:
+
         session["login_next"] = next_page
+
     else:
-        session.pop("login_next", None)
+
+        session.pop(
+            "login_next",
+            None
+        )
+
 
     return oauth.google.authorize_redirect(
+
         url_for(
             "google_callback",
             _external=True
         )
+
     )
 
 
