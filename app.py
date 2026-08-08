@@ -1057,9 +1057,6 @@ def checkout():
 
 
 
-
-
-
 # ==================================================
 # PLACE ORDER
 # ==================================================
@@ -1067,70 +1064,33 @@ def checkout():
 @app.route("/place-order", methods=["POST"])
 def place_order():
 
-
     cart = session.get(
         "cart",
         []
     )
 
-
-
     if not cart:
-
-
         return redirect("/")
 
-
-
-
-
-
     name = request.form.get(
-        "name"
-    )
-
+        "name",
+        ""
+    ).strip()
 
     phone = request.form.get(
-        "phone"
-    )
-
+        "phone",
+        ""
+    ).strip()
 
     address = request.form.get(
-        "address"
-    )
+        "address",
+        ""
+    ).strip()
 
 
-
-
-# ==================================================
-# SAVE DELIVERY DETAILS TO USER PROFILE
-# ==================================================
-
-if session.get("user_email"):
-
-    get_users_collection().update_one(
-
-        {
-            "email": session["user_email"]
-        },
-
-        {
-            "$set": {
-
-                "phone": phone,
-
-                "address": address,
-
-                "updated": datetime.now()
-
-            }
-        }
-
-    )
-
-
-
-
+    # ==================================================
+    # VALIDATE PHONE NUMBER
+    # ==================================================
 
     if (
         not phone
@@ -1140,60 +1100,76 @@ if session.get("user_email"):
         len(phone) != 10
     ):
 
-
         total = sum(
-
             item["price"] * item["qty"]
-
             for item in cart
-
         )
-
 
         return render_template(
-
             "checkout.html",
-
             cart=cart,
-
             total=total,
-
             error="Enter valid 10 digit mobile number"
-
         )
 
 
+    # ==================================================
+    # SAVE DELIVERY DETAILS TO USER PROFILE
+    # ==================================================
 
+    if session.get("user_email"):
 
-
-
-    # STOCK FINAL CHECK
-
-    for item in cart:
-
-
-
-        product = get_products_collection().find_one(
+        get_users_collection().update_one(
 
             {
-                "_id":ObjectId(item["id"])
+                "email": session["user_email"]
+            },
+
+            {
+                "$set": {
+
+                    "phone": phone,
+
+                    "address": address,
+
+                    "updated": datetime.now()
+
+                }
             }
 
         )
 
+        # Update session also
+        session["user_phone"] = phone
+
+        session["user_address"] = address
 
 
-        if not product:
+    # ==================================================
+    # STOCK FINAL CHECK
+    # ==================================================
 
+    for item in cart:
+
+        try:
+
+            product = get_products_collection().find_one(
+                {
+                    "_id": ObjectId(item["id"])
+                }
+            )
+
+        except InvalidId:
 
             return redirect("/cart")
 
 
+        if not product:
+
+            return redirect("/cart")
 
 
-
-        if item["qty"] > product.get("stock",0):
-
+        if item["qty"] > product.get("stock", 0):
 
             return render_template(
 
@@ -1202,11 +1178,8 @@ if session.get("user_email"):
                 cart=cart,
 
                 total=sum(
-
                     i["price"] * i["qty"]
-
                     for i in cart
-
                 ),
 
                 error=f"{item['name']} stock unavailable"
@@ -1214,10 +1187,9 @@ if session.get("user_email"):
             )
 
 
-
-
-
-
+    # ==================================================
+    # CALCULATE TOTAL
+    # ==================================================
 
     total = sum(
 
@@ -1228,81 +1200,85 @@ if session.get("user_email"):
     )
 
 
-
-
-
+    # ==================================================
+    # CREATE ORDER
+    # ==================================================
 
     order = {
 
-    "name": name,
+        "name": name,
 
-    "phone": phone,
+        "phone": phone,
 
-    "address": address,
+        "address": address,
 
-    "products": cart,
+        "products": cart,
 
-    "total": total,
+        "total": total,
 
-    "status": "Pending",
+        "status": "Pending",
 
-    "date": datetime.now(),
+        "date": datetime.now(),
 
-    "user_email": session.get("user_email")
+        "user_email": session.get("user_email")
 
-}
-
-
+    }
 
 
-
-
+    # ==================================================
     # REDUCE STOCK
+    # ==================================================
 
     for item in cart:
-
-
 
         get_products_collection().update_one(
 
             {
-
-                "_id":ObjectId(item["id"])
-
+                "_id": ObjectId(item["id"])
             },
 
-
             {
-
-                "$inc":{
-
-                    "stock":-item["qty"]
-
+                "$inc": {
+                    "stock": -item["qty"]
                 }
-
             }
 
         )
 
 
-
-
-
+    # ==================================================
+    # SAVE ORDER
+    # ==================================================
 
     get_orders_collection().insert_one(
-
         order
-
     )
 
 
+    # ==================================================
+    # CLEAR ONLY CART
+    # ==================================================
+
+    # IMPORTANT:
+    # Do NOT use session.clear()
+    # because that would also log the user out.
+
+    session.pop(
+        "cart",
+        None
+    )
 
 
+    # ==================================================
+    # ORDER SUCCESS
+    # ==================================================
 
-    session.pop("cart", None)
     return render_template(
         "success.html"
     )
+
+
+
 
 
 # ==================================================
