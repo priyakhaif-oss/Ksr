@@ -363,18 +363,25 @@ def home():
 
 # ======================================================
 # GOOGLE LOGIN
-#=======================================================
-
-
-
+# ======================================================
 
 @app.route("/login/google")
 def login_google():
+
+    # Save the page where user started Google login
+    next_page = request.args.get("next")
+
+    if next_page:
+        session["login_next"] = next_page
+    else:
+        session.pop("login_next", None)
+
     return oauth.google.authorize_redirect(
-        url_for("google_callback", _external=True)
+        url_for(
+            "google_callback",
+            _external=True
+        )
     )
-
-
 
 
 
@@ -504,8 +511,29 @@ def google_callback():
     )
     
     session.permanent = True
+
+
+
+
+# ==============================================
+# RETURN TO PREVIOUS PAGE AFTER GOOGLE LOGIN
+# ==============================================
+
+
+next_page = session.pop(
+    "login_next",
+    None
+)
+
+
+if next_page:
+    
+    return redirect(next_page)
     
     return redirect("/profile")
+
+
+
 
 
 
@@ -1004,17 +1032,22 @@ def remove(id):
 
 
 
-
-
-
-
-
 # ==================================================
 # CHECKOUT PAGE
 # ==================================================
 
 @app.route("/checkout")
 def checkout():
+
+    # Login required
+    if not session.get("user_email"):
+
+        return redirect(
+            url_for(
+                "login_google",
+                next="/checkout"
+            )
+        )
 
 
     cart = session.get(
@@ -1023,14 +1056,9 @@ def checkout():
     )
 
 
-
     if not cart:
 
-
         return redirect("/")
-
-
-
 
 
     total = sum(
@@ -1040,7 +1068,6 @@ def checkout():
         for item in cart
 
     )
-
 
 
     return render_template(
@@ -1055,8 +1082,6 @@ def checkout():
 
 
 
-
-
 # ==================================================
 # PLACE ORDER
 # ==================================================
@@ -1064,12 +1089,26 @@ def checkout():
 @app.route("/place-order", methods=["POST"])
 def place_order():
 
+    # ==============================================
+    # LOGIN REQUIRED
+    # ==============================================
+
+    if not session.get("user_email"):
+        return redirect(
+            url_for(
+                "login_google",
+                next="/checkout"
+            )
+        )
+
+
     cart = session.get(
         "cart",
         []
     )
 
     if not cart:
+
         return redirect("/")
 
 
@@ -1119,34 +1158,33 @@ def place_order():
 
 
     # ==============================================
-    # SAVE DELIVERY DETAILS TO USER PROFILE
+    # SAVE DELIVERY DETAILS
     # ==============================================
 
-    if session.get("user_email"):
+    get_users_collection().update_one(
 
-        get_users_collection().update_one(
+        {
+            "email": session["user_email"]
+        },
 
-            {
-                "email": session["user_email"]
-            },
+        {
+            "$set": {
 
-            {
-                "$set": {
+                "phone": phone,
 
-                    "phone": phone,
+                "address": address,
 
-                    "address": address,
+                "updated": datetime.now()
 
-                    "updated": datetime.now()
-
-                }
             }
+        }
 
-        )
+    )
 
-        # Update session also
-        session["user_phone"] = phone
-        session["user_address"] = address
+
+    session["user_phone"] = phone
+
+    session["user_address"] = address
 
 
     # ==============================================
@@ -1178,8 +1216,11 @@ def place_order():
         if item["qty"] > product.get("stock", 0):
 
             total = sum(
+
                 i["price"] * i["qty"]
+
                 for i in cart
+
             )
 
             return render_template(
@@ -1228,7 +1269,7 @@ def place_order():
 
         "date": datetime.now(),
 
-        "user_email": session.get("user_email")
+        "user_email": session["user_email"]
 
     }
 
@@ -1274,7 +1315,7 @@ def place_order():
 
 
     # ==============================================
-    # SUCCESS PAGE
+    # SUCCESS
     # ==============================================
 
     return render_template(
