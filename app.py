@@ -504,6 +504,8 @@ def google_callback():
     )
     
     session.permanent = True
+    
+    return redirect("/profile")
 
 
 
