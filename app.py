@@ -133,6 +133,10 @@ def inject_brand():
 
         "user_picture": session.get("user_picture"),
 
+        "user_phone": session.get("user_phone"),
+        
+        "user_address": session.get("user_address"),
+
         "logged_in": bool(session.get("user_email"))
 
     }
@@ -479,15 +483,27 @@ def google_callback():
 
 
     session["user_email"] = user["email"]
-
+    
     session["user_name"] = user["name"]
-
+    
     session["user_picture"] = user["picture"]
-
+    
+    saved_user = get_users_collection().find_one(
+          {
+              "email": user["email"]
+          }
+    )
+    
+    session["user_phone"] = saved_user.get(
+    "phone",
+    ""
+    )
+    
+    session["user_address"] = saved_user.get(
+        "address",   ""
+    )
+    
     session.permanent = True
-
-
-    return redirect("/profile")
 
 
 
@@ -1084,6 +1100,34 @@ def place_order():
 
 
 
+# ==================================================
+# SAVE DELIVERY DETAILS TO USER PROFILE
+# ==================================================
+
+if session.get("user_email"):
+
+    get_users_collection().update_one(
+
+        {
+            "email": session["user_email"]
+        },
+
+        {
+            "$set": {
+
+                "phone": phone,
+
+                "address": address,
+
+                "updated": datetime.now()
+
+            }
+        }
+
+    )
+
+
+
 
 
     if (
@@ -1481,17 +1525,36 @@ def admin_logout():
 # USER LOGOUT
 # ==================================================
 
+
 @app.route("/logout")
 def logout():
 
-    session.pop("user_email", None)
+    session.pop(
+        "user_email",
+        None
+    )
 
-    session.pop("user_name", None)
+    session.pop(
+        "user_name",
+        None
+    )
 
-    session.pop("user_picture", None)
+    session.pop(
+        "user_picture",
+        None
+    )
 
-    return redirect("/")
+    session.pop(
+        "user_phone",
+        None
+    )
 
+    session.pop(
+        "user_address",
+        None
+    )
+
+    return redirect("/profile")
 
 
 
