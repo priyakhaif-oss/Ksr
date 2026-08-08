@@ -422,7 +422,6 @@ def profile():
 
 
 
-
 # ==================================================
 # GOOGLE CALLBACK
 # ==================================================
@@ -435,7 +434,6 @@ def google_callback():
     user_info = token.get("userinfo")
 
     if not user_info:
-
         return redirect("/profile")
 
 
@@ -445,22 +443,27 @@ def google_callback():
 
         "email": user_info["email"],
 
-        "picture": user_info.get("picture", "")
+        "picture": user_info.get(
+            "picture",
+            ""
+        )
 
     }
 
 
+    # ==============================================
+    # SAVE / UPDATE USER
+    # ==============================================
+
     get_users_collection().update_one(
 
         {
-
             "email": user["email"]
-
         },
 
         {
 
-            "$set":{
+            "$set": {
 
                 "name": user["name"],
 
@@ -470,13 +473,13 @@ def google_callback():
 
             },
 
-            "$setOnInsert":{
+            "$setOnInsert": {
 
                 "email": user["email"],
 
-                "phone":"",
+                "phone": "",
 
-                "address":"",
+                "address": "",
 
                 "created": datetime.now()
 
@@ -489,47 +492,60 @@ def google_callback():
     )
 
 
+    # ==============================================
+    # CREATE LOGIN SESSION
+    # ==============================================
+
     session["user_email"] = user["email"]
-    
+
     session["user_name"] = user["name"]
-    
+
     session["user_picture"] = user["picture"]
-    
+
+
     saved_user = get_users_collection().find_one(
-          {
-              "email": user["email"]
-          }
+
+        {
+            "email": user["email"]
+        }
+
     )
-    
+
+
     session["user_phone"] = saved_user.get(
-    "phone",
-    ""
+        "phone",
+        ""
     )
-    
+
+
     session["user_address"] = saved_user.get(
-        "address",   ""
+        "address",
+        ""
     )
-    
+
+
     session.permanent = True
 
 
+    # ==============================================
+    # RETURN TO PREVIOUS PAGE
+    # ==============================================
+
+    next_page = session.pop(
+        "login_next",
+        None
+    )
 
 
-# ==============================================
-# RETURN TO PREVIOUS PAGE AFTER GOOGLE LOGIN
-# ==============================================
+    if next_page:
+
+        return redirect(next_page)
 
 
-next_page = session.pop(
-    "login_next",
-    None
-)
+    # ==============================================
+    # DEFAULT: PROFILE
+    # ==============================================
 
-
-if next_page:
-    
-    return redirect(next_page)
-    
     return redirect("/profile")
 
 
