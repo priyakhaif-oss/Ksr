@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Profile | {{site_name}}</title>
+
+<link rel="icon" href="/static/images/favicon.png">
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+<a href="/" class="logo">
+
+<img
+src="/static/images/logo.png"
+alt="{{site_name}}">
+
+<span>
+{{site_name}}
+</span>
+
+</a>
+
+<div class="admin-actions">
+
+<a href="/" class="cart-btn">
+Home
+</a>
+
+</div>
+
+</header>
+
+
+<section id="products">
+
+<h2>
+My Profile
+</h2>
+
+
+<div class="card checkout-card">
+
+
+{% if logged_in %}
+
+
+<div style="
+text-align:center;
+margin-bottom:30px;
+">
+
+
+{% if user_picture %}
+
+<img
+src="{{user_picture}}"
+alt="Profile"
+style="
+width:90px;
+height:90px;
+border-radius:50%;
+object-fit:cover;
+margin-bottom:15px;
+">
+
+{% endif %}
+
+
+<h2 style="margin-bottom:8px;">
+{{user_name}}
+</h2>
+
+
+<p style="margin:0;">
+{{user_email}}
+</p>
+
+</div>
+
+
+<div style="
+margin-top:25px;
+">
+
+
+<h3>
+Account Details
+</h3>
+
+
+<p>
+<strong>Name</strong>
+<br>
+{{user_name}}
+</p>
+
+
+<p>
+<strong>Email</strong>
+<br>
+{{user_email}}
+</p>
+
+
+<p>
+<strong>Mobile Number</strong>
+<br>
+
+{% if user and user.phone %}
+
+{{user.phone}}
+
+{% else %}
+
+Not added yet
+
+{% endif %}
+
+</p>
+
+
+<p>
+<strong>Delivery Address</strong>
+<br>
+
+{% if user and user.address %}
+
+{{user.address}}
+
+{% else %}
+
+Not added yet
+
+{% endif %}
+
+</p>
+
+</div>
+
+
+<div style="
+margin-top:25px;
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+">
+
+
+<a
+href="/checkout"
+class="cart-btn">
+
+Checkout
+
+</a>
+
+
+<a
+href="/logout"
+class="logout-btn">
+
+Logout
+
+</a>
+
+</div>
+
+
+{% else %}
+
+
+<div style="
+text-align:center;
+padding:20px 0;
+">
+
+
+<h2>
+Sign in to your account
+</h2>
+
+
+<p style="
+margin-bottom:25px;
+">
+
+Sign in with Google to manage your profile and delivery details.
+
+</p>
+
+
+<a
+href="/login/google"
+class="google-login-btn"
+style="
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:12px;
+width:100%;
+max-width:350px;
+padding:14px 20px;
+border:1px solid #dadce0;
+border-radius:8px;
+background:#ffffff;
+color:#202124;
+text-decoration:none;
+font-weight:600;
+box-sizing:border-box;
+">
+
+
+<svg
+width="20"
+height="20"
+viewBox="0 0 48 48"
+aria-hidden="true">
+
+<path
+fill="#FFC107"
+d="M43.611 20.083H42V20H24v8h11.303C33.649 32.657 29.19 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039L37.618 9.382C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+
+<path
+fill="#FF3D00"
+d="M6.306 14.691l6.571 4.819C14.655 16.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039L37.618 9.382C34.046 6.053 29.268 4 24 4c-7.682 0-14.302 4.337-17.694 10.691z"/>
+
+<path
+fill="#4CAF50"
+d="M24 44c5.166 0 9.91-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.169 0-9.626-3.327-11.293-7.946l-6.522 5.025C9.585 39.556 16.227 44 24 44z"/>
+
+<path
+fill="#1976D2"
+d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.084 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+
+</svg>
+
+
+<span>
+Continue with Google
+</span>
+
+
+</a>
+
+
+</div>
+
+
+{% endif %}
+
+
+</div>
+
+</section>
+
+
+<footer>
+
+<p>
+© 2026 {{site_name}}
+</p>
+
+<p>
+Fresh Milk Delivered To Your Doorstep
+</p>
+
+</footer>
+
+
+<nav class="bottom-nav">
+
+<a href="/">
+Home
+</a>
+
+<a href="/cart">
+Cart
+</a>
+
+<a href="/profile">
+Profile
+</a>
+
+</nav>
+
+
+</body>
+
+</html>
