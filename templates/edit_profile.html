@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Edit Profile | {{site_name}}</title>
+
+<link
+rel="icon"
+href="/static/images/favicon.png">
+
+<link
+rel="stylesheet"
+href="/static/css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+<a href="/" class="logo">
+
+<img
+src="/static/images/logo.png"
+alt="{{site_name}}">
+
+<span>
+{{site_name}}
+</span>
+
+</a>
+
+<div class="admin-actions">
+
+<a
+href="/profile"
+class="cart-btn">
+
+Profile
+
+</a>
+
+</div>
+
+</header>
+
+
+<section id="products">
+
+<div class="card checkout-card">
+
+<h2>
+Edit Profile
+</h2>
+
+
+<form
+action="/edit-profile"
+method="POST">
+
+
+<label>
+Name
+</label>
+
+<input
+type="text"
+name="name"
+value="{{user.name or ''}}"
+required>
+
+
+<label>
+Google Email
+</label>
+
+<input
+type="email"
+value="{{user.email}}"
+disabled>
+
+
+<label>
+Mobile Number
+</label>
+
+<input
+type="tel"
+name="phone"
+value="{{user.phone or ''}}"
+placeholder="10 digit mobile number"
+inputmode="numeric"
+maxlength="10">
+
+
+<label>
+Delivery Address
+</label>
+
+<textarea
+name="address"
+placeholder="Enter your delivery address"
+rows="5">{{user.address or ''}}</textarea>
+
+
+{% if error %}
+
+<p style="color:red;">
+{{error}}
+</p>
+
+{% endif %}
+
+
+<div
+style="
+margin-top:20px;
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+">
+
+<button
+type="submit">
+
+Save Profile
+
+</button>
+
+
+<a
+href="/profile"
+class="cart-btn">
+
+Cancel
+
+</a>
+
+</div>
+
+
+</form>
+
+</div>
+
+</section>
+
+
+<footer>
+
+<p>
+© 2026 {{site_name}}
+</p>
+
+<p>
+{{site_tagline}}
+</p>
+
+</footer>
+
+
+<nav class="bottom-nav">
+
+<a href="/">
+Home
+</a>
+
+<a href="/cart">
+Cart
+</a>
+
+<a href="/profile">
+Profile
+</a>
+
+</nav>
+
+</body>
+
+</html>
