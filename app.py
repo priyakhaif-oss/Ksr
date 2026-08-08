@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session, redirect
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from datetime import datetime, timedelta
 import os
 
@@ -7,6 +7,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
+from authlib.integrations.flask_client import OAuth
 
 
 load_dotenv()
@@ -24,6 +25,23 @@ app.secret_key = os.environ.get(
     "SECRET_KEY",
     "ksr_dairy_secret_key"
 )
+
+
+
+
+oauth = OAuth(app)
+
+oauth.register(
+    name="google",
+    client_id=os.environ.get("GOOGLE_CLIENT_ID"),
+    client_secret=os.environ.get("GOOGLE_CLIENT_SECRET"),
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={
+        "scope": "openid email profile"
+    }
+)
+
+
 
 
 app.permanent_session_lifetime = timedelta(
@@ -91,18 +109,15 @@ SITE_TAGLINE = "Fresh Milk Delivered To Your Doorstep"
 @app.context_processor
 def inject_brand():
 
-
     cart = session.get(
         "cart",
         []
     )
 
-
     cart_count = sum(
-        item.get("qty",0)
+        item.get("qty", 0)
         for item in cart
     )
-
 
     return {
 
@@ -110,7 +125,15 @@ def inject_brand():
 
         "site_tagline": SITE_TAGLINE,
 
-        "cart_count": cart_count
+        "cart_count": cart_count,
+
+        "user_name": session.get("user_name"),
+
+        "user_email": session.get("user_email"),
+
+        "user_picture": session.get("user_picture"),
+
+        "logged_in": bool(session.get("user_email"))
 
     }
 
@@ -171,6 +194,10 @@ def get_products_collection():
 
     return get_database()["products"]
 
+
+
+def get_users_collection():
+    return get_database()["users"]
 
 
 
@@ -330,6 +357,20 @@ def home():
 
 
 
+# ======================================================
+# GOOGLE LOGIN
+#=======================================================
+
+
+
+
+@app.route("/login/google")
+def login_google():
+    return oauth.google.authorize_redirect(
+        url_for("google_callback", _external=True)
+    )
+
+
 
 
 
@@ -338,13 +379,115 @@ def home():
 # PROFILE
 # ==================================================
 
+
+
+
 @app.route("/profile")
 def profile():
 
+    user = None
+
+    if session.get("user_email"):
+
+        user = get_users_collection().find_one(
+
+            {
+
+                "email": session["user_email"]
+
+            }
+
+        )
+
     return render_template(
-        "profile.html"
+
+        "profile.html",
+
+        user=user
+
     )
 
+
+
+
+
+
+# ==================================================
+# GOOGLE CALLBACK
+# ==================================================
+
+@app.route("/auth/google/callback")
+def google_callback():
+
+    token = oauth.google.authorize_access_token()
+
+    user_info = token.get("userinfo")
+
+    if not user_info:
+
+        return redirect("/profile")
+
+
+    user = {
+
+        "name": user_info["name"],
+
+        "email": user_info["email"],
+
+        "picture": user_info.get("picture", "")
+
+    }
+
+
+    get_users_collection().update_one(
+
+        {
+
+            "email": user["email"]
+
+        },
+
+        {
+
+            "$set":{
+
+                "name": user["name"],
+
+                "picture": user["picture"],
+
+                "updated": datetime.now()
+
+            },
+
+            "$setOnInsert":{
+
+                "email": user["email"],
+
+                "phone":"",
+
+                "address":"",
+
+                "created": datetime.now()
+
+            }
+
+        },
+
+        upsert=True
+
+    )
+
+
+    session["user_email"] = user["email"]
+
+    session["user_name"] = user["name"]
+
+    session["user_picture"] = user["picture"]
+
+    session.permanent = True
+
+
+    return redirect("/profile")
 
 
 
@@ -1214,6 +1357,22 @@ def admin_logout():
 
 
 
+
+
+# ==================================================
+# USER LOGOUT
+# ==================================================
+
+@app.route("/logout")
+def logout():
+
+    session.pop("user_email", None)
+
+    session.pop("user_name", None)
+
+    session.pop("user_picture", None)
+
+    return redirect("/")
 
 
 
