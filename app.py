@@ -1297,15 +1297,10 @@ if session.get("user_email"):
 
 
 
-    session.clear()
-
-
-
+    session.pop("cart", None)
     return render_template(
-
         "success.html"
-
-)
+    )
 
 
 # ==================================================
