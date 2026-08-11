@@ -426,7 +426,28 @@ function showToast(message){
 
 }
 
+
+<script>
+
+const currentPath = window.location.pathname;
+
+document.querySelectorAll(".bottom-nav a").forEach(link => {
+
+    const href = link.getAttribute("href");
+
+    if (
+        href === currentPath ||
+        (currentPath === "/" && href === "/") ||
+        (currentPath.startsWith("/profile") && href === "/profile")
+    ) {
+        link.classList.add("active");
+    }
+
+});
+
 </script>
+
+        
 
 </body>
 
