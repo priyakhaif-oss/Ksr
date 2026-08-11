@@ -2757,3 +2757,29 @@ canvas{
 }
 
 
+
+/* =========================
+   ACTIVE BOTTOM NAV
+========================= */
+
+.bottom-nav a.active{
+    color:var(--green);
+}
+
+.bottom-nav a.active svg{
+    color:var(--green);
+    transform:scale(1.12);
+}
+
+.bottom-nav a.active span{
+    color:var(--green);
+    font-weight:700;
+}
+
+.bottom-nav a{
+    transition:.3s ease;
+}
+
+.bottom-nav a svg{
+    transition:.3s ease;
+}
