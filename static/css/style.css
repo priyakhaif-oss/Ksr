@@ -243,9 +243,11 @@ header{
 
     position:absolute;
 
-    top:-7px;
+    bottom:-8px;
 
-    right:-7px;
+    right:50%;
+
+    transform:translateX(50%);
 
     min-width:22px;
 
@@ -263,13 +265,15 @@ header{
 
     background:#ef4444;
 
-    color:white;
+    color:#fff;
 
     font-size:12px;
 
     font-weight:700;
 
-    border:2px solid white;
+    border:2px solid #fff;
+
+    z-index:10;
 
 }
 
