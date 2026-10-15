@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from datetime import datetime, timedelta
 import os
+import requests
 
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
@@ -53,11 +54,9 @@ app.permanent_session_lifetime = timedelta(
 
 
 # ==================================================
-# IMAGE UPLOAD CONFIG
+# IMAGE UPLOAD CONFIG (UPDATED FOR IMGBB)
 # ==================================================
-
-UPLOAD_FOLDER = "static/uploads"
-
+# Removed local os.makedirs() to fix Vercel Read-Only File System Error
 
 ALLOWED_EXTENSIONS = {
     "png",
@@ -67,16 +66,8 @@ ALLOWED_EXTENSIONS = {
 }
 
 
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
-
-
-if not os.path.exists(UPLOAD_FOLDER):
-
-    os.makedirs(UPLOAD_FOLDER)
-
-
-
+# Retrieve ImgBB API Key from .env (fallback to string if not found)
+IMGBB_API_KEY = os.environ.get("IMGBB_API_KEY", "YOUR_IMGBB_API_KEY_HERE")
 
 
 def allowed_file(filename):
@@ -1612,115 +1603,53 @@ def logout():
 @app.route("/add-product", methods=["POST"])
 def add_product():
 
-
     if not session.get("admin"):
-
-
         return redirect("/admin")
 
 
+    name = request.form.get("name")
+    price = request.form.get("price")
+    description = request.form.get("description")
+    stock = request.form.get("stock")
+    category = request.form.get("category", "Milk")
 
-
-
-    name = request.form.get(
-        "name"
-    )
-
-
-    price = request.form.get(
-        "price"
-    )
-
-
-    description = request.form.get(
-        "description"
-    )
-
-
-    stock = request.form.get(
-        "stock"
-    )
-
-
-    category = request.form.get(
-        "category",
-        "Milk"
-    )
-
-
-
-    image = request.files.get(
-        "image"
-    )
-
-
-
+    image = request.files.get("image")
     image_path = "/static/images/default.png"
 
 
-
-
-
-
     if image and allowed_file(image.filename):
+        try:
+            # Uploading directly to ImgBB
+            url = "https://api.imgbb.com/1/upload"
+            payload = {
+                "key": IMGBB_API_KEY
+            }
+            files = {
+                "image": (image.filename, image.read(), image.content_type)
+            }
+            
+            response = requests.post(url, data=payload, files=files)
+            result = response.json()
 
-
-        filename = secure_filename(
-            image.filename
-        )
-
-
-        image.save(
-
-            os.path.join(
-
-                app.config["UPLOAD_FOLDER"],
-
-                filename
-
-            )
-
-        )
-
-
-        image_path = "/static/uploads/" + filename
-
-
-
-
+            if result.get("success"):
+                image_path = result["data"]["url"]
+        
+        except Exception as e:
+            print(f"ImgBB Upload Error: {e}")
 
 
     product = {
-
-
-        "name":name,
-
-        "price":int(price),
-
-        "description":description,
-
-        "image":image_path,
-
-        "stock":int(stock),
-
-        "category":category,
-
-        "created":datetime.now()
-
+        "name": name,
+        "price": int(price) if price else 0,
+        "description": description,
+        "image": image_path,
+        "stock": int(stock) if stock else 0,
+        "category": category,
+        "created": datetime.now()
     }
 
 
-
-
-
-
-    get_products_collection().insert_one(
-
-        product
-
-    )
-
-
+    get_products_collection().insert_one(product)
 
     return redirect("/admin")
 
@@ -2675,6 +2604,3 @@ if __name__ == "__main__":
         debug=debug_mode
 
     )
-
-
-
